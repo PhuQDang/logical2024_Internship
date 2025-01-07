@@ -7,3 +7,10 @@ import logging
 import sys
 from typing import Dict, List, Tuple
 import re
+
+class DatabaseQueries:
+    def __init__(self):
+        pass
+
+if __name__ == "__main__":
+    pass
