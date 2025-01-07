@@ -104,7 +104,7 @@ class IndustrialZoneBusinessesFinder:
             return industrialZoneMap, idZoneMap
         
         except Exception as e:
-            cur.rollback()
+            conn.rollback()
             self.logger.error(f"Error extracting industrial zones from address {str(e)}")
             raise
         finally:
@@ -129,7 +129,7 @@ class IndustrialZoneBusinessesFinder:
                 )
             conn.commit()
         except Exception as e:
-            cur.rollback()
+            conn.rollback()
             self.logger.error(str(e))
         finally:
             if conn:
