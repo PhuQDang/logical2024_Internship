@@ -6,7 +6,6 @@ import numpy as np
 import logging
 import sys
 from typing import Dict, List, Tuple
-import re
 import tabulate
 
 class DatabaseQueries:
