@@ -1,5 +1,5 @@
 from general_database import *
-from industrial_zone import *
+from industrial_zone_finder import *
 
 def general_setup(fname, industrialSetUp = True):
     db_params = {
