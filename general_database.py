@@ -8,10 +8,6 @@ import sys
 from typing import Dict, List, Tuple
 import re
 
-gbAreaMap = {}  
-gbTypeMap = {}
-gbActivityMap = {}
-
 class VNBusinessImporter:
     def __init__(self, db_params: Dict[str, str], excel_file: str):
         self.db_params = db_params
