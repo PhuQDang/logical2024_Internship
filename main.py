@@ -8,6 +8,7 @@ def main():
             if not 0 <= int(option) <= 2:
                 print("Invalid option")
                 continue
+            
         except KeyboardInterrupt:
             return
         except:

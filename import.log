@@ -1,0 +1,77 @@
+2025-01-07 09:17:04,672 - INFO - Schema created successfully
+2025-01-07 09:17:04,680 - ERROR - Error in import process: [Errno 2] No such file or directory: 'dsdn_1997_2024_cleaned.xlsx'
+2025-01-07 09:17:45,405 - INFO - Schema created successfully
+2025-01-07 09:19:38,250 - INFO - Schema created successfully
+2025-01-07 09:26:34,737 - INFO - Schema created successfully
+2025-01-07 09:27:35,862 - INFO - Schema created successfully
+2025-01-07 09:27:38,208 - ERROR - Error processing business types: 'NoneType' object is not subscriptable
+2025-01-07 09:27:38,213 - ERROR - Error in import process: 'NoneType' object is not subscriptable
+2025-01-07 09:28:52,019 - INFO - Schema created successfully
+2025-01-07 09:28:54,515 - ERROR - Error processing business types: 'NoneType' object is not subscriptable
+2025-01-07 09:28:54,524 - ERROR - Error in import process: 'NoneType' object is not subscriptable
+2025-01-07 09:30:46,479 - INFO - Schema created successfully
+2025-01-07 09:30:48,735 - ERROR - Error processing business types: 'NoneType' object is not subscriptable
+2025-01-07 09:30:48,735 - ERROR - Error in import process: 'NoneType' object is not subscriptable
+2025-01-07 09:31:48,556 - INFO - Schema created successfully
+2025-01-07 09:31:57,251 - ERROR - Error processing business types: 'NoneType' object is not subscriptable
+2025-01-07 09:31:57,251 - ERROR - Error in import process: 'NoneType' object is not subscriptable
+2025-01-07 09:45:20,610 - INFO - Schema created successfully
+2025-01-07 09:45:29,429 - ERROR - Error processing areas: 'district'
+2025-01-07 09:45:29,429 - ERROR - Error in import process: 'district'
+2025-01-07 09:46:04,406 - INFO - Schema created successfully
+2025-01-07 09:46:49,953 - ERROR - Error processing business types: 'NoneType' object is not subscriptable
+2025-01-07 09:47:00,028 - ERROR - Error in import process: 'NoneType' object is not subscriptable
+2025-01-07 09:47:18,691 - INFO - Schema created successfully
+2025-01-07 09:48:11,813 - INFO - Schema created successfully
+2025-01-07 09:55:03,697 - INFO - Schema created successfully
+2025-01-07 09:55:21,191 - INFO - Schema created successfully
+2025-01-07 09:55:56,986 - INFO - Schema created successfully
+2025-01-07 09:59:04,648 - INFO - Schema created successfully
+2025-01-07 10:01:28,277 - INFO - Schema created successfully
+2025-01-07 10:04:59,649 - INFO - Schema created successfully
+2025-01-07 10:05:08,357 - ERROR - Error processing activities: syntax error at or near "{"
+LINE 10: ...             SELECT code FROM activities WHERE code = {4730}
+                                                                  ^
+
+2025-01-07 10:05:08,373 - ERROR - Error in import process: syntax error at or near "{"
+LINE 10: ...             SELECT code FROM activities WHERE code = {4730}
+                                                                  ^
+
+2025-01-07 10:05:57,521 - INFO - Schema created successfully
+2025-01-07 10:07:01,418 - INFO - Schema created successfully
+2025-01-07 10:07:10,561 - ERROR - Error in import process: not enough values to unpack (expected 2, got 1)
+2025-01-07 10:07:34,931 - INFO - Schema created successfully
+2025-01-07 10:11:45,076 - INFO - Schema created successfully
+2025-01-07 10:12:27,872 - ERROR - Error in import process: not enough values to unpack (expected 2, got 1)
+2025-01-07 10:13:20,195 - INFO - Schema created successfully
+2025-01-07 10:15:11,354 - INFO - Schema created successfully
+2025-01-07 10:15:29,672 - ERROR - Error in import process: 'list' object is not callable
+2025-01-07 10:16:19,641 - INFO - Schema created successfully
+2025-01-07 10:16:50,722 - INFO - Schema created successfully
+2025-01-07 10:16:54,039 - ERROR - Error in import process: not enough values to unpack (expected 2, got 1)
+2025-01-07 10:17:30,372 - INFO - Schema created successfully
+2025-01-07 10:17:33,379 - ERROR - Error in import process: not enough values to unpack (expected 2, got 1)
+2025-01-07 10:17:40,427 - INFO - Schema created successfully
+2025-01-07 10:17:50,143 - ERROR - Error in import process: not enough values to unpack (expected 2, got 1)
+2025-01-07 10:18:22,007 - INFO - Schema created successfully
+2025-01-07 10:21:44,204 - INFO - Schema created successfully
+2025-01-07 10:23:52,036 - INFO - Schema created successfully
+2025-01-07 10:25:20,895 - INFO - Schema created successfully
+2025-01-07 10:27:09,008 - INFO - Schema created successfully
+2025-01-07 10:27:44,433 - INFO - Successfully imported all data
+2025-01-07 10:29:04,216 - INFO - Schema created successfully
+2025-01-07 10:29:21,955 - INFO - Successfully imported all data
+2025-01-07 10:36:10,793 - INFO - Schema created successfully
+2025-01-07 10:36:13,525 - ERROR - Error in import process: duplicate key value violates unique constraint "business_act_pkey"
+DETAIL:  Key (business_id, act_code)=(1, 4730) already exists.
+
+2025-01-07 10:36:47,473 - INFO - Schema created successfully
+2025-01-07 10:36:50,559 - ERROR - Error in import process: operator does not exist: character varying = double precision
+LINE 12: ...       SELECT id FROM businesses WHERE reg_number = 'NaN'::f...
+                                                              ^
+HINT:  No operator matches the given name and argument types. You might need to add explicit type casts.
+
+2025-01-07 10:37:36,570 - INFO - Schema created successfully
+2025-01-07 10:38:26,363 - INFO - Successfully imported all data
+2025-01-07 10:40:07,860 - INFO - Schema created successfully
+2025-01-07 10:40:25,565 - INFO - Successfully imported all data
