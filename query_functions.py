@@ -71,8 +71,8 @@ class DatabaseQueries:
             cur.execute(query)
             df = pd.DataFrame(cur.fetchall())
             df.columns = columns
-            output_path = Path.cwd()/"query_output.csv"
-            df.to_csv(output_path, index=False)
+            output_path = Path.cwd()/"query_output.xlsx"
+            df.to_excel(output_path, index=False)
             print(f"Files saved to {output_path}")
         except Exception as e:
             conn.rollback()
