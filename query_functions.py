@@ -18,7 +18,7 @@ class DatabaseQueries:
             level=logging.INFO,
             format='%(asctime)s - %(levelname)s - %(message)s',
             handlers=[
-                logging.FileHandler('import.log'),
+                logging.FileHandler('queries.log'),
                 logging.StreamHandler(sys.stdout)
             ]
         )
