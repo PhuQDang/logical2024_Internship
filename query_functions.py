@@ -40,6 +40,18 @@ class DatabaseQueries:
         """
         return query
 
+    def count_businesses_in_zone(self, zone_name):
+        query = """
+        SELECT COUNT(*) 
+        FROM general_businesses 
+            JOIN industrial_zone_businesses  
+                ON general_businesses.id = industrial_zone_businesses.business_id
+            JOIN industrial_zones
+                ON industrial_zones.id = industrial_zone_businesses.zone_id
+        WHERE industrial_zones.name = '%s'
+        """.format(zone_name)
+        return query
+
     def return_query_result(self, option = None):
         conn = psycopg2.connect(**self.db_params)
         cur = conn.cursor()
