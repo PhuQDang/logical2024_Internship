@@ -75,3 +75,12 @@ HINT:  No operator matches the given name and argument types. You might need to 
 2025-01-07 10:38:26,363 - INFO - Successfully imported all data
 2025-01-07 10:40:07,860 - INFO - Schema created successfully
 2025-01-07 10:40:25,565 - INFO - Successfully imported all data
+2025-01-08 10:13:42,329 - ERROR - Error executing query: '0'
+2025-01-08 10:14:03,079 - ERROR - Error executing query: no results to fetch
+2025-01-08 10:14:24,160 - ERROR - Error executing query: DatabaseQueries.__count_businesses_in_zone() missing 1 required positional argument: 'zone_name'
+2025-01-08 10:59:32,256 - ERROR - Error executing query: __main__.DatabaseQueries.count_businesses_in_zone() argument after ** must be a mapping, not str
+2025-01-08 10:59:52,821 - ERROR - Error executing query: too many values to unpack (expected 2)
+2025-01-08 11:00:22,505 - ERROR - Error executing query: too many values to unpack (expected 2)
+2025-01-08 11:00:45,640 - ERROR - Error executing query: Length mismatch: Expected axis has 1 elements, new values have 2 elements
+2025-01-08 11:01:15,375 - ERROR - Error executing query: Length mismatch: Expected axis has 1 elements, new values have 2 elements
+2025-01-08 11:03:04,502 - ERROR - Error executing query: [Errno 13] Permission denied: 'C:\\Users\\dangq\\Documents\\2024_LOGICAL_Internship\\logical2024_Internship\\query_output.xlsx'

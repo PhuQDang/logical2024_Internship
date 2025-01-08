@@ -2,6 +2,7 @@ import pandas as pd
 import psycopg2
 from psycopg2 import sql
 from sqlalchemy import create_engine
+from pathlib import Path
 import numpy as np
 import logging
 import sys
@@ -11,9 +12,9 @@ import tabulate
 class DatabaseQueries:
     def __init__(self, db_params):
         self.db_params = db_params
-        pass
+        self.__setup_logging()
 
-    def setup_logging(self):
+    def __setup_logging(self):
         logging.basicConfig(
             level=logging.INFO,
             format='%(asctime)s - %(levelname)s - %(message)s',
@@ -24,7 +25,7 @@ class DatabaseQueries:
         )
         self.logger = logging.getLogger(__name__)
     
-    def __industrial_zone_businesses_main_act_query(self):
+    def industrial_zone_businesses_main_act_query(self):
         query = """
         SELECT general_businesses.name, business_act.act_code, activities.descr, industrial_zones.name  
         FROM general_businesses 
@@ -38,27 +39,41 @@ class DatabaseQueries:
                 ON industrial_zones.id = industrial_zone_businesses.zone_id
         WHERE main_act = true;
         """
-        return query
+        columns = ["Name", "Activity Code", "Activity Description", "Industrial Zone"]
+        return query, columns
 
-    def count_businesses_in_zone(self, zone_name):
+    def count_businesses_in_zone(self):
         query = """
-        SELECT COUNT(*) 
+        SELECT industrial_zones.name, COUNT(*) 
         FROM general_businesses 
             JOIN industrial_zone_businesses  
                 ON general_businesses.id = industrial_zone_businesses.business_id
             JOIN industrial_zones
                 ON industrial_zones.id = industrial_zone_businesses.zone_id
-        WHERE industrial_zones.name = '%s'
-        """.format(zone_name)
-        return query
+        GROUP BY industrial_zones.name
+        """
+        columns = ["Industrial Zone", "Number of businesses"]
+        return query, columns
 
-    def return_query_result(self, option = None):
+    def return_query_result(self, option):
         conn = psycopg2.connect(**self.db_params)
         cur = conn.cursor()
-
+        options = {
+            0: self.industrial_zone_businesses_main_act_query,
+            1: self.count_businesses_in_zone
+        }
+        if option == 1:
+            params = input(
+                "Enter industrial zone: "
+            ).upper()
         try:
-            cur.execute(self.__industrial_zone_businesses_main_act_query())
-            return tabulate.tabulate(cur.fetchall(), tablefmt="pipe")
+            query, columns = options[option]()
+            cur.execute(query)
+            df = pd.DataFrame(cur.fetchall())
+            df.columns = columns
+            output_path = Path.cwd()/"query_output.csv"
+            df.to_csv(output_path, index=False)
+            print(f"Files saved to {output_path}")
         except Exception as e:
             conn.rollback()
             self.logger.error(f"Error executing query: {str(e)}")
@@ -77,7 +92,8 @@ def main():
         'port': '5432'
     }
     queryCarrier = DatabaseQueries(db_params)
-    return queryCarrier.return_query_result()
+    option = input()
+    return queryCarrier.return_query_result(int(option))
 
 if __name__ == "__main__":
     print(main())
