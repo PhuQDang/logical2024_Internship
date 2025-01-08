@@ -84,3 +84,5 @@ HINT:  No operator matches the given name and argument types. You might need to 
 2025-01-08 11:00:45,640 - ERROR - Error executing query: Length mismatch: Expected axis has 1 elements, new values have 2 elements
 2025-01-08 11:01:15,375 - ERROR - Error executing query: Length mismatch: Expected axis has 1 elements, new values have 2 elements
 2025-01-08 11:03:04,502 - ERROR - Error executing query: [Errno 13] Permission denied: 'C:\\Users\\dangq\\Documents\\2024_LOGICAL_Internship\\logical2024_Internship\\query_output.xlsx'
+2025-01-08 13:22:30,802 - ERROR - dictionary update sequence element #0 has length 16; 2 is required
+2025-01-08 13:22:30,802 - ERROR - Error executing query: dictionary update sequence element #0 has length 16; 2 is required

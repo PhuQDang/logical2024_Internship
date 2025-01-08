@@ -96,7 +96,7 @@ class IndustrialZoneBusinessesFinder:
                     SELECT * FROM e
                     UNION
                         SELECT id FROM industrial_zones WHERE name = %s
-                    """, (zone, zone)
+                    """, (zone, zone,)
                 )
                 zoneId = cur.fetchone()[0]
                 industrialZoneMap[zone] = zoneId
