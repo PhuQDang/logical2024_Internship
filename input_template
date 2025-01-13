@@ -2,14 +2,16 @@ import pandas as pd
 import numpy as np
 import logging
 import sys
-from typing import Dict, List, Tuple
 import re
 import tkinter as tk
 from tkinter import ttk
+from pathlib import Path
 
-class InputTemplate:
-    def __init__(self, out_fname):
-        self.out_fname = out_fname
+class InputTemplateFile:
+    def __init__(self, out_fname="input_template_file.xlsx"):
+        self.out_fname = re.search(r"[\d\D]*\.", out_fname).group() + 'xlsx'
+        print(self.out_fname)
+        self.setup_logging()
     
     def setup_logging(self):
         logging.basicConfig(
@@ -22,9 +24,20 @@ class InputTemplate:
         )
         self.logger = logging.getLogger(__name__)
     
-    def get_input(self):
+    def input_data_to_excel(self, is_empty=False):
+        try:
+            input_data = self.get_input(is_empty)
+            df = pd.DataFrame(input_data)
+            input_template_path = Path.cwd() / self.out_fname
+            df.to_excel(input_template_path, index=True)
+            return input_template_path
+        except Exception as e:
+            self.logger.error(str(e))
+            raise
+    
+    def get_input(self, is_empty):
         input_data = {
-            "no" : [],
+            "no": [],
             "reg_number": [],
             "business_name": [],
             "address": [],
@@ -45,16 +58,24 @@ class InputTemplate:
             "shareholders": [],
             "domestic": []
         }
-        for category in input_data.keys():
-            data = input(f"Enter data for {category}")
-            input_data[category].append(data)
-        
-        df = pd.DataFrame(input_data)
-
-
-
+        try:
+            if not is_empty:
+                for category in input_data.keys():
+                    data = input(f"Enter data for {category}: ")
+                    input_data[category].append(data)
+        except Exception as e:
+            self.logger.error(str(e))
+            raise
+        finally:
+            self.logger()
+            return input_data
+    
     def __input_popup_format(self):
         ...
 
-if __name__ == "__main__":
+def main():
     ...
+
+if __name__ == "__main__":
+    test = InputTemplateFile()
+    test.input_data_to_excel()

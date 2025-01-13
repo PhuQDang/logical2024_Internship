@@ -3,6 +3,7 @@ import psycopg2
 import logging
 import sys
 from pathlib import Path
+import time
 
 class QueryPrompter:
 
@@ -191,7 +192,7 @@ class QueryPrompter:
             data = self.query_data_raw(query, query_params)
             df = pd.DataFrame(data)
             df.columns = columns
-            output_path = Path.cwd() / "query_output.xlsx"
+            output_path = Path.cwd() / f"query_output_{time.time()}.xlsx"
             df.to_excel(output_path, index=False)
         except Exception as e:
             self.logger.error(str(e))
