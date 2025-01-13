@@ -24,7 +24,7 @@ class InputTemplateFile:
         )
         self.logger = logging.getLogger(__name__)
     
-    def input_data_to_excel(self, is_empty=False):
+    def input_data_to_excel(self, is_empty=True):
         try:
             input_data = self.get_input(is_empty)
             df = pd.DataFrame(input_data)
@@ -41,6 +41,7 @@ class InputTemplateFile:
             "reg_number": [],
             "business_name": [],
             "address": [],
+            "provinces": [],
             "district": [],
             "ward": [],
             "auth_cap": [],

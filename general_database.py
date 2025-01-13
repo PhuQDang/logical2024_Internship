@@ -89,6 +89,7 @@ class VNBusinessImporter:
                 area_id     int,
                 UNIQUE (name, area_id)
             );
+            
             CREATE TABLE IF NOT EXISTS industrial_zone_businesses (
                 business_id     int REFERENCES general_businesses(id),
                 zone_id         int REFERENCES industrial_zones(id),
