@@ -2,7 +2,7 @@ from general_database import *
 from industrial_zone_finder import *
 from query_functions import *
 
-def general_setup(fname, industrialSetUp = True):
+def general_setup(fname):
     db_params = {
         'host': 'localhost',
         'database': 'businessesdb',
@@ -18,11 +18,7 @@ def general_setup(fname, industrialSetUp = True):
     try:
         importer.import_data()
         print("Data import completed successfully!")
-        if industrialSetUp:
-            industrialFilter = IndustrialZoneBusinessesFinder(db_params)
-            industrialFilter.setup_logging()
-            industrialFilter.create_industrial_schema()
-            industrialFilter.address_to_zone()
+        
     except Exception as e:
         print(f"Error: {str(e)}")
         return

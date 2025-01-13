@@ -64,7 +64,7 @@ class IndustrialZoneBusinessesFinder:
         idZoneMap = {}
 
         def extract_industrial_zone(address: str) -> str:
-            addressProcessed = re.search(r"(KCN)\D+", address)
+            addressProcessed = re.search(r"(KCN)[\D\d]*?,", address)
             if addressProcessed != None:
                 addressProcessed = re.findall(r"[^–()-]+", addressProcessed.group().split(',')[0].upper())
                 for i in range(len(addressProcessed)):

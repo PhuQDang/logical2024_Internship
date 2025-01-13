@@ -165,8 +165,6 @@ class QueryPrompter:
         try:
             cur.execute(query, (*query_params,))
             data = cur.fetchall()
-            if data == None:
-                return None
             self.logger.info("Finish returning query results")
             return data
         except Exception as e:

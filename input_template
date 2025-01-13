@@ -6,11 +6,11 @@ import re
 import tkinter as tk
 from tkinter import ttk
 from pathlib import Path
+import time
 
 class InputTemplateFile:
-    def __init__(self, out_fname="input_template_file.xlsx"):
+    def __init__(self, out_fname=f"input_template_file{time.time()}.xlsx"):
         self.out_fname = re.search(r"[\d\D]*\.", out_fname).group() + 'xlsx'
-        print(self.out_fname)
         self.setup_logging()
     
     def setup_logging(self):
@@ -29,7 +29,7 @@ class InputTemplateFile:
             input_data = self.get_input(is_empty)
             df = pd.DataFrame(input_data)
             input_template_path = Path.cwd() / self.out_fname
-            df.to_excel(input_template_path, index=True)
+            df.to_excel(input_template_path, index=False)
             return input_template_path
         except Exception as e:
             self.logger.error(str(e))
@@ -64,12 +64,11 @@ class InputTemplateFile:
                 for category in input_data.keys():
                     data = input(f"Enter data for {category}: ")
                     input_data[category].append(data)
+            self.logger.info("Exported query successfully")
+            return input_data
         except Exception as e:
             self.logger.error(str(e))
             raise
-        finally:
-            self.logger()
-            return input_data
     
     def __input_popup_format(self):
         ...
