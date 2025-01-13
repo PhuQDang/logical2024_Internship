@@ -1,11 +1,7 @@
 import pandas as pd
 import psycopg2
-from psycopg2 import sql
-from sqlalchemy import create_engine
-import numpy as np
 import logging
 import sys
-from typing import Dict, List, Tuple
 import re
 
 class IndustrialZoneBusinessesFinder:
@@ -96,7 +92,7 @@ class IndustrialZoneBusinessesFinder:
                     SELECT * FROM e
                     UNION
                         SELECT id FROM industrial_zones WHERE name = %s
-                    """, (zone, zone)
+                    """, (zone, zone,)
                 )
                 zoneId = cur.fetchone()[0]
                 industrialZoneMap[zone] = zoneId
