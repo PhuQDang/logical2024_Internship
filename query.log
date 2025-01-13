@@ -25,3 +25,5 @@ LINE 9:         WHERE industrial_zones.name LIKE ''%KCN %''
 2025-01-13 10:36:11,393 - INFO - Finish returning query results
 2025-01-13 10:36:35,070 - INFO - Finish returning query results
 2025-01-13 10:36:35,260 - ERROR - [Errno 13] Permission denied: 'C:\\Users\\dangq\\Documents\\2024_LOGICAL_Internship\\logical2024_Internship\\query_output.xlsx'
+2025-01-13 10:37:48,889 - INFO - Finish returning query results
+2025-01-13 10:37:55,212 - INFO - Finish returning query results
