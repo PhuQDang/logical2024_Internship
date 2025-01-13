@@ -167,13 +167,13 @@ class QueryPrompter:
             data = cur.fetchall()
             if data == None:
                 return None
+            self.logger.info("Finish returning query results")
             return data
         except Exception as e:
             conn.rollback()
             self.logger.error(str(e))
             raise
         finally:
-            self.logger.info("Finish returning query results")
             if conn:
                 cur.close()
                 conn.close()

@@ -30,7 +30,8 @@ class IndustrialZoneBusinessesFinder:
             CREATE TABLE IF NOT EXISTS industrial_zones (
                 id      SERIAL PRIMARY KEY,
                 name    varchar(255) UNIQUE,
-                area_id     int
+                area_id     int,
+                UNIQUE (name, area_id)
             );
             CREATE TABLE IF NOT EXISTS industrial_zone_businesses (
                 business_id     int REFERENCES general_businesses(id),
@@ -61,7 +62,6 @@ class IndustrialZoneBusinessesFinder:
         id_addresses = cur.fetchall()
         industrialZoneMap = {}
         idZoneMap = {}
-        wardMap = {}
 
         def extract_industrial_zone(address: str) -> str:
             addressProcessed = re.search(r"(KCN)\D+", address)
@@ -72,44 +72,50 @@ class IndustrialZoneBusinessesFinder:
                 addressProcessed = ' '.join(addressProcessed)
             return addressProcessed
         
-        data = {"industrial_zone" : []}
-        for id, address in id_addresses:
+        data = {
+                "industrial_zone" : [],
+                "area_id": []
+            }
+        for id, address, area_id in id_addresses:
             industrialZone = extract_industrial_zone(address)
             if industrialZone == None:
                 continue
             idZoneMap[id] = industrialZone
             data["industrial_zone"].append(industrialZone)
+            data["area_id"].append(area_id)
         try:
-            df = pd.DataFrame(data)["industrial_zone"].unique()
-            # for zone in df:
-            #     cur.execute(
-            #         """
-            #         WITH e AS (
-            #         INSERT INTO industrial_zones (name, area_id)
-            #         VALUES
-            #             (%s, %s)
-            #         ON CONFLICT DO NOTHING
-            #         RETURNING id
-            #         )
-            #         SELECT * FROM e
-            #         UNION
-            #             SELECT id FROM industrial_zones WHERE name = %s
-            #         """, (zone, zone,)
-            #     )
-            #     zoneId = cur.fetchone()[0]
-            #     industrialZoneMap[zone] = zoneId
-            # conn.commit()
+            df = pd.DataFrame(data)
+            for _, row in df.iterrows():
+                zone = row['industrial_zone']
+                area_id = row['area_id']
+                cur.execute(
+                    """
+                    WITH e AS (
+                        INSERT INTO industrial_zones (name, area_id)
+                        VALUES
+                            (%s, %s)
+                        ON CONFLICT DO NOTHING
+                        RETURNING id
+                    )
+                    SELECT * FROM e
+                    UNION
+                        SELECT id FROM industrial_zones WHERE name = %s
+                    """, (zone, area_id, zone,)
+                )
+                zoneId = cur.fetchone()[0]
+                industrialZoneMap[zone] = zoneId
+            conn.commit()
+            self.logger.info("Finish processing addresses and industrial zoness")
             return industrialZoneMap, idZoneMap
         
         except Exception as e:
             conn.rollback()
-            self.logger.error(f"Error extracting industrial zones from address {str(e)}")
+            self.logger.error(f"Error extracting industrial zones from address: {str(e)}")
             raise
         finally:
             if conn:
                 cur.close()
                 conn.close()
-            print("Finish processing addresses and industrial zoness")
             
     def address_to_zone(self) -> None:
         conn = psycopg2.connect(**self.db_params)
@@ -126,14 +132,15 @@ class IndustrialZoneBusinessesFinder:
                     """, (business_id, industrialZoneMap[zone])
                 )
             conn.commit()
+            self.logger.info("Finish filtering businesses")
         except Exception as e:
             conn.rollback()
             self.logger.error(str(e))
+            raise
         finally:
             if conn:
                 cur.close()
                 conn.close()
-            print("Finish filtering businesses")
 
 def main():
     db_params = {
