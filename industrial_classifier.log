@@ -58,3 +58,11 @@ DETAIL:  Key (industrial_park)=(426) is not present in table "industrial_parks".
 2025-01-15 15:09:10,674 - INFO - Finish getting industrial parks
 2025-01-15 15:09:10,735 - INFO - Schema created successfully
 2025-01-15 15:09:21,994 - INFO - Successfully imported all data
+2025-01-15 15:21:15,035 - INFO - Finish getting industrial parks
+2025-01-15 15:21:15,181 - INFO - Schema created successfully
+2025-01-15 15:21:19,761 - ERROR - Error in import process: duplicate key value violates unique constraint "park_placement_pkey"
+DETAIL:  Key (park_id, div_id)=(6, 106) already exists.
+
+2025-01-15 15:22:03,227 - INFO - Finish getting industrial parks
+2025-01-15 15:22:03,313 - INFO - Schema created successfully
+2025-01-15 15:22:25,781 - INFO - Successfully imported all data

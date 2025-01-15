@@ -39,8 +39,8 @@ class QueryPrompter:
         )
         self.logger = logging.getLogger(__name__)
 
-    def __get_industrial_zones(self):
-        query = "SELECT name FROM industrial_zones ORDER BY name"
+    def __get_industrial_parks(self):
+        query = "SELECT name FROM industrial_parks ORDER BY name"
         res = self.query_data_raw(query, [])
         return res
 
@@ -97,12 +97,10 @@ class QueryPrompter:
         query = """
         SELECT general_businesses.name as b_name,
                general_businesses.auth_capital as auth_capital,
-               industrial_zones.name as z_name
+               industrial_parks.name as park_name
         FROM general_businesses
-            JOIN industrial_zone_businesses
-                ON general_businesses.id = industrial_zone_businesses.business_id
-            JOIN industrial_zones
-                ON industrial_zones.id = industrial_zone_businesses.zone_id
+            JOIN industrial_parks
+                ON general_businesses.park_id = industrial_parks.id
         WHERE auth_capital >= %s
         ORDER BY %s
         """
@@ -111,16 +109,14 @@ class QueryPrompter:
     
     def industrial_zone_businesses_all_query(self):
         query = """
-        SELECT general_businesses.name, business_act.act_code, activities.descr, industrial_zones.name  
+        SELECT general_businesses.name, business_act.act_code, activities.descr, industrial_parks.name  
         FROM general_businesses 
-            JOIN industrial_zone_businesses  
-                ON general_businesses.id = industrial_zone_businesses.business_id
+            JOIN industrial_parks
+                ON general_businesses.park_id = industrial_parks.id
             JOIN business_act 
                 ON business_act.business_id = general_businesses.id
             JOIN activities
                 ON activities.code = business_act.act_code
-            JOIN industrial_zones
-                ON industrial_zones.id = industrial_zone_businesses.zone_id
         WHERE main_act = true;
         """
         cols = ["Name", "Activity Code", "Activity Description", "Industrial Zone"]
@@ -128,13 +124,11 @@ class QueryPrompter:
 
     def industrial_zone_businesses_count(self):
         query = """
-        SELECT industrial_zones.name as zone_name, COUNT(*) as number_of_businesses
-        FROM general_businesses 
-            JOIN industrial_zone_businesses  
-                ON general_businesses.id = industrial_zone_businesses.business_id
-            JOIN industrial_zones
-                ON industrial_zones.id = industrial_zone_businesses.zone_id
-        GROUP BY industrial_zones.name
+        SELECT industrial_parks.name as zone_name, COUNT(*) as number_of_businesses
+        FROM general_businesses
+            JOIN industrial_parks
+                ON general_businesses.park_id = industrial_parks.id
+        GROUP BY industrial_parks.name
         ORDER BY number_of_businesses
         """
         cols = [self.COL_NAME[12], self.COL_NAME[13]]
@@ -145,13 +139,11 @@ class QueryPrompter:
         SELECT general_businesses.name as b_name,
                general_businesses.address as addr
         FROM general_businesses
-            JOIN industrial_zone_businesses
-                ON industrial_zone_businesses.business_id = general_businesses.id
-            JOIN industrial_zones
-                ON industrial_zones.id = industrial_zone_businesses.zone_id
-        WHERE industrial_zones.name LIKE %s
+            JOIN industrial_parks
+                ON industrial_parks.id = general_businesses.park_id
+        WHERE industrial_parks.name LIKE %s
         """
-        available_zones = list(map(lambda x: x[0], self.__get_industrial_zones()))
+        available_zones = list(map(lambda x: x[0], self.__get_industrial_parks()))
         for i, z_name in enumerate(available_zones):
             print(f"{i}. {z_name}")
         zone = '%' + available_zones[int(input("Enter a zone number: "))] + '%'

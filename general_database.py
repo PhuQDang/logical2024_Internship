@@ -41,6 +41,12 @@ class VNBusinessImporter:
                 division varchar(10)
             );
 
+            CREATE TABLE IF NOT EXISTS park_placement(
+                park_id int REFERENCES industrial_parks(id),
+                div_id  int REFERENCES admin_divisions(id),
+                PRIMARY KEY(park_id, div_id)
+            );
+
             CREATE TABLE IF NOT EXISTS activities (
                 code integer PRIMARY KEY,
                 descr varchar(255)
@@ -274,9 +280,18 @@ class VNBusinessImporter:
                     # Insert business
                     area_key = f"{row['district']}|{row['ward']}"
                     area_id = area_map.get(area_key)
-                    _park_id = None
                     if pd.notna(row['address']):
                         _park_id = self.classifier.classify_(row['address'])
+                    else:
+                        _park_id = None
+
+                    if _park_id != None:
+                        cur.execute("""
+                            INSERT INTO park_placement (park_id, div_id)
+                            VALUES
+                                    (%s, %s)
+                            ON CONFLICT DO NOTHING
+                        """, (_park_id, area_id,))
                     
                     cur.execute("""
                         INSERT INTO general_businesses (
