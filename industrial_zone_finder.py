@@ -27,7 +27,7 @@ class IndustrialZoneBusinessesFinder:
             cur = conn.cursor()
 
             schema_sql = """
-            CREATE TABLE IF NOT EXISTS industrial_zones (
+            CREATE TABLE IF NOT EXISTS industrial_parks (
                 id      SERIAL PRIMARY KEY,
                 name    varchar(255) UNIQUE,
                 area_id     int,
@@ -35,7 +35,7 @@ class IndustrialZoneBusinessesFinder:
             );
             CREATE TABLE IF NOT EXISTS industrial_zone_businesses (
                 business_id     int REFERENCES general_businesses(id),
-                zone_id         int REFERENCES industrial_zones(id),
+                zone_id         int REFERENCES industrial_parks(id),
                 PRIMARY KEY (business_id, zone_id)
             );
             """
@@ -51,7 +51,7 @@ class IndustrialZoneBusinessesFinder:
                 cur.close()
                 conn.close()
 
-    def process_industrial_zones(self) -> dict[int, str]:
+    def process_industrial_parks(self) -> dict[int, str]:
         """
         Extract unique industrial zones and create a map of zone's name and zone's id
         """
@@ -64,7 +64,7 @@ class IndustrialZoneBusinessesFinder:
         idZoneMap = {}
 
         def extract_industrial_zone(address: str) -> str:
-            addressProcessed = re.search(r"(KCN)[\D\d]*?,", address)
+            addressProcessed = re.search(r"(?<=KCN )[\D\d]+?,|(?<=Khu công nghiệp )[\D\d]+?,|(?<=Khu Công Nghiệp )[\D\d]+?,|(?<=khu công nghiệp )[\D\d]+?,", address)
             if addressProcessed != None:
                 addressProcessed = re.findall(r"[^–()-]+", addressProcessed.group().split(',')[0].upper())
                 for i in range(len(addressProcessed)):
@@ -91,7 +91,7 @@ class IndustrialZoneBusinessesFinder:
                 cur.execute(
                     """
                     WITH e AS (
-                        INSERT INTO industrial_zones (name, area_id)
+                        INSERT INTO industrial_parks (name, area_id)
                         VALUES
                             (%s, %s)
                         ON CONFLICT DO NOTHING
@@ -99,13 +99,13 @@ class IndustrialZoneBusinessesFinder:
                     )
                     SELECT * FROM e
                     UNION
-                        SELECT id FROM industrial_zones WHERE name = %s
+                        SELECT id FROM industrial_parks WHERE name = %s
                     """, (zone, area_id, zone,)
                 )
                 zoneId = cur.fetchone()[0]
                 industrialZoneMap[zone] = zoneId
             conn.commit()
-            self.logger.info("Finish processing addresses and industrial zoness")
+            self.logger.info("Finish processing addresses and industrial zones")
             return industrialZoneMap, idZoneMap
         
         except Exception as e:
@@ -121,7 +121,7 @@ class IndustrialZoneBusinessesFinder:
         conn = psycopg2.connect(**self.db_params)
         cur = conn.cursor()
         try:
-            industrialZoneMap, idZoneMap = self.process_industrial_zones()
+            industrialZoneMap, idZoneMap = self.process_industrial_parks()
             for business_id, zone in idZoneMap.items():
                 cur.execute(
                     """
@@ -152,7 +152,6 @@ def main():
     }
     industrialFilter = IndustrialZoneBusinessesFinder(db_params)
     try:
-        industrialFilter.setup_logging()
         industrialFilter.create_industrial_schema()
         industrialFilter.address_to_zone()
     except Exception as e:

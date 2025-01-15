@@ -96,3 +96,7 @@ HINT:  No operator matches the given name and argument types. You might need to 
 2025-01-13 13:30:23,487 - INFO - Successfully imported all data
 2025-01-13 13:30:23,657 - INFO - Finish processing addresses and industrial zoness
 2025-01-13 13:30:23,682 - INFO - Finish filtering businesses
+2025-01-15 11:45:01,362 - INFO - Schema created successfully
+2025-01-15 11:45:24,372 - INFO - Successfully imported all data
+2025-01-15 11:47:10,964 - INFO - Schema created successfully
+2025-01-15 11:47:33,184 - INFO - Successfully imported all data

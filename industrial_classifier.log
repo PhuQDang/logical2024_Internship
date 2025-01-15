@@ -1,0 +1,60 @@
+2025-01-15 13:59:44,260 - ERROR - 'park_name'
+2025-01-15 14:00:43,638 - ERROR - 'C'
+2025-01-15 14:01:09,318 - INFO - Finish getting industrial parks
+2025-01-15 14:01:56,911 - ERROR - 'C'
+2025-01-15 14:02:09,517 - ERROR - 'C'
+2025-01-15 14:03:23,144 - ERROR - 'C'
+2025-01-15 14:06:10,979 - ERROR - 'NoneType' object has no attribute 'group'
+2025-01-15 14:08:38,164 - ERROR - 'S'
+2025-01-15 14:10:10,737 - INFO - Finish getting industrial parks
+2025-01-15 14:13:56,020 - INFO - Finish getting industrial parks
+2025-01-15 14:14:31,347 - INFO - Finish getting industrial parks
+2025-01-15 14:20:17,455 - INFO - Finish getting industrial parks
+2025-01-15 14:21:38,989 - INFO - Finish getting industrial parks
+2025-01-15 14:22:02,983 - INFO - Finish getting industrial parks
+2025-01-15 14:22:48,308 - INFO - Finish getting industrial parks
+2025-01-15 14:22:57,568 - INFO - Finish getting industrial parks
+2025-01-15 14:24:15,949 - INFO - Finish getting industrial parks
+2025-01-15 14:24:22,285 - INFO - Finish getting industrial parks
+2025-01-15 14:26:14,750 - INFO - Finish getting industrial parks
+2025-01-15 14:26:24,195 - INFO - Finish getting industrial parks
+2025-01-15 14:27:41,535 - INFO - Finish getting industrial parks
+2025-01-15 14:29:05,114 - INFO - Finish getting industrial parks
+2025-01-15 14:29:33,227 - INFO - Finish getting industrial parks
+2025-01-15 14:31:53,269 - INFO - Finish getting industrial parks
+2025-01-15 14:32:09,038 - INFO - Finish getting industrial parks
+2025-01-15 14:40:50,916 - INFO - Finish getting industrial parks
+2025-01-15 14:41:02,594 - INFO - Finish getting industrial parks
+2025-01-15 14:53:41,549 - INFO - Finish getting industrial parks
+2025-01-15 14:53:41,597 - INFO - Schema created successfully
+2025-01-15 14:53:43,194 - ERROR - Error in import process: not all arguments converted during string formatting
+2025-01-15 14:54:40,446 - INFO - Finish getting industrial parks
+2025-01-15 14:54:40,473 - INFO - Schema created successfully
+2025-01-15 14:54:42,008 - ERROR - Error in import process: insert or update on table "general_businesses" violates foreign key constraint "general_businesses_industrial_park_fkey"
+DETAIL:  Key (industrial_park)=(144) is not present in table "industrial_parks".
+
+2025-01-15 14:55:28,697 - INFO - Finish getting industrial parks
+2025-01-15 14:55:28,728 - INFO - Schema created successfully
+2025-01-15 14:56:38,814 - INFO - Finish getting industrial parks
+2025-01-15 14:56:38,851 - INFO - Schema created successfully
+2025-01-15 14:57:29,379 - ERROR - Error in import process: insert or update on table "general_businesses" violates foreign key constraint "general_businesses_industrial_park_fkey"
+DETAIL:  Key (industrial_park)=(426) is not present in table "industrial_parks".
+
+2025-01-15 14:59:38,952 - INFO - Finish getting industrial parks
+2025-01-15 14:59:38,992 - INFO - Schema created successfully
+2025-01-15 14:59:40,763 - ERROR - Error in import process: can't adapt type 'numpy.int64'
+2025-01-15 14:59:56,722 - INFO - Finish getting industrial parks
+2025-01-15 14:59:56,753 - INFO - Schema created successfully
+2025-01-15 15:02:31,967 - INFO - Finish getting industrial parks
+2025-01-15 15:02:32,102 - INFO - Schema created successfully
+2025-01-15 15:04:46,031 - INFO - Finish getting industrial parks
+2025-01-15 15:04:46,076 - INFO - Schema created successfully
+2025-01-15 15:04:47,662 - ERROR - Error in import process: can't adapt type 'numpy.int64'
+2025-01-15 15:04:54,277 - INFO - Finish getting industrial parks
+2025-01-15 15:04:54,302 - INFO - Schema created successfully
+2025-01-15 15:06:37,530 - INFO - Finish getting industrial parks
+2025-01-15 15:06:37,562 - INFO - Schema created successfully
+2025-01-15 15:06:48,736 - INFO - Successfully imported all data
+2025-01-15 15:09:10,674 - INFO - Finish getting industrial parks
+2025-01-15 15:09:10,735 - INFO - Schema created successfully
+2025-01-15 15:09:21,994 - INFO - Successfully imported all data

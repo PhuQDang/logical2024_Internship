@@ -7,11 +7,13 @@ import logging
 import sys
 from typing import Dict, List, Tuple
 import re
+from industrial_park_classifier import IndustrialParkClassifier
 
 class VNBusinessImporter:
     def __init__(self, db_params: Dict[str, str], excel_file: str):
         self.db_params = db_params
         self.excel_file = excel_file
+        self.classifier = IndustrialParkClassifier(self.db_params)
         self.setup_logging()
         
     def setup_logging(self):
@@ -32,11 +34,11 @@ class VNBusinessImporter:
             cur = conn.cursor()
 
             schema_sql = """
-            CREATE TABLE IF NOT EXISTS areas(
+            CREATE TABLE IF NOT EXISTS admin_divisions(
                 id serial PRIMARY KEY,
                 name varchar(100),
-                parent_id bigint REFERENCES areas(id),
-                area_type varchar(10)
+                parent_id bigint REFERENCES admin_divisions(id),
+                division varchar(10)
             );
 
             CREATE TABLE IF NOT EXISTS activities (
@@ -55,16 +57,17 @@ class VNBusinessImporter:
                 name varchar(255),
                 reg_number varchar(20),
                 address varchar(255),
-                area_id int references areas(id),
+                area_id int REFERENCES admin_divisions(id),
+                park_id int REFERENCES industrial_parks(id),
                 phone varchar(20)[],
                 email varchar(100),
                 auth_capital bigint,
-                type_id int references business_type(id),
+                type_id int REFERENCES business_type(id),
                 domestic boolean
             );
 
             CREATE TABLE IF NOT EXISTS legal_rep(
-                business_id int references general_businesses(id),
+                business_id int REFERENCES general_businesses(id),
                 name varchar(100),
                 PRIMARY KEY (business_id, name)
             );
@@ -104,8 +107,8 @@ class VNBusinessImporter:
         phones = re.findall(r'\d+[^-,;/]*', phone_str.replace('–', '-'))
         return [phone.strip() for phone in phones]
 
-    def process_areas(self, df: pd.DataFrame) -> Dict[str, int]:
-        """Process district and ward data into areas table"""
+    def process_admin_divisions(self, df: pd.DataFrame) -> Dict[str, int]:
+        """Process district and ward data into admin_divisions table"""
         conn = psycopg2.connect(**self.db_params)
         cur = conn.cursor()
         area_map = {}
@@ -116,7 +119,7 @@ class VNBusinessImporter:
             for province in provinces:
                 if pd.notna(province):
                     cur.execute(
-                        "INSERT INTO areas (name, area_type) VALUES (%s, %s) RETURNING id",
+                        "INSERT INTO admin_divisions (name, division) VALUES (%s, %s) RETURNING id",
                         (province, 'province')
                     )
                     province_id = cur.fetchone()[0]
@@ -128,7 +131,7 @@ class VNBusinessImporter:
                     for district in districts:
                         if pd.notna(district):
                             cur.execute(
-                                "INSERT INTO areas (name, parent_id, area_type) VALUES (%s, %s, %s) RETURNING id",
+                                "INSERT INTO admin_divisions (name, parent_id, division) VALUES (%s, %s, %s) RETURNING id",
                                 (district, province_id, 'district')
                             )
                             district_id = cur.fetchone()[0]
@@ -141,7 +144,7 @@ class VNBusinessImporter:
                             for ward in wards:
                                 if pd.notna(ward):
                                     cur.execute(
-                                        "INSERT INTO areas (name, parent_id, area_type) VALUES (%s, %s, %s) RETURNING id",
+                                        "INSERT INTO admin_divisions (name, parent_id, division) VALUES (%s, %s, %s) RETURNING id",
                                         (ward, district_id, 'ward')
                                     )
                                     ward_id = cur.fetchone()[0]
@@ -152,12 +155,12 @@ class VNBusinessImporter:
 
         except Exception as e:
             conn.rollback()
-            self.logger.error(f"Error processing areas: {str(e)}")
+            self.logger.error(f"Error processing admin_divisions: {str(e)}")
             raise
         finally:
             cur.close()
             conn.close()
-            print("Import areas complete")
+            print("Import admin_divisions complete")
 
     def process_business_types(self, df: pd.DataFrame) -> Dict[str, int]:
         """Process business types"""
@@ -258,7 +261,7 @@ class VNBusinessImporter:
             df = pd.read_excel(self.excel_file)
             
             # Process reference data first
-            area_map = self.process_areas(df)
+            area_map = self.process_admin_divisions(df)
             type_map = self.process_business_types(df)
             activity_map = self.process_activities(df)
 
@@ -271,18 +274,22 @@ class VNBusinessImporter:
                     # Insert business
                     area_key = f"{row['district']}|{row['ward']}"
                     area_id = area_map.get(area_key)
+                    _park_id = None
+                    if pd.notna(row['address']):
+                        _park_id = self.classifier.classify_(row['address'])
                     
                     cur.execute("""
                         INSERT INTO general_businesses (
-                            name, reg_number, address, area_id, phone, email,
+                            name, reg_number, address, area_id, park_id, phone, email,
                             auth_capital, type_id, domestic
-                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         RETURNING id
                     """, (
                         row['business_name'],
                         row['reg_number'],
                         row['address'],
                         area_id,
+                        _park_id,
                         self.process_phone_numbers(row['phone']),
                         row['email'],
                         row['auth_cap'],
@@ -291,7 +298,7 @@ class VNBusinessImporter:
                     ))
                     
                     business_id = cur.fetchone()[0]
-
+                    
                     # Insert business activities
                     if pd.notna(row['main_act']):
                         if row['main_act'] == "--":

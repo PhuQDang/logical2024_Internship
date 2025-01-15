@@ -70,3 +70,14 @@
 2025-01-13 14:47:30,074 - INFO - Schema created successfully
 2025-01-13 14:47:30,582 - INFO - Finish processing addresses and industrial zoness
 2025-01-13 14:47:30,595 - INFO - Finish filtering businesses
+2025-01-13 16:18:26,511 - INFO - Schema created successfully
+2025-01-13 16:18:26,681 - ERROR - cannot unpack non-iterable NoneType object
+2025-01-13 16:19:13,741 - INFO - Schema created successfully
+2025-01-13 16:19:13,971 - INFO - Finish processing addresses and industrial zoness
+2025-01-13 16:19:13,992 - INFO - Finish filtering businesses
+2025-01-13 16:20:00,867 - INFO - Schema created successfully
+2025-01-13 16:20:01,066 - INFO - Finish processing addresses and industrial zoness
+2025-01-13 16:20:01,081 - INFO - Finish filtering businesses
+2025-01-13 16:21:19,711 - INFO - Schema created successfully
+2025-01-13 16:21:20,021 - INFO - Finish processing addresses and industrial zoness
+2025-01-13 16:21:20,061 - INFO - Finish filtering businesses

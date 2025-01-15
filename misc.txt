@@ -25,3 +25,24 @@ ORDER BY number_of_businesses
 """
 columns = ["Industrial Zone", "Number of businesses"]
 
+CREATE TABLE industrial_parks (
+	id	serial	PRIMARY KEY,
+	name	varchar(255),
+	area	real
+);
+
+INSERT INTO industrial_parks (name, area)
+VALUES
+	('MINH HƯNG HÀN QUỐC', 192.3),
+	('MINH HƯNG III', 291.5),
+	('CHƠN THÀNH I', 124.5),
+	('CHƠN THÀNH II', 76),
+	('BECAMEX BÌNH PHƯỚC', 2448.3),
+	('BẮC ĐỒNG PHÚ', 190.4),
+	('NAM ĐỒNG PHÚ', 69),
+	('ĐỒNG XOÀI I', 162.6),
+	('ĐỒNG XOÀI II', 84.7),
+	('ĐỒNG XOÀI III', 120.3),
+	('VIỆT KIỀU', 103.9),
+	('MINH HƯNG SIKICO', 655),
+	('TÂN KHAI II', 160)
