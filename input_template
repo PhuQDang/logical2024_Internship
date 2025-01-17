@@ -9,7 +9,7 @@ from pathlib import Path
 import time
 
 class InputTemplateFile:
-    def __init__(self, out_fname=f"input_template_file{time.time()}.xlsx"):
+    def __init__(self, out_fname=f"input_template_.xlsx"):
         self.out_fname = re.search(r"[\d\D]*\.", out_fname).group() + 'xlsx'
         self.setup_logging()
     
@@ -29,7 +29,9 @@ class InputTemplateFile:
             input_data = self.get_input(is_empty)
             df = pd.DataFrame(input_data)
             input_template_path = Path.cwd() / self.out_fname
-            df.to_excel(input_template_path, index=False)
+            writer = pd.ExcelWriter(path=input_template_path, engine='xlsxwriter')
+            df.to_excel(writer, index=False,)
+            writer.close()
             return input_template_path
         except Exception as e:
             self.logger.error(str(e))

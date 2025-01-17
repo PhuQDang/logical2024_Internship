@@ -1,2 +1,12 @@
 2025-01-13 14:09:36,312 - ERROR - 'Logger' object is not callable
 2025-01-13 14:10:37,558 - INFO - Exported query successfully
+2025-01-17 10:51:44,845 - INFO - Exported query successfully
+2025-01-17 10:51:44,849 - ERROR - No module named 'xlsxwriter'
+2025-01-17 10:53:12,669 - INFO - Exported query successfully
+2025-01-17 10:53:12,719 - ERROR - 'XlsxWriter' object has no attribute 'save'
+2025-01-17 10:53:44,421 - INFO - Exported query successfully
+2025-01-17 10:55:22,826 - INFO - Exported query successfully
+2025-01-17 10:58:28,601 - INFO - Exported query successfully
+2025-01-17 10:58:46,259 - INFO - Exported query successfully
+2025-01-17 11:00:20,735 - INFO - Exported query successfully
+2025-01-17 11:00:35,010 - INFO - Exported query successfully
