@@ -66,3 +66,7 @@ DETAIL:  Key (park_id, div_id)=(6, 106) already exists.
 2025-01-15 15:22:03,227 - INFO - Finish getting industrial parks
 2025-01-15 15:22:03,313 - INFO - Schema created successfully
 2025-01-15 15:22:25,781 - INFO - Successfully imported all data
+2025-01-15 16:04:47,507 - INFO - Finish getting industrial parks
+2025-01-17 09:36:19,911 - INFO - Finish getting industrial parks
+2025-01-17 09:36:20,019 - INFO - Schema created successfully
+2025-01-17 09:36:43,620 - INFO - Successfully imported all data

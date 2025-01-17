@@ -20,7 +20,7 @@ class QueryPrompter:
         "Business Model", #9
         "Shareholders", #10
         "Domestic", #11
-        "Industrial Zone" #12
+        "Industrial Zone", #12
         "Number of Businesses" #13
     ]
 
@@ -71,7 +71,7 @@ class QueryPrompter:
         cols = [self.COL_NAME[1], self.COL_NAME[3]]
         return (query, [min_capital], cols)
     
-    def industrial_zone_business_capital_query(self):
+    def industrial_park_business_capital_query(self):
         rank = {
             0: "b_name",
             1: "auth_capital",
@@ -107,7 +107,7 @@ class QueryPrompter:
         cols = [self.COL_NAME[1], self.COL_NAME[3], self.COL_NAME[12]]
         return (query, [min_capital, ranking_category], cols)
     
-    def industrial_zone_businesses_all_query(self):
+    def industrial_park_businesses_all_query(self):
         query = """
         SELECT general_businesses.name, business_act.act_code, activities.descr, industrial_parks.name  
         FROM general_businesses 
@@ -122,7 +122,7 @@ class QueryPrompter:
         cols = ["Name", "Activity Code", "Activity Description", "Industrial Zone"]
         return (query, [], cols)
 
-    def industrial_zone_businesses_count(self):
+    def industrial_park_businesses_count(self):
         query = """
         SELECT industrial_parks.name as zone_name, COUNT(*) as number_of_businesses
         FROM general_businesses
@@ -134,7 +134,7 @@ class QueryPrompter:
         cols = [self.COL_NAME[12], self.COL_NAME[13]]
         return (query, [], cols)
 
-    def businesses_in_industrial_zone(self):
+    def businesses_in_industrial_park(self):
         query = """
         SELECT general_businesses.name as b_name,
                general_businesses.address as addr
@@ -146,7 +146,7 @@ class QueryPrompter:
         available_zones = list(map(lambda x: x[0], self.__get_industrial_parks()))
         for i, z_name in enumerate(available_zones):
             print(f"{i}. {z_name}")
-        zone = '%' + available_zones[int(input("Enter a zone number: "))] + '%'
+        zone = '%' + available_zones[int(input("Enter a zone number: "))]
         cols = [self.COL_NAME[1], self.COL_NAME[2]]
         return (query, [zone], cols)
 
@@ -171,13 +171,22 @@ class QueryPrompter:
     def query_results(self):
         query_options = {
             1: self.all_businesses_capital_query,
-            2: self.businesses_in_industrial_zone,
-            3: self.industrial_zone_businesses_all_query,
-            4: self.industrial_zone_business_capital_query,
-            5: self.industrial_zone_businesses_count
+            2: self.industrial_park_businesses_all_query,
+            3: self.businesses_in_industrial_park,
+            4: self.industrial_park_business_capital_query,
+            5: self.industrial_park_businesses_count
         }
+        print("Query options:\n"
+              "\t1. Businesses based on authorized capital\n"
+              "\t2. Businesses in all industrial parks\n"
+              "\t3. Businesses in a specified industrial park\n"
+              "\t4. Businessed in industrial park filtered by authorized capital\n"
+              "\t5. Number of businesses in industrial parks\n"
+              "\t0. Quit")
         try:
             option = int(input("Enter which query to perform: "))
+            if not option:
+                sys.exit(0)
             query, query_params, columns = query_options[option]()
             data = self.query_data_raw(query, query_params)
             df = pd.DataFrame(data)

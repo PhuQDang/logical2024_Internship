@@ -1,11 +1,8 @@
 import pandas as pd
 import psycopg2
-from psycopg2 import sql
-from sqlalchemy import create_engine
-import numpy as np
 import logging
 import sys
-from typing import Dict, List, Tuple
+from typing import Dict, List
 import re
 from industrial_park_classifier import IndustrialParkClassifier
 
@@ -79,14 +76,14 @@ class VNBusinessImporter:
             );
 
             CREATE TABLE IF NOT EXISTS business_act(
-                business_id int,
-                act_code int,
+                business_id int REFERENCES general_businesses(id),
+                act_code int REFERENCES activities(code),
                 main_act boolean,
                 PRIMARY KEY(business_id, act_code)
             );
 
             CREATE TABLE IF NOT EXISTS co_fund_shareholders(
-                business_id int,
+                business_id int REFERENCES general_businesses(id),
                 name varchar(80),
                 type varchar(50),
                 PRIMARY KEY(business_id, name)
@@ -400,5 +397,5 @@ def main(fname):
         sys.exit(1)
 
 if __name__ == "__main__":
-    fname = 'dsdn_1997_2024_processed.xlsx'
+    fname = 'dsdn_1997_2024_processed.xlsx' #should create a dropbox to drop file in (front-end)
     main(fname)

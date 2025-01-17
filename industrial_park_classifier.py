@@ -76,7 +76,7 @@ class IndustrialParkClassifier:
             return text
         roman_str = roman_.group().strip()
         num = 0
-        translation = {"X": 10, "IX": 9, "V": 5, "IV": 4, "I": 1}
+        translation = {"X": 10, "V": 5, "I": 1}
         roman_str = roman_str.replace("IV", "IIII").replace("IX", "VIIII")
         for c in roman_str:
             num += translation[c]
