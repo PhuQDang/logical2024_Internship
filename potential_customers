@@ -13,6 +13,8 @@ import re
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 from collections import Counter
+from pathlib import Path
+import time
 
 class PotentialCustomersClassifier:
     def __init__(self, db_params):
@@ -35,12 +37,23 @@ class PotentialCustomersClassifier:
             conn = psycopg2.connect(**self.__db_params)
             cur = conn.cursor()
             cur.execute("""
-            SELECT * FROM general_businesses
-                WHERE park_id IS NOT NULL
+            SELECT general_businesses.id AS business_id,
+                business_act.act_code AS act_code,
+                activities.descr AS act_descr,
+                general_businesses.auth_capital AS auth_capital
+            FROM general_businesses
+                JOIN industrial_parks 
+                    ON general_businesses.park_id = industrial_parks.id
+                JOIN business_act 
+                    ON general_businesses.id = business_act.business_id
+                JOIN activities 
+                    ON business_act.act_code = activities.code
+            WHERE business_act.main_act = true
             """)
-            data = pd.DataFrame(cur.fetchall())
+            df = pd.DataFrame(cur.fetchall())
+            df.columns = ["business_id", "act_code", "act_descr", "auth_cap"]
             self.logger.info("Finished getting raw data")
-            return data
+            return df
         except Exception as e:
             conn.rollback()
             self.logger.error(str(e))
@@ -49,6 +62,36 @@ class PotentialCustomersClassifier:
             if conn:
                 cur.close()
                 conn.close()
+    
+    def export_to_(self, f_format='csv'):
+        export_f = {
+            'csv': pd.DataFrame.to_csv,
+            'xlsx': pd.DataFrame.to_excel
+        }
+        try:
+            raw_data = self.retrieve_raw_data()
+            out_path = Path.cwd() / f"customers_raw_{time.time()}.{f_format}"
+            export_f[f_format](raw_data, out_path, index=False)
+        except Exception as e:
+            self.logger.error(e)
+            raise
+
+
+
+def main():
+    db_param = {
+        'host': 'localhost',
+        'database': 'businessesdb',
+        'user': 'postgres',
+        'password': '1234',
+        'port': '5432'
+    }
+    try:
+        custClass = PotentialCustomersClassifier(db_params=db_param)
+        custClass.export_to_()
+
+    except Exception as e:
+        print(str(e))
 
 if __name__ == "__main__":
-    print("Hello World")
+    main()

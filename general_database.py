@@ -5,6 +5,7 @@ import sys
 from typing import Dict, List
 import re
 from industrial_park_classifier import IndustrialParkClassifier
+import numpy as np
 
 class VNBusinessImporter:
     def __init__(self, db_params: Dict[str, str], excel_file: str):
@@ -82,11 +83,16 @@ class VNBusinessImporter:
                 PRIMARY KEY(business_id, act_code)
             );
 
-            CREATE TABLE IF NOT EXISTS co_fund_shareholders(
+            CREATE TABLE IF NOT EXISTS shareholders(
+                id  serial PRIMARY KEY,
+                name varchar(80)
+            );
+
+            CREATE TABLE IF NOT EXISTS business_shareholder(
                 business_id int REFERENCES general_businesses(id),
-                name varchar(80),
+                shareholder_id int REFERENCES shareholders(id),
                 type varchar(50),
-                PRIMARY KEY(business_id, name)
+                PRIMARY KEY (business_id, shareholder_id)
             );
             """
             
@@ -253,7 +259,39 @@ class VNBusinessImporter:
         finally:
             cur.close()
             conn.close()
-    
+
+    def process_shareholders(self, df: pd.DataFrame):
+        conn = psycopg2.connect(**self.db_params)
+        cur = conn.cursor()
+        shareholders_map = {}
+        try:
+            shareholders = np.concatenate((df['co_fund'].dropna().unique(), df['shareholders'].dropna().unique()), axis=0)
+            for s_list in shareholders:
+                for _s in s_list.split(','):
+                    _s = _s.strip().lower()
+                    cur.execute("""
+                        WITH e AS (
+                            INSERT INTO shareholders (name)
+                            VALUES
+                                (%s)
+                            ON CONFLICT DO NOTHING
+                            RETURNING id
+                        ) SELECT * FROM e
+                        UNION SELECT id FROM shareholders WHERE name = %s
+                    """, (_s, _s))
+                    _id = cur.fetchone()[0]
+                    shareholders_map[_s] = _id
+            conn.commit()
+            self.logger.info("Finish processing shareholders")
+            return shareholders_map
+        except Exception as e:
+            conn.rollback()
+            self.logger.error(f"Error processing shareholders: {str(e)}")
+            raise
+        finally:
+            cur.close()
+            conn.close()
+
     def import_data(self):
         """Main import process"""
         try:
@@ -267,6 +305,7 @@ class VNBusinessImporter:
             area_map = self.process_admin_divisions(df)
             type_map = self.process_business_types(df)
             activity_map = self.process_activities(df)
+            shareholder_map = self.process_shareholders(df)
 
             # Process businesses
             conn = psycopg2.connect(**self.db_params)
@@ -341,13 +380,13 @@ class VNBusinessImporter:
                         if pd.notna(row.get(shareholder_list)):
                             shareholders = row[shareholder_list].split(',')
                             for s in shareholders:
-                                s = s.strip()
+                                s = s.strip().lower()
                                 if s:
                                     cur.execute("""
-                                        INSERT INTO co_fund_shareholders (business_id, name, type)
+                                        INSERT INTO business_shareholder (business_id, shareholder_id, type)
                                         VALUES (%s, %s, %s)
                                         ON CONFLICT DO NOTHING
-                                    """, (business_id, s, shareholder_list))
+                                    """, (business_id, shareholder_map[s], shareholder_list))
 
                     if pd.notna(row.get('legal_rep')):
                         rep = row['legal_rep']

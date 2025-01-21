@@ -71,3 +71,83 @@ DETAIL:  Key (park_id, div_id)=(6, 106) already exists.
 2025-01-17 09:36:20,019 - INFO - Schema created successfully
 2025-01-17 09:36:43,620 - INFO - Successfully imported all data
 2025-01-21 09:03:51,850 - INFO - Finish getting industrial parks
+2025-01-21 11:10:06,339 - INFO - Finish getting industrial parks
+2025-01-21 11:10:06,397 - ERROR - Error creating schema: syntax error at or near ")"
+LINE 56:             );
+                     ^
+
+2025-01-21 11:10:06,405 - ERROR - Error in import process: syntax error at or near ")"
+LINE 56:             );
+                     ^
+
+2025-01-21 11:10:50,427 - INFO - Finish getting industrial parks
+2025-01-21 11:10:50,527 - INFO - Schema created successfully
+2025-01-21 11:10:53,947 - ERROR - Error processing shareholders: 'float' object has no attribute 'strip'
+2025-01-21 11:10:53,947 - ERROR - Error in import process: 'float' object has no attribute 'strip'
+2025-01-21 11:12:24,137 - INFO - Finish getting industrial parks
+2025-01-21 11:12:24,297 - INFO - Schema created successfully
+2025-01-21 11:13:39,932 - INFO - Finish getting industrial parks
+2025-01-21 11:13:39,997 - INFO - Schema created successfully
+2025-01-21 11:16:49,969 - INFO - Finish getting industrial parks
+2025-01-21 11:16:50,025 - INFO - Schema created successfully
+2025-01-21 11:17:54,296 - INFO - Finish getting industrial parks
+2025-01-21 11:17:54,366 - INFO - Schema created successfully
+2025-01-21 11:18:20,266 - INFO - Finish getting industrial parks
+2025-01-21 11:18:20,332 - INFO - Schema created successfully
+2025-01-21 11:18:32,556 - INFO - Finish getting industrial parks
+2025-01-21 11:18:32,706 - INFO - Schema created successfully
+2025-01-21 11:19:12,629 - INFO - Finish getting industrial parks
+2025-01-21 11:19:12,686 - INFO - Schema created successfully
+2025-01-21 11:20:07,643 - INFO - Finish getting industrial parks
+2025-01-21 11:20:07,703 - INFO - Schema created successfully
+2025-01-21 11:20:52,136 - INFO - Finish getting industrial parks
+2025-01-21 11:20:52,199 - INFO - Schema created successfully
+2025-01-21 11:20:57,622 - ERROR - Error processing shareholders: 'shareholder'
+2025-01-21 11:20:57,622 - ERROR - Error in import process: 'shareholder'
+2025-01-21 11:21:38,110 - INFO - Finish getting industrial parks
+2025-01-21 11:21:38,166 - INFO - Schema created successfully
+2025-01-21 11:21:43,382 - ERROR - Error processing shareholders: syntax error at or near "ON"
+LINE 6:                             ON CONFLICT DO NOTHING
+                                    ^
+
+2025-01-21 11:21:43,382 - ERROR - Error in import process: syntax error at or near "ON"
+LINE 6:                             ON CONFLICT DO NOTHING
+                                    ^
+
+2025-01-21 11:22:00,947 - INFO - Finish getting industrial parks
+2025-01-21 11:22:00,996 - INFO - Schema created successfully
+2025-01-21 11:22:07,895 - INFO - Finish processing shareaholders
+2025-01-21 11:22:08,036 - ERROR - Error in import process: 'NoneType' object is not subscriptable
+2025-01-21 11:23:00,750 - INFO - Finish getting industrial parks
+2025-01-21 11:23:00,898 - INFO - Schema created successfully
+2025-01-21 11:23:11,571 - INFO - Finish processing shareholders
+2025-01-21 11:23:29,130 - INFO - Finish getting industrial parks
+2025-01-21 11:23:29,179 - INFO - Schema created successfully
+2025-01-21 11:23:43,561 - INFO - Finish processing shareholders
+2025-01-21 11:23:43,708 - ERROR - Error in import process: column "name" of relation "business_shareholder" does not exist
+LINE 2: ...   INSERT INTO business_shareholder (business_id, name, type...
+                                                             ^
+
+2025-01-21 11:25:22,218 - INFO - Finish getting industrial parks
+2025-01-21 11:25:22,275 - INFO - Schema created successfully
+2025-01-21 11:26:37,752 - INFO - Finish getting industrial parks
+2025-01-21 11:26:37,805 - INFO - Schema created successfully
+2025-01-21 11:27:18,696 - INFO - Finish getting industrial parks
+2025-01-21 11:27:18,855 - INFO - Schema created successfully
+2025-01-21 11:28:50,736 - INFO - Finish getting industrial parks
+2025-01-21 11:28:50,795 - INFO - Schema created successfully
+2025-01-21 11:29:25,986 - INFO - Finish getting industrial parks
+2025-01-21 11:29:26,045 - INFO - Schema created successfully
+2025-01-21 11:29:43,188 - INFO - Finish processing shareholders
+2025-01-21 11:29:43,345 - ERROR - Error in import process: column "id" of relation "business_shareholder" does not exist
+LINE 2: ...    INSERT INTO business_shareholder (business_id, id, type)
+                                                              ^
+
+2025-01-21 11:30:07,878 - INFO - Finish getting industrial parks
+2025-01-21 11:30:07,936 - INFO - Schema created successfully
+2025-01-21 11:30:28,549 - INFO - Finish processing shareholders
+2025-01-21 11:31:31,509 - INFO - Successfully imported all data
+2025-01-21 11:34:13,279 - INFO - Finish getting industrial parks
+2025-01-21 11:34:13,376 - INFO - Schema created successfully
+2025-01-21 11:34:20,325 - INFO - Finish processing shareholders
+2025-01-21 11:34:42,126 - INFO - Successfully imported all data

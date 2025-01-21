@@ -1,37 +1,10 @@
-query = """
-SELECT general_businesses.name, business_act.act_code, activities.descr, industrial_zones.name  
-FROM general_businesses 
-    JOIN industrial_zone_businesses  
-        ON general_businesses.id = industrial_zone_businesses.business_id
-    JOIN business_act 
-        ON business_act.business_id = general_businesses.id
-    JOIN activities
-        ON activities.code = business_act.act_code
-    JOIN industrial_zones
-        ON industrial_zones.id = industrial_zone_businesses.zone_id
-WHERE main_act = true;
-"""
-columns = ["Name", "Activity Code", "Activity Description", "Industrial Zone"]
-
-query = """
-SELECT industrial_zones.name as zone_name, COUNT(*) as number_of_businesses
-FROM general_businesses 
-    JOIN industrial_zone_businesses  
-        ON general_businesses.id = industrial_zone_businesses.business_id
-    JOIN industrial_zones
-        ON industrial_zones.id = industrial_zone_businesses.zone_id
-GROUP BY industrial_zones.name
-ORDER BY number_of_businesses
-"""
-columns = ["Industrial Zone", "Number of businesses"]
-
 CREATE TABLE industrial_parks (
 	id	serial	PRIMARY KEY,
 	name	varchar(255),
 	area_ha	real
 );
 
-INSERT INTO industrial_parks (name, area)
+INSERT INTO industrial_parks (name, area_ha)
 VALUES
 	('MINH HƯNG HÀN QUỐC', 192.3),
 	('MINH HƯNG III', 291.5),
