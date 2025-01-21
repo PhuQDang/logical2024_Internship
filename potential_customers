@@ -14,5 +14,41 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 from collections import Counter
 
+class PotentialCustomersClassifier:
+    def __init__(self, db_params):
+        self.__db_params = db_params
+        self.__setup_logging()
+
+    def __setup_logging(self):
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s - %(levelname)s - %(message)s',
+            handlers=[
+                logging.FileHandler('customer_finder.log'),
+                logging.StreamHandler(sys.stdout)
+            ]
+        )
+        self.logger = logging.getLogger(__name__)
+
+    def retrieve_raw_data(self):
+        try:
+            conn = psycopg2.connect(**self.__db_params)
+            cur = conn.cursor()
+            cur.execute("""
+            SELECT * FROM general_businesses
+                WHERE park_id IS NOT NULL
+            """)
+            data = pd.DataFrame(cur.fetchall())
+            self.logger.info("Finished getting raw data")
+            return data
+        except Exception as e:
+            conn.rollback()
+            self.logger.error(str(e))
+            raise
+        finally:
+            if conn:
+                cur.close()
+                conn.close()
+
 if __name__ == "__main__":
     print("Hello World")
