@@ -78,6 +78,13 @@ class PotentialCustomersClassifier:
     
     def create_model_(self):
         ...
+
+    def plot_data(self, df: pd.DataFrame):
+        xArray = df['business_id']
+        yArray = df['auth_cap']
+        plt.plot(xArray, yArray, marker='^', ls='')
+        plt.show()
+
 def main():
     db_param = {
         'host': 'localhost',
@@ -89,6 +96,7 @@ def main():
     try:
         custClass = PotentialCustomersClassifier(db_params=db_param)
         custClass.export_to_()
+        custClass.plot_data(custClass.retrieve_raw_data())
 
     except Exception as e:
         print(str(e))
