@@ -33,3 +33,5 @@ LINE 9:         WHERE industrial_zones.name LIKE ''%KCN %''
 2025-01-17 08:57:43,663 - INFO - Finish returning query results
 2025-01-17 08:58:26,065 - INFO - Finish returning query results
 2025-01-17 08:58:33,620 - INFO - Finish returning query results
+2025-01-21 08:59:03,683 - INFO - Finish returning query results
+2025-01-21 08:59:03,690 - ERROR - No module named 'openpyxl'
