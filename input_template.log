@@ -10,3 +10,5 @@
 2025-01-17 10:58:46,259 - INFO - Exported query successfully
 2025-01-17 11:00:20,735 - INFO - Exported query successfully
 2025-01-17 11:00:35,010 - INFO - Exported query successfully
+2025-01-21 11:52:01,402 - INFO - Exported query successfully
+2025-01-21 11:52:01,402 - ERROR - No module named 'xlsxwriter'

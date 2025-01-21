@@ -8,13 +8,13 @@ warnings.filterwarnings('ignore')
 import psycopg2
 import logging
 import sys
+import time
 from typing import Dict, List
 import re
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 from collections import Counter
 from pathlib import Path
-import time
 
 class PotentialCustomersClassifier:
     def __init__(self, db_params):
@@ -32,7 +32,7 @@ class PotentialCustomersClassifier:
         )
         self.logger = logging.getLogger(__name__)
 
-    def retrieve_raw_data(self):
+    def retrieve_raw_data(self) -> pd.DataFrame:
         try:
             conn = psycopg2.connect(**self.__db_params)
             cur = conn.cursor()
@@ -63,21 +63,21 @@ class PotentialCustomersClassifier:
                 cur.close()
                 conn.close()
     
-    def export_to_(self, f_format='csv'):
+    def export_to_(self, f_format: str|None ='csv' ) -> None:
         export_f = {
             'csv': pd.DataFrame.to_csv,
             'xlsx': pd.DataFrame.to_excel
         }
         try:
             raw_data = self.retrieve_raw_data()
-            out_path = Path.cwd() / f"customers_raw_{time.time()}.{f_format}"
+            out_path = Path.cwd() / f"customers_raw_.{f_format}"
             export_f[f_format](raw_data, out_path, index=False)
         except Exception as e:
             self.logger.error(e)
             raise
-
-
-
+    
+    def create_model_(self):
+        ...
 def main():
     db_param = {
         'host': 'localhost',

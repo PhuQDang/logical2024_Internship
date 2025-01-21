@@ -22,3 +22,4 @@ six==1.17.0
 thefuzz==0.22.1
 threadpoolctl==3.5.0
 tzdata==2024.2
+XlsxWriter==3.2.0
