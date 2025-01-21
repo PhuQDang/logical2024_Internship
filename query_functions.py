@@ -73,26 +73,12 @@ class QueryPrompter:
     
     def industrial_park_business_capital_query(self):
         rank = {
-            0: "b_name",
-            1: "auth_capital",
-            2: "z_name"
+            0: "general_businesses.name",
+            1: "general_businesses.auth_capital",
+            2: "industrial_zones.name"
         }
         
         min_capital = self.verify_capital_input()
-        while True:
-            try:
-                print("Ranking categories:\n"
-                    "0. Business name\n"
-                    "1. Authorized capital\n"
-                    "2. Industrial zone")
-                ranking_category = rank[int(input("Enter ranking category: "))]
-                if not (0 <= ranking_category <= 2):
-                    print("Invalid value.")
-                    continue
-                break
-            except ValueError:
-                print("Invalid value.")
-                continue
         
         query = """
         SELECT general_businesses.name as b_name,
@@ -102,10 +88,9 @@ class QueryPrompter:
             JOIN industrial_parks
                 ON general_businesses.park_id = industrial_parks.id
         WHERE auth_capital >= %s
-        ORDER BY %s
         """
         cols = [self.COL_NAME[1], self.COL_NAME[3], self.COL_NAME[12]]
-        return (query, [min_capital, ranking_category], cols)
+        return (query, [min_capital], cols)
     
     def industrial_park_businesses_all_query(self):
         query = """

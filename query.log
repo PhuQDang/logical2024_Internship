@@ -36,3 +36,11 @@ LINE 9:         WHERE industrial_zones.name LIKE ''%KCN %''
 2025-01-21 08:59:03,683 - INFO - Finish returning query results
 2025-01-21 08:59:03,690 - ERROR - No module named 'openpyxl'
 2025-01-21 09:00:30,508 - INFO - Finish returning query results
+2025-01-21 09:04:24,160 - INFO - Finish returning query results
+2025-01-21 09:05:08,027 - INFO - Finish returning query results
+2025-01-21 09:05:55,587 - INFO - Finish returning query results
+2025-01-21 09:06:02,071 - INFO - Finish returning query results
+2025-01-21 09:06:31,753 - ERROR - '<=' not supported between instances of 'int' and 'str'
+2025-01-21 09:08:00,114 - ERROR - unhashable type: 'list'
+2025-01-21 09:09:08,260 - ERROR - unhashable type: 'list'
+2025-01-21 09:12:10,348 - INFO - Finish returning query results
