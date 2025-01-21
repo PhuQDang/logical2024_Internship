@@ -46,7 +46,7 @@ class VNBusinessImporter:
             );
 
             CREATE TABLE IF NOT EXISTS activities (
-                code integer PRIMARY KEY,
+                code varchar(5) PRIMARY KEY,
                 descr varchar(255)
             );
 
@@ -78,7 +78,7 @@ class VNBusinessImporter:
 
             CREATE TABLE IF NOT EXISTS business_act(
                 business_id int REFERENCES general_businesses(id),
-                act_code int REFERENCES activities(code),
+                act_code varchar(5) REFERENCES activities(code),
                 main_act boolean,
                 PRIMARY KEY(business_id, act_code)
             );
@@ -224,14 +224,14 @@ class VNBusinessImporter:
             for i in range(len(main_activities)):
                 if len(main_activities[i]) < 2:
                     continue
-                all_activities[int(main_activities[i][0])] = main_activities[i][1]
+                all_activities[main_activities[i][0]] = main_activities[i][1]
             # Add other activities
             other_activities = list(map(lambda y: list(map(lambda x: x.removesuffix(',').split(':'), re.findall(r"[\d]{4,}:[\D]*", str(y)))), df['all_act'].dropna()))
             for i in range(len(other_activities)):
                 for j in range(len(other_activities[i])):
                     if len(other_activities[i][j]) < 2:
                         continue
-                    all_activities[int(other_activities[i][j][0])] = other_activities[i][j][1]
+                    all_activities[other_activities[i][j][0]] = other_activities[i][j][1]
             # Insert activities and generate codes
             for code, activity in all_activities.items():
                 cur.execute(

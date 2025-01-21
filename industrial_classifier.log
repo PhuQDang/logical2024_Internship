@@ -151,3 +151,7 @@ LINE 2: ...    INSERT INTO business_shareholder (business_id, id, type)
 2025-01-21 11:34:13,376 - INFO - Schema created successfully
 2025-01-21 11:34:20,325 - INFO - Finish processing shareholders
 2025-01-21 11:34:42,126 - INFO - Successfully imported all data
+2025-01-21 13:20:44,477 - INFO - Finish getting industrial parks
+2025-01-21 13:20:44,573 - INFO - Schema created successfully
+2025-01-21 13:20:51,422 - INFO - Finish processing shareholders
+2025-01-21 13:21:13,446 - INFO - Successfully imported all data
