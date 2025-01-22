@@ -1,5 +1,4 @@
 from general_database import *
-from industrial_zone_finder import *
 from query_functions import *
 
 def general_setup(fname):
@@ -23,6 +22,13 @@ def general_setup(fname):
         return
 
 def main():
+    db_params = {
+        'host': 'localhost',
+        'database': 'businessesdb',
+        'user': 'postgres',
+        'password': '1234',
+        'port': '5432'
+    }
     while True:
         try:
             option = input("1. Read excel file\n"
@@ -37,8 +43,8 @@ def main():
             elif int(option) == 1:
                 ...
             elif int(option) == 2:
-                ...
-
+                queryRespond = QueryPrompter(db_parms=db_params)
+                queryRespond.query_results()
         except KeyboardInterrupt:
             sys.exit(0)
         except ValueError:

@@ -249,3 +249,7 @@ DETAIL:  Key columns "div_id" and "code" are of incompatible types: integer and 
 2025-01-22 11:41:55,526 - INFO - Schema created successfully
 2025-01-22 11:41:58,656 - INFO - Finish processing shareholders
 2025-01-22 11:48:42,832 - INFO - Successfully imported all data
+2025-01-22 13:42:32,831 - INFO - Finish getting industrial parks
+2025-01-22 13:42:32,923 - INFO - Schema created successfully
+2025-01-22 13:42:40,396 - INFO - Finish processing shareholders
+2025-01-22 13:52:55,159 - INFO - Successfully imported all data
