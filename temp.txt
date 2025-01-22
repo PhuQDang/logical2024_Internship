@@ -1,0 +1,8 @@
+SELECT wards.code, wards.name
+FROM provinces
+	JOIN districts ON districts.province_code = provinces.code
+	JOIN wards ON wards.district_code = districts.code
+WHERE provinces.name LIKE %s AND districts.name LIKE %s
+
+(?<=Thành phố ).+|(?<=Huyện ).+|(?<=Thị Xã ).+|(?<=Thị xã ).+
+(?<=Phường ).+|(?<=Xã ).+|(?<=Thị trấn ).+|(?<=Thị Trấn ).+

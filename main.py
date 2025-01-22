@@ -18,7 +18,6 @@ def general_setup(fname):
     try:
         importer.import_data()
         print("Data import completed successfully!")
-        
     except Exception as e:
         print(f"Error: {str(e)}")
         return
@@ -50,4 +49,8 @@ def main():
             sys.exit(1)
 
 if __name__ == "__main__":
-    main()
+    fname = 'dsdn_1997_2024_processed.xlsx'
+    start = time.time()
+    general_setup(fname)
+    end = time.time()
+    print(f"Time taken to import all data = {end-start}")

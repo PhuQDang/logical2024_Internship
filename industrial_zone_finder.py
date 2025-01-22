@@ -3,6 +3,7 @@ import psycopg2
 import logging
 import sys
 import re
+from rapidfuzz.fuzz import ratio, partial_ratio
 
 class IndustrialZoneBusinessesFinder:
     def __init__(self, db_params: dict[str, str], excel_file = None) -> None:
@@ -159,4 +160,12 @@ def main():
         sys.exit(1)
 
 if __name__ == "__main__":
-    main()
+    s1 = "Đăk Ơ"
+    s2 = "Đak Ơ"
+    s3 = "Hà Nội"
+    print(f"Ratio(s1, s2) = {ratio(s1, s2)}, partial(s1, s2) = {partial_ratio(s1, s2)}"
+          f"Ratio(s1, s3) = {ratio(s1, s3)}, partial(s1, s3) = {partial_ratio(s1, s3)}")
+    
+    test_arr = pd.DataFrame([(1, "Đak Ơ"), (2, "Bình Phước"), (3, "Đak Long"), (4,"Hà Nội")])
+    a, b = max(test_arr.iloc(), key=lambda x: partial_ratio(x[1], s1))
+    print(a, b)

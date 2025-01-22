@@ -155,3 +155,97 @@ LINE 2: ...    INSERT INTO business_shareholder (business_id, id, type)
 2025-01-21 13:20:44,573 - INFO - Schema created successfully
 2025-01-21 13:20:51,422 - INFO - Finish processing shareholders
 2025-01-21 13:21:13,446 - INFO - Successfully imported all data
+2025-01-21 16:15:48,535 - ERROR - relation "industrial_parks" does not exist
+LINE 4:                 FROM industrial_parks
+                             ^
+
+2025-01-21 16:16:08,048 - INFO - Finish getting industrial parks
+2025-01-21 16:16:08,160 - INFO - Schema created successfully
+2025-01-21 16:16:15,106 - INFO - Finish processing shareholders
+2025-01-21 16:16:15,322 - ERROR - column provinces.id does not exist
+LINE 2:                 SELECT provinces.id
+                               ^
+
+2025-01-21 16:16:15,322 - ERROR - Error in import process: column provinces.id does not exist
+LINE 2:                 SELECT provinces.id
+                               ^
+
+2025-01-21 16:17:33,735 - INFO - Finish getting industrial parks
+2025-01-21 16:17:33,792 - INFO - Schema created successfully
+2025-01-21 16:17:43,878 - INFO - Finish processing shareholders
+2025-01-21 16:17:44,023 - ERROR - Error in import process: insert or update on table "general_businesses" violates foreign key constraint "general_businesses_area_id_fkey"
+DETAIL:  Key (area_id)=(25234) is not present in table "admin_divisions".
+
+2025-01-21 16:20:44,820 - INFO - Finish getting industrial parks
+2025-01-21 16:20:44,884 - ERROR - Error creating schema: foreign key constraint "park_placement_div_id_fkey" cannot be implemented
+DETAIL:  Key columns "div_id" and "code" are of incompatible types: integer and character varying.
+
+2025-01-21 16:20:44,884 - ERROR - Error in import process: foreign key constraint "park_placement_div_id_fkey" cannot be implemented
+DETAIL:  Key columns "div_id" and "code" are of incompatible types: integer and character varying.
+
+2025-01-21 16:21:32,552 - INFO - Finish getting industrial parks
+2025-01-21 16:21:32,665 - INFO - Schema created successfully
+2025-01-21 16:21:39,271 - INFO - Finish processing shareholders
+2025-01-21 16:21:39,680 - ERROR - 'NoneType' object is not subscriptable
+2025-01-21 16:21:39,680 - ERROR - Error in import process: 'NoneType' object is not subscriptable
+2025-01-21 16:21:57,313 - INFO - Finish getting industrial parks
+2025-01-21 16:21:57,369 - INFO - Schema created successfully
+2025-01-21 16:22:17,037 - INFO - Finish processing shareholders
+2025-01-21 16:23:57,440 - INFO - Finish getting industrial parks
+2025-01-21 16:23:57,593 - INFO - Schema created successfully
+2025-01-21 16:24:20,518 - INFO - Finish processing shareholders
+2025-01-21 16:45:46,026 - INFO - Finish getting industrial parks
+2025-01-21 16:45:46,097 - INFO - Schema created successfully
+2025-01-21 16:46:03,038 - INFO - Finish processing shareholders
+2025-01-21 16:46:03,791 - ERROR - 'NoneType' object is not subscriptable
+2025-01-21 16:46:03,792 - ERROR - Error in import process: 'NoneType' object is not subscriptable
+2025-01-22 09:42:43,996 - INFO - Finish getting industrial parks
+2025-01-22 09:42:44,051 - INFO - Schema created successfully
+2025-01-22 09:43:13,333 - INFO - Finish processing shareholders
+2025-01-22 09:43:56,501 - INFO - Finish getting industrial parks
+2025-01-22 09:43:56,572 - INFO - Schema created successfully
+2025-01-22 09:44:29,144 - INFO - Finish processing shareholders
+2025-01-22 09:44:49,620 - INFO - Finish getting industrial parks
+2025-01-22 09:44:49,668 - INFO - Schema created successfully
+2025-01-22 09:45:28,405 - INFO - Finish processing shareholders
+2025-01-22 09:46:19,519 - INFO - Finish getting industrial parks
+2025-01-22 09:46:19,578 - INFO - Schema created successfully
+2025-01-22 09:46:59,471 - INFO - Finish processing shareholders
+2025-01-22 09:53:11,549 - INFO - Finish getting industrial parks
+2025-01-22 09:53:11,607 - INFO - Schema created successfully
+2025-01-22 09:53:55,484 - INFO - Finish processing shareholders
+2025-01-22 10:09:49,151 - INFO - Finish getting industrial parks
+2025-01-22 10:10:17,781 - INFO - Finish getting industrial parks
+2025-01-22 10:10:17,965 - INFO - Schema created successfully
+2025-01-22 10:10:33,230 - INFO - Finish processing shareholders
+2025-01-22 10:11:11,655 - INFO - Finish getting industrial parks
+2025-01-22 10:11:11,773 - INFO - Schema created successfully
+2025-01-22 10:11:30,883 - INFO - Finish processing shareholders
+2025-01-22 10:13:28,402 - INFO - Finish getting industrial parks
+2025-01-22 10:13:28,514 - INFO - Schema created successfully
+2025-01-22 10:13:50,889 - INFO - Finish processing shareholders
+2025-01-22 10:32:02,888 - INFO - Successfully imported all data
+2025-01-22 10:39:33,537 - INFO - Finish getting industrial parks
+2025-01-22 10:39:33,713 - INFO - Schema created successfully
+2025-01-22 10:39:40,797 - INFO - Finish processing shareholders
+2025-01-22 10:50:49,691 - INFO - Successfully imported all data
+2025-01-22 11:02:14,638 - INFO - Finish getting industrial parks
+2025-01-22 11:02:14,773 - INFO - Schema created successfully
+2025-01-22 11:02:33,543 - INFO - Finish getting industrial parks
+2025-01-22 11:02:33,687 - INFO - Schema created successfully
+2025-01-22 11:03:46,306 - INFO - Finish getting industrial parks
+2025-01-22 11:03:46,477 - INFO - Schema created successfully
+2025-01-22 11:03:53,512 - INFO - Finish processing shareholders
+2025-01-22 11:03:53,657 - ERROR - Error in import process: 'VNBusinessImporter' object has no attribute 'test_array'
+2025-01-22 11:04:50,093 - INFO - Finish getting industrial parks
+2025-01-22 11:04:50,258 - INFO - Schema created successfully
+2025-01-22 11:05:00,677 - INFO - Finish processing shareholders
+2025-01-22 11:14:30,841 - INFO - Successfully imported all data
+2025-01-22 11:26:31,231 - INFO - Finish getting industrial parks
+2025-01-22 11:26:31,325 - INFO - Schema created successfully
+2025-01-22 11:26:34,625 - INFO - Finish processing shareholders
+2025-01-22 11:33:14,166 - INFO - Successfully imported all data
+2025-01-22 11:41:55,482 - INFO - Finish getting industrial parks
+2025-01-22 11:41:55,526 - INFO - Schema created successfully
+2025-01-22 11:41:58,656 - INFO - Finish processing shareholders
+2025-01-22 11:48:42,832 - INFO - Successfully imported all data

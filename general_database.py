@@ -6,6 +6,7 @@ from typing import Dict, List
 import re
 from industrial_park_classifier import IndustrialParkClassifier
 import numpy as np
+from rapidfuzz.fuzz import ratio, partial_ratio
 
 class VNBusinessImporter:
     def __init__(self, db_params: Dict[str, str], excel_file: str):
@@ -13,6 +14,7 @@ class VNBusinessImporter:
         self.excel_file = excel_file
         self.classifier = IndustrialParkClassifier(self.db_params)
         self.setup_logging()
+        self.test_array = []
         
     def setup_logging(self):
         logging.basicConfig(
@@ -32,16 +34,9 @@ class VNBusinessImporter:
             cur = conn.cursor()
 
             schema_sql = """
-            CREATE TABLE IF NOT EXISTS admin_divisions(
-                id serial PRIMARY KEY,
-                name varchar(100),
-                parent_id bigint REFERENCES admin_divisions(id),
-                division varchar(10)
-            );
-
             CREATE TABLE IF NOT EXISTS park_placement(
                 park_id int REFERENCES industrial_parks(id),
-                div_id  int REFERENCES admin_divisions(id),
+                div_id  varchar(20) REFERENCES areas(code),
                 PRIMARY KEY(park_id, div_id)
             );
 
@@ -61,7 +56,7 @@ class VNBusinessImporter:
                 name varchar(255),
                 reg_number varchar(20),
                 address varchar(255),
-                area_id int REFERENCES admin_divisions(id),
+                area_id varchar(20) REFERENCES areas(code),
                 park_id int REFERENCES industrial_parks(id),
                 phone varchar(20)[],
                 email varchar(100),
@@ -116,60 +111,95 @@ class VNBusinessImporter:
         phones = re.findall(r'\d+[^-,;/]*', phone_str.replace('–', '-'))
         return [phone.strip() for phone in phones]
 
-    def process_admin_divisions(self, df: pd.DataFrame) -> Dict[str, int]:
+    def __fetch_divisions(self):
+        conn = psycopg2.connect(**self.db_params)
+        cur = conn.cursor()
+        
+        try:
+            cur.execute("SELECT areas.code, areas.name FROM areas")
+            self.areas_map = pd.DataFrame(cur.fetchall())
+        except Exception as e:
+            conn.rollback()
+            self.logger.error(f"Error fetching divisions: {str(e)}")
+        finally:
+            cur.close()
+            conn.close()
+        
+    def __fetch_area_code(self, address, parent='NULL'):
+        conn = psycopg2.connect(**self.db_params)
+        cur = conn.cursor()
+        
+        try:
+            cur.execute("SELECT areas.code, areas.name FROM areas WHERE parent_code = %s", (parent,))
+            areas_map = pd.DataFrame(cur.fetchall())
+            res, _ = max(areas_map.iloc(), key=lambda x: partial_ratio(x[1], address))
+            return res
+        except Exception as e:
+            conn.rollback()
+            self.logger.error(f"Error fetching divisions: {str(e)}")
+        finally:
+            cur.close()
+            conn.close()
+
+
+    def process_admin_divisions(self, row) -> Dict[str, int]:
         """Process district and ward data into admin_divisions table"""
         conn = psycopg2.connect(**self.db_params)
         cur = conn.cursor()
-        area_map = {}
-
+        self.test_array
+        last_access_ = None
+        get_id = None
         try:
-            # Process districts
-            provinces = df['province'].unique()
-            for province in provinces:
-                if pd.notna(province):
-                    cur.execute(
-                        "INSERT INTO admin_divisions (name, division) VALUES (%s, %s) RETURNING id",
-                        (province, 'province')
-                    )
-                    province_id = cur.fetchone()[0]
-                    area_map[province] = province_id
-
-                    district_map = df['province'] == province
-                    districts = df.loc[district_map, 'district'].unique()
-
-                    for district in districts:
-                        if pd.notna(district):
-                            cur.execute(
-                                "INSERT INTO admin_divisions (name, parent_id, division) VALUES (%s, %s, %s) RETURNING id",
-                                (district, province_id, 'district')
-                            )
-                            district_id = cur.fetchone()[0]
-                            area_map[district] = district_id
-
-                            # Process wards for this district
-                            ward_mask = df['district'] == district
-                            wards = df.loc[ward_mask, 'ward'].unique()
-                            
-                            for ward in wards:
-                                if pd.notna(ward):
-                                    cur.execute(
-                                        "INSERT INTO admin_divisions (name, parent_id, division) VALUES (%s, %s, %s) RETURNING id",
-                                        (ward, district_id, 'ward')
-                                    )
-                                    ward_id = cur.fetchone()[0]
-                                    area_map[f"{district}|{ward}"] = ward_id
-
-            conn.commit()
-            return area_map
-
+            if pd.notna(row['province']):
+                province_temp = re.search(r"(?<=Tỉnh).+|(?<=tỉnh).+", row['province']).group().strip()
+                cur.execute("""
+                    SELECT areas.code
+                    FROM areas
+                        WHERE parent_code IS NULL AND areas.name LIKE %s             
+                """, ('%'+province_temp+'%',))
+                _province_id = cur.fetchone()[0]
+                last_access_ = province_temp
+                get_id = _province_id
+                if pd.notna(row['district']):
+                    district_temp = re.search(r"(?<=Thành phố).+|(?<=Huyện).+|(?<=Thị Xã).+|(?<=Thị xã).+|(?<=TX).+|(?<=tx).+", row['district']).group().strip()
+                    cur.execute("""
+                        SELECT areas.code
+                        FROM areas
+                            WHERE parent_code = %s AND areas.name LIKE %s            
+                    """, (_province_id, '%'+district_temp+'%'))
+                    _district_id = cur.fetchone()
+                    if _district_id is None:
+                        _district_id = self.__fetch_area_code(district_temp, parent=_province_id)
+                    else: 
+                        _district_id = _district_id[0]
+                    last_access_ = district_temp
+                    get_id = _district_id
+                    if pd.notna(row['ward']):
+                        ward_temp = re.search(r"(?<=Phường).+|(?<=Xã).+|(?<=Thị Trấn).+|(?<=Thị trấn).+|(?<=Tt).+|(?<=tt)", row['ward']).group().strip()
+                        cur.execute("""
+                            SELECT areas.code 
+                            FROM areas
+                                WHERE parent_code = %s AND areas.name LIKE %s
+                        """, (_district_id, '%'+ward_temp+'%'))
+                        _ward_id = cur.fetchone()
+                        if _ward_id is None:
+                            _ward_id = self.__fetch_area_code(ward_temp, parent=_district_id)
+                        else:
+                            _ward_id = _ward_id[0]
+                        last_access_ = ward_temp
+                        get_id = _ward_id
+                #         return _ward_id
+                #     return _district_id
+                # return _province_id
+                self.test_array.append([last_access_, get_id])
+                return get_id
         except Exception as e:
-            conn.rollback()
-            self.logger.error(f"Error processing admin_divisions: {str(e)}")
+            self.logger.error(e)
             raise
         finally:
             cur.close()
             conn.close()
-            print("Import admin_divisions complete")
+
 
     def process_business_types(self, df: pd.DataFrame) -> Dict[str, int]:
         """Process business types"""
@@ -302,7 +332,6 @@ class VNBusinessImporter:
             df = pd.read_excel(self.excel_file)
             
             # Process reference data first
-            area_map = self.process_admin_divisions(df)
             type_map = self.process_business_types(df)
             activity_map = self.process_activities(df)
             shareholder_map = self.process_shareholders(df)
@@ -315,7 +344,7 @@ class VNBusinessImporter:
                 for _, row in df.iterrows():
                     # Insert business
                     area_key = f"{row['district']}|{row['ward']}"
-                    area_id = area_map.get(area_key)
+                    area_id = self.process_admin_divisions(row)
                     if pd.notna(row['address']):
                         _park_id = self.classifier.classify_(row['address'])
                     else:
@@ -395,6 +424,7 @@ class VNBusinessImporter:
                             (business_id, rep,)
                         )
                         
+                    
 
                 conn.commit()
                 self.logger.info(f"Successfully imported all data")
@@ -415,7 +445,7 @@ def main(fname):
     # Database connection parameters
     db_params = {
         'host': 'localhost',
-        'database': 'businessesdb',
+        'database': 'divisiondb_test',
         'user': 'postgres',
         'password': '1234',
         'port': '5432'
@@ -430,7 +460,9 @@ def main(fname):
     try:
         importer.import_data()
         print("Data import completed successfully!")
-        
+        for i, k in importer.test_array:
+            if k == '01':
+                print(i, k)
     except Exception as e:
         print(f"Error: {str(e)}")
         sys.exit(1)

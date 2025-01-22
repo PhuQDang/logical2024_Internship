@@ -1,6 +1,4 @@
--- DROP TABLE IF EXISTS wards;
--- DROP TABLE IF EXISTS districts;
--- DROP TABLE IF EXISTS provinces;
+-- DROP TABLE IF EXISTS areas;
 -- DROP TABLE IF EXISTS administrative_units;
 -- DROP TABLE IF EXISTS administrative_regions;
 
@@ -28,78 +26,23 @@ CREATE TABLE administrative_units (
 );
 
 
--- CREATE provinces TABLE
-CREATE TABLE provinces (
+-- CREATE areas TABLE
+CREATE TABLE areas (
 	code varchar(20) NOT NULL,
 	"name" varchar(255) NOT NULL,
 	name_en varchar(255) NULL,
 	full_name varchar(255) NOT NULL,
 	full_name_en varchar(255) NULL,
 	code_name varchar(255) NULL,
-	administrative_unit_id integer NULL,
-	administrative_region_id integer NULL,
-	CONSTRAINT provinces_pkey PRIMARY KEY (code)
+	parent_code varchar(255) NULL,
+	administrative_unit_id integer NULL REFERENCES administrative_units(id),
+	administrative_region_id integer NULL REFERENCES administrative_regions(id),
+	CONSTRAINT areas_pkey PRIMARY KEY (code)
 );
 
-
--- provinces foreign keys
-
-ALTER TABLE provinces ADD CONSTRAINT provinces_administrative_region_id_fkey FOREIGN KEY (administrative_region_id) REFERENCES administrative_regions(id);
-ALTER TABLE provinces ADD CONSTRAINT provinces_administrative_unit_id_fkey FOREIGN KEY (administrative_unit_id) REFERENCES administrative_units(id);
-
-CREATE INDEX idx_provinces_region ON provinces(administrative_region_id);
-CREATE INDEX idx_provinces_unit ON provinces(administrative_unit_id);
-
-
--- CREATE districts TABLE
-CREATE TABLE districts (
-	code varchar(20) NOT NULL,
-	"name" varchar(255) NOT NULL,
-	name_en varchar(255) NULL,
-	full_name varchar(255) NULL,
-	full_name_en varchar(255) NULL,
-	code_name varchar(255) NULL,
-	province_code varchar(20) NULL,
-	administrative_unit_id integer NULL,
-	CONSTRAINT districts_pkey PRIMARY KEY (code)
-);
-
-
--- districts foreign keys
-
-ALTER TABLE districts ADD CONSTRAINT districts_administrative_unit_id_fkey FOREIGN KEY (administrative_unit_id) REFERENCES administrative_units(id);
-ALTER TABLE districts ADD CONSTRAINT districts_province_code_fkey FOREIGN KEY (province_code) REFERENCES provinces(code);
-
-CREATE INDEX idx_districts_province ON districts(province_code);
-CREATE INDEX idx_districts_unit ON districts(administrative_unit_id);
-
-
-
--- CREATE wards TABLE
-CREATE TABLE wards (
-	code varchar(20) NOT NULL,
-	"name" varchar(255) NOT NULL,
-	name_en varchar(255) NULL,
-	full_name varchar(255) NULL,
-	full_name_en varchar(255) NULL,
-	code_name varchar(255) NULL,
-	district_code varchar(20) NULL,
-	administrative_unit_id integer NULL,
-	CONSTRAINT wards_pkey PRIMARY KEY (code)
-);
-
-
--- wards foreign keys
-
-ALTER TABLE wards ADD CONSTRAINT wards_administrative_unit_id_fkey FOREIGN KEY (administrative_unit_id) REFERENCES administrative_units(id);
-ALTER TABLE wards ADD CONSTRAINT wards_district_code_fkey FOREIGN KEY (district_code) REFERENCES districts(code);
-
-CREATE INDEX idx_wards_district ON wards(district_code);
-CREATE INDEX idx_wards_unit ON wards(administrative_unit_id);
-
-/* === Vietnamese Provinces Database Dataset for PostgreSQL/MySQL === */
+/* === Vietnamese areas Database Dataset for PostgreSQL/MySQL === */
 /* Created at:  Sat, 11 Jan 2025 11:11:14 +0700 */
-/* Reference: https://github.com/ThangLeQuoc/vietnamese-provinces-database */
+/* Reference: https://github.com/ThangLeQuoc/vietnamese-areas-database */
 /* =============================================== */
 
 -- DATA for administrative_regions --
@@ -126,8 +69,8 @@ INSERT INTO administrative_units(id,full_name,full_name_en,short_name,short_name
 INSERT INTO administrative_units(id,full_name,full_name_en,short_name,short_name_en,code_name,code_name_en) VALUES(10,'Xã','Commune','Xã','Commune','xa','commune');
 ------------------------------------
 
--- DATA for provinces --
-INSERT INTO provinces(code,name,name_en,full_name,full_name_en,code_name,administrative_unit_id,administrative_region_id) VALUES
+-- DATA for areas --
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,administrative_unit_id,administrative_region_id) VALUES
 ('01','Hà Nội','Ha Noi','Thành phố Hà Nội','Ha Noi City','ha_noi',1,3),
 ('02','Hà Giang','Ha Giang','Tỉnh Hà Giang','Ha Giang Province','ha_giang',2,1),
 ('04','Cao Bằng','Cao Bang','Tỉnh Cao Bằng','Cao Bang Province','cao_bang',2,1),
@@ -179,7 +122,7 @@ INSERT INTO provinces(code,name,name_en,full_name,full_name_en,code_name,adminis
 ('77','Bà Rịa - Vũng Tàu','Ba Ria - Vung Tau','Tỉnh Bà Rịa - Vũng Tàu','Ba Ria - Vung Tau Province','ba_ria_vung_tau',2,7),
 ('79','Hồ Chí Minh','Ho Chi Minh','Thành phố Hồ Chí Minh','Ho Chi Minh City','ho_chi_minh',1,7);
 
-INSERT INTO provinces(code,name,name_en,full_name,full_name_en,code_name,administrative_unit_id,administrative_region_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,administrative_unit_id,administrative_region_id) VALUES
 ('80','Long An','Long An','Tỉnh Long An','Long An Province','long_an',2,8),
 ('82','Tiền Giang','Tien Giang','Tỉnh Tiền Giang','Tien Giang Province','tien_giang',2,8),
 ('83','Bến Tre','Ben Tre','Tỉnh Bến Tre','Ben Tre Province','ben_tre',2,8),
@@ -196,8 +139,8 @@ INSERT INTO provinces(code,name,name_en,full_name,full_name_en,code_name,adminis
 
 -- ----------------------------------
 
--- DATA for districts --
-INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,province_code,administrative_unit_id) VALUES
+-- DATA for areas --
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('001','Ba Đình','Ba Dinh','Quận Ba Đình','Ba Dinh District','ba_dinh','01',5),
 ('002','Hoàn Kiếm','Hoan Kiem','Quận Hoàn Kiếm','Hoan Kiem District','hoan_kiem','01',5),
 ('003','Tây Hồ','Tay Ho','Quận Tây Hồ','Tay Ho District','tay_ho','01',5),
@@ -249,7 +192,7 @@ INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,provinc
 ('051','Hoà An','Hoa An','Huyện Hoà An','Hoa An District','hoa_an','04',7),
 ('052','Nguyên Bình','Nguyen Binh','Huyện Nguyên Bình','Nguyen Binh District','nguyen_binh','04',7);
 
-INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,province_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('053','Thạch An','Thach An','Huyện Thạch An','Thach An District','thach_an','04',7),
 ('058','Bắc Kạn','Bac Kan','Thành phố Bắc Kạn','Bac Kan City','bac_kan','06',4),
 ('060','Pác Nặm','Pac Nam','Huyện Pác Nặm','Pac Nam District','pac_nam','06',7),
@@ -301,7 +244,7 @@ INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,provinc
 ('122','Phù Yên','Phu Yen','Huyện Phù Yên','Phu Yen District','phu_yen','14',7),
 ('123','Mộc Châu','Moc Chau','Huyện Mộc Châu','Moc Chau District','moc_chau','14',7);
 
-INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,province_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('124','Yên Châu','Yen Chau','Huyện Yên Châu','Yen Chau District','yen_chau','14',7),
 ('125','Mai Sơn','Mai Son','Huyện Mai Sơn','Mai Son District','mai_son','14',7),
 ('126','Sông Mã','Song Ma','Huyện Sông Mã','Song Ma District','song_ma','14',7),
@@ -353,7 +296,7 @@ INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,provinc
 ('198','Bình Liêu','Binh Lieu','Huyện Bình Liêu','Binh Lieu District','binh_lieu','22',7),
 ('199','Tiên Yên','Tien Yen','Huyện Tiên Yên','Tien Yen District','tien_yen','22',7);
 
-INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,province_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('200','Đầm Hà','Dam Ha','Huyện Đầm Hà','Dam Ha District','dam_ha','22',7),
 ('201','Hải Hà','Hai Ha','Huyện Hải Hà','Hai Ha District','hai_ha','22',7),
 ('202','Ba Chẽ','Ba Che','Huyện Ba Chẽ','Ba Che District','ba_che','22',7),
@@ -405,7 +348,7 @@ INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,provinc
 ('290','Chí Linh','Chi Linh','Thành phố Chí Linh','Chi Linh City','chi_linh','30',4),
 ('291','Nam Sách','Nam Sach','Huyện Nam Sách','Nam Sach District','nam_sach','30',7);
 
-INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,province_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('292','Kinh Môn','Kinh Mon','Thị xã Kinh Môn','Kinh Mon Town','kinh_mon','30',6),
 ('293','Kim Thành','Kim Thanh','Huyện Kim Thành','Kim Thanh District','kim_thanh','30',7),
 ('294','Thanh Hà','Thanh Ha','Huyện Thanh Hà','Thanh Ha District','thanh_ha','30',7),
@@ -457,7 +400,7 @@ INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,provinc
 ('356','Nam Định','Nam Dinh','Thành phố Nam Định','Nam Dinh City','nam_dinh','36',4),
 ('359','Vụ Bản','Vu Ban','Huyện Vụ Bản','Vu Ban District','vu_ban','36',7);
 
-INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,province_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('360','Ý Yên','Y Yen','Huyện Ý Yên','Y Yen District','y_yen','36',7),
 ('361','Nghĩa Hưng','Nghia Hung','Huyện Nghĩa Hưng','Nghia Hung District','nghia_hung','36',7),
 ('362','Nam Trực','Nam Truc','Huyện Nam Trực','Nam Truc District','nam_truc','36',7),
@@ -509,7 +452,7 @@ INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,provinc
 ('421','Quỳnh Lưu','Quynh Luu','Huyện Quỳnh Lưu','Quynh Luu District','quynh_luu','40',7),
 ('422','Con Cuông','Con Cuong','Huyện Con Cuông','Con Cuong District','con_cuong','40',7);
 
-INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,province_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('423','Tân Kỳ','Tan Ky','Huyện Tân Kỳ','Tan Ky District','tan_ky','40',7),
 ('424','Anh Sơn','Anh Son','Huyện Anh Sơn','Anh Son District','anh_son','40',7),
 ('425','Diễn Châu','Dien Chau','Huyện Diễn Châu','Dien Chau District','dien_chau','40',7),
@@ -561,7 +504,7 @@ INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,provinc
 ('482','Phú Lộc','Phu Loc','Huyện Phú Lộc','Phu Loc District','phu_loc','46',7),
 ('490','Liên Chiểu','Lien Chieu','Quận Liên Chiểu','Lien Chieu District','lien_chieu','48',5);
 
-INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,province_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('491','Thanh Khê','Thanh Khe','Quận Thanh Khê','Thanh Khe District','thanh_khe','48',5),
 ('492','Hải Châu','Hai Chau','Quận Hải Châu','Hai Chau District','hai_chau','48',5),
 ('493','Sơn Trà','Son Tra','Quận Sơn Trà','Son Tra District','son_tra','48',5),
@@ -613,7 +556,7 @@ INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,provinc
 ('555','Tuy Hoà','Tuy Hoa','Thành phố Tuy Hoà','Tuy Hoa City','tuy_hoa','54',4),
 ('557','Sông Cầu','Song Cau','Thị xã Sông Cầu','Song Cau Town','song_cau','54',6);
 
-INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,province_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('558','Đồng Xuân','Dong Xuan','Huyện Đồng Xuân','Dong Xuan District','dong_xuan','54',7),
 ('559','Tuy An','Tuy An','Huyện Tuy An','Tuy An District','tuy_an','54',7),
 ('560','Sơn Hòa','Son Hoa','Huyện Sơn Hòa','Son Hoa District','son_hoa','54',7),
@@ -665,7 +608,7 @@ INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,provinc
 ('627','Chư Păh','Chu Pah','Huyện Chư Păh','Chu Pah District','chu_pah','64',7),
 ('628','Ia Grai','Ia Grai','Huyện Ia Grai','Ia Grai District','ia_grai','64',7);
 
-INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,province_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('629','Mang Yang','Mang Yang','Huyện Mang Yang','Mang Yang District','mang_yang','64',7),
 ('630','Kông Chro','Kong Chro','Huyện Kông Chro','Kong Chro District','kong_chro','64',7),
 ('631','Đức Cơ','Duc Co','Huyện Đức Cơ','Duc Co District','duc_co','64',7),
@@ -717,7 +660,7 @@ INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,provinc
 ('693','Bù Đốp','Bu Dop','Huyện Bù Đốp','Bu Dop District','bu_dop','70',7),
 ('694','Hớn Quản','Hon Quan','Huyện Hớn Quản','Hon Quan District','hon_quan','70',7);
 
-INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,province_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('695','Đồng Phú','Dong Phu','Huyện Đồng Phú','Dong Phu District','dong_phu','70',7),
 ('696','Bù Đăng','Bu Dang','Huyện Bù Đăng','Bu Dang District','bu_dang','70',7),
 ('697','Chơn Thành','Chon Thanh','Thị xã Chơn Thành','Chon Thanh Town','chon_thanh','70',6),
@@ -769,7 +712,7 @@ INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,provinc
 ('770','3','3','Quận 3','District 3','3','79',5),
 ('771','10','10','Quận 10','District 10','10','79',5);
 
-INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,province_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('772','11','11','Quận 11','District 11','11','79',5),
 ('773','4','4','Quận 4','District 4','4','79',5),
 ('774','5','5','Quận 5','District 5','5','79',5),
@@ -821,7 +764,7 @@ INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,provinc
 ('844','Càng Long','Cang Long','Huyện Càng Long','Cang Long District','cang_long','84',7),
 ('845','Cầu Kè','Cau Ke','Huyện Cầu Kè','Cau Ke District','cau_ke','84',7);
 
-INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,province_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('846','Tiểu Cần','Tieu Can','Huyện Tiểu Cần','Tieu Can District','tieu_can','84',7),
 ('847','Châu Thành','Chau Thanh','Huyện Châu Thành','Chau Thanh District','chau_thanh','84',7),
 ('848','Cầu Ngang','Cau Ngang','Huyện Cầu Ngang','Cau Ngang District','cau_ngang','84',7),
@@ -873,7 +816,7 @@ INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,provinc
 ('911','Phú Quốc','Phu Quoc','Thành phố Phú Quốc','Phu Quoc City','phu_quoc','91',4),
 ('912','Kiên Hải','Kien Hai','Huyện Kiên Hải','Kien Hai District','kien_hai','91',7);
 
-INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,province_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('913','U Minh Thượng','U Minh Thuong','Huyện U Minh Thượng','U Minh Thuong District','u_minh_thuong','91',7),
 ('914','Giang Thành','Giang Thanh','Huyện Giang Thành','Giang Thanh District','giang_thanh','91',7),
 ('916','Ninh Kiều','Ninh Kieu','Quận Ninh Kiều','Ninh Kieu District','ninh_kieu','92',5),
@@ -923,8 +866,8 @@ INSERT INTO districts(code,name,name_en,full_name,full_name_en,code_name,provinc
 
 -- ----------------------------------
 
--- DATA for wards --
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+-- DATA for areas --
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('00001','Phúc Xá','Phuc Xa','Phường Phúc Xá','Phuc Xa Ward','phuc_xa','001',8),
 ('00004','Trúc Bạch','Truc Bach','Phường Trúc Bạch','Truc Bach Ward','truc_bach','001',8),
 ('00006','Vĩnh Phúc','Vinh Phuc','Phường Vĩnh Phúc','Vinh Phuc Ward','vinh_phuc','001',8),
@@ -976,7 +919,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('00145','Long Biên','Long Bien','Phường Long Biên','Long Bien Ward','long_bien','004',8),
 ('00148','Thạch Bàn','Thach Ban','Phường Thạch Bàn','Thach Ban Ward','thach_ban','004',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('00151','Phúc Đồng','Phuc Dong','Phường Phúc Đồng','Phuc Dong Ward','phuc_dong','004',8),
 ('00154','Cự Khối','Cu Khoi','Phường Cự Khối','Cu Khoi Ward','cu_khoi','004',8),
 ('00157','Nghĩa Đô','Nghia Do','Phường Nghĩa Đô','Nghia Do Ward','nghia_do','005',8),
@@ -1028,7 +971,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('00316','Đại Kim','Dai Kim','Phường Đại Kim','Dai Kim Ward','dai_kim','008',8),
 ('00319','Tân Mai','Tan Mai','Phường Tân Mai','Tan Mai Ward','tan_mai','008',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('00322','Hoàng Văn Thụ','Hoang Van Thu','Phường Hoàng Văn Thụ','Hoang Van Thu Ward','hoang_van_thu','008',8),
 ('00325','Giáp Bát','Giap Bat','Phường Giáp Bát','Giap Bat Ward','giap_bat','008',8),
 ('00328','Lĩnh Nam','Linh Nam','Phường Lĩnh Nam','Linh Nam Ward','linh_nam','008',8),
@@ -1080,7 +1023,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('00472','Tiên Dương','Tien Duong','Xã Tiên Dương','Tien Duong Commune','tien_duong','017',10),
 ('00475','Vân Hà','Van Ha','Xã Vân Hà','Van Ha Commune','van_ha','017',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('00478','Uy Nỗ','Uy No','Xã Uy Nỗ','Uy No Commune','uy_no','017',10),
 ('00481','Vân Nội','Van Noi','Xã Vân Nội','Van Noi Commune','van_noi','017',10),
 ('00484','Liên Hà','Lien Ha','Xã Liên Hà','Lien Ha Commune','lien_ha','017',10),
@@ -1132,7 +1075,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('00655','Tam Hiệp','Tam Hiep','Xã Tam Hiệp','Tam Hiep Commune','tam_hiep','020',10),
 ('00658','Tứ Hiệp','Tu Hiep','Xã Tứ Hiệp','Tu Hiep Commune','tu_hiep','020',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('00661','Yên Mỹ','Yen My','Xã Yên Mỹ','Yen My Commune','yen_my','020',10),
 ('00664','Vĩnh Quỳnh','Vinh Quynh','Xã Vĩnh Quỳnh','Vinh Quynh Commune','vinh_quynh','020',10),
 ('00667','Ngũ Hiệp','Ngu Hiep','Xã Ngũ Hiệp','Ngu Hiep Commune','ngu_hiep','020',10),
@@ -1184,7 +1127,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('00766','Sủng Trái','Sung Trai','Xã Sủng Trái','Sung Trai Commune','sung_trai','026',10),
 ('00769','Mèo Vạc','Meo Vac','Thị trấn Mèo Vạc','Meo Vac Township','meo_vac','027',9);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('00772','Thượng Phùng','Thuong Phung','Xã Thượng Phùng','Thuong Phung Commune','thuong_phung','027',10),
 ('00775','Pải Lủng','Pai Lung','Xã Pải Lủng','Pai Lung Commune','pai_lung','027',10),
 ('00778','Xín Cái','Xin Cai','Xã Xín Cái','Xin Cai Commune','xin_cai','027',10),
@@ -1236,7 +1179,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('00706','Phú Linh','Phu Linh','Xã Phú Linh','Phu Linh Commune','phu_linh','030',10),
 ('00709','Kim Linh','Kim Linh','Xã Kim Linh','Kim Linh Commune','kim_linh','030',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('00913','Vị Xuyên','Vi Xuyen','Thị trấn Vị Xuyên','Vi Xuyen Township','vi_xuyen','030',9),
 ('00916','Nông Trường Việt Lâm','Nong Truong Viet Lam','Thị trấn Nông Trường Việt Lâm','Nong Truong Viet Lam Township','nong_truong_viet_lam','030',9),
 ('00919','Minh Tân','Minh Tan','Xã Minh Tân','Minh Tan Commune','minh_tan','030',10),
@@ -1288,7 +1231,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('01063','Bản Luốc','Ban Luoc','Xã Bản Luốc','Ban Luoc Commune','ban_luoc','032',10),
 ('01066','Ngàm Đăng Vài','Ngam Dang Vai','Xã Ngàm Đăng Vài','Ngam Dang Vai Commune','ngam_dang_vai','032',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('01069','Bản Nhùng','Ban Nhung','Xã Bản Nhùng','Ban Nhung Commune','ban_nhung','032',10),
 ('01072','Tả Sử Choóng','Ta Su Choong','Xã Tả Sử Choóng','Ta Su Choong Commune','ta_su_choong','032',10),
 ('01075','Nậm Dịch','Nam Dich','Xã Nậm Dịch','Nam Dich Commune','nam_dich','032',10),
@@ -1340,7 +1283,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('01219','Đông Thành','Dong Thanh','Xã Đông Thành','Dong Thanh Commune','dong_thanh','034',10),
 ('01222','Xuân Minh','Xuan Minh','Xã Xuân Minh','Xuan Minh Commune','xuan_minh','035',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('01225','Tiên Nguyên','Tien Nguyen','Xã Tiên Nguyên','Tien Nguyen Commune','tien_nguyen','035',10),
 ('01228','Tân Nam','Tan Nam','Xã Tân Nam','Tan Nam Commune','tan_nam','035',10),
 ('01231','Bản Rịa','Ban Ria','Xã Bản Rịa','Ban Ria Commune','ban_ria','035',10),
@@ -1392,7 +1335,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('01345','Phan Thanh','Phan Thanh','Xã Phan Thanh','Phan Thanh Commune','phan_thanh','043',10),
 ('01348','Hồng An','Hong An','Xã Hồng An','Hong An Commune','hong_an','043',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('01351','Hưng Đạo','Hung Dao','Xã Hưng Đạo','Hung Dao Commune','hung_dao','043',10),
 ('01352','Hưng Thịnh','Hung Thinh','Xã Hưng Thịnh','Hung Thinh Commune','hung_thinh','043',10),
 ('01354','Huy Giáp','Huy Giap','Xã Huy Giáp','Huy Giap Commune','huy_giap','043',10),
@@ -1444,7 +1387,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('01534','Minh Long','Minh Long','Xã Minh Long','Minh Long Commune','minh_long','048',10),
 ('01537','Lý Quốc','Ly Quoc','Xã Lý Quốc','Ly Quoc Commune','ly_quoc','048',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('01540','Thắng Lợi','Thang Loi','Xã Thắng Lợi','Thang Loi Commune','thang_loi','048',10),
 ('01543','Đồng Loan','Dong Loan','Xã Đồng Loan','Dong Loan Commune','dong_loan','048',10),
 ('01546','Đức Quang','Duc Quang','Xã Đức Quang','Duc Quang Commune','duc_quang','048',10),
@@ -1496,7 +1439,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('01735','Triệu Nguyên','Trieu Nguyen','Xã Triệu Nguyên','Trieu Nguyen Commune','trieu_nguyen','052',10),
 ('01738','Ca Thành','Ca Thanh','Xã Ca Thành','Ca Thanh Commune','ca_thanh','052',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('01744','Vũ Nông','Vu Nong','Xã Vũ Nông','Vu Nong Commune','vu_nong','052',10),
 ('01747','Minh Tâm','Minh Tam','Xã Minh Tâm','Minh Tam Commune','minh_tam','052',10),
 ('01750','Thể Dục','The Duc','Xã Thể Dục','The Duc Commune','the_duc','052',10),
@@ -1548,7 +1491,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('01900','Cao Thượng','Cao Thuong','Xã Cao Thượng','Cao Thuong Commune','cao_thuong','061',10),
 ('01906','Khang Ninh','Khang Ninh','Xã Khang Ninh','Khang Ninh Commune','khang_ninh','061',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('01909','Nam Mẫu','Nam Mau','Xã Nam Mẫu','Nam Mau Commune','nam_mau','061',10),
 ('01912','Thượng Giáo','Thuong Giao','Xã Thượng Giáo','Thuong Giao Commune','thuong_giao','061',10),
 ('01915','Địa Linh','Dia Linh','Xã Địa Linh','Dia Linh Commune','dia_linh','061',10),
@@ -1600,7 +1543,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('02068','Đại Sảo','Dai Sao','Xã Đại Sảo','Dai Sao Commune','dai_sao','064',10),
 ('02071','Nghĩa Tá','Nghia Ta','Xã Nghĩa Tá','Nghia Ta Commune','nghia_ta','064',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('02077','Yên Mỹ','Yen My','Xã Yên Mỹ','Yen My Commune','yen_my','064',10),
 ('02080','Bình Trung','Binh Trung','Xã Bình Trung','Binh Trung Commune','binh_trung','064',10),
 ('02083','Yên Phong','Yen Phong','Xã Yên Phong','Yen Phong Commune','yen_phong','064',10),
@@ -1652,7 +1595,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('02524','Đội Cấn','Doi Can','Phường Đội Cấn','Doi Can Ward','doi_can','070',8),
 ('02233','Phúc Yên','Phuc Yen','Xã Phúc Yên','Phuc Yen Commune','phuc_yen','071',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('02242','Xuân Lập','Xuan Lap','Xã Xuân Lập','Xuan Lap Commune','xuan_lap','071',10),
 ('02251','Khuôn Hà','Khuon Ha','Xã Khuôn Hà','Khuon Ha Commune','khuon_ha','071',10),
 ('02266','Lăng Can','Lang Can','Thị trấn Lăng Can','Lang Can Township','lang_can','071',9),
@@ -1704,7 +1647,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('02386','Yên Lâm','Yen Lam','Xã Yên Lâm','Yen Lam Commune','yen_lam','074',10),
 ('02389','Minh Dân','Minh Dan','Xã Minh Dân','Minh Dan Commune','minh_dan','074',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('02392','Phù Lưu','Phu Luu','Xã Phù Lưu','Phu Luu Commune','phu_luu','074',10),
 ('02395','Minh Hương','Minh Huong','Xã Minh Hương','Minh Huong Commune','minh_huong','074',10),
 ('02398','Yên Phú','Yen Phu','Xã Yên Phú','Yen Phu Commune','yen_phu','074',10),
@@ -1756,7 +1699,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('02560','Tú Thịnh','Tu Thinh','Xã Tú Thịnh','Tu Thinh Commune','tu_thinh','076',10),
 ('02563','Cấp Tiến','Cap Tien','Xã Cấp Tiến','Cap Tien Commune','cap_tien','076',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('02566','Hợp Thành','Hop Thanh','Xã Hợp Thành','Hop Thanh Commune','hop_thanh','076',10),
 ('02569','Phúc Ứng','Phuc Ung','Xã Phúc Ứng','Phuc Ung Commune','phuc_ung','076',10),
 ('02572','Đông Thọ','Dong Tho','Xã Đông Thọ','Dong Tho Commune','dong_tho','076',10),
@@ -1808,7 +1751,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('02719','Mường Vi','Muong Vi','Xã Mường Vi','Muong Vi Commune','muong_vi','082',10),
 ('02722','Dền Thàng','Den Thang','Xã Dền Thàng','Den Thang Commune','den_thang','082',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('02725','Bản Xèo','Ban Xeo','Xã Bản Xèo','Ban Xeo Commune','ban_xeo','082',10),
 ('02728','Mường Hum','Muong Hum','Xã Mường Hum','Muong Hum Commune','muong_hum','082',10),
 ('02731','Trung Lèng Hồ','Trung Leng Ho','Xã Trung Lèng Hồ','Trung Leng Ho Commune','trung_leng_ho','082',10),
@@ -1860,7 +1803,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('02890','Bảo Nhai','Bao Nhai','Xã Bảo Nhai','Bao Nhai Commune','bao_nhai','085',10),
 ('02893','Nậm Lúc','Nam Luc','Xã Nậm Lúc','Nam Luc Commune','nam_luc','085',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('02896','Cốc Lầu','Coc Lau','Xã Cốc Lầu','Coc Lau Commune','coc_lau','085',10),
 ('02899','Bản Cái','Ban Cai','Xã Bản Cái','Ban Cai Commune','ban_cai','085',10),
 ('02902','N.T Phong Hải','N.T Phong Hai','Thị trấn N.T Phong Hải','N.T Phong Hai Township','n.t_phong_hai','086',9),
@@ -1912,7 +1855,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('03052','Liên Minh','Lien Minh','Xã Liên Minh','Lien Minh Commune','lien_minh','088',10),
 ('03055','Khánh Yên','Khanh Yen','Thị trấn Khánh Yên','Khanh Yen Township','khanh_yen','089',9);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('03061','Võ Lao','Vo Lao','Xã Võ Lao','Vo Lao Commune','vo_lao','089',10),
 ('03064','Sơn Thuỷ','Son Thuy','Xã Sơn Thuỷ','Son Thuy Commune','son_thuy','089',10),
 ('03067','Nậm Mả','Nam Ma','Xã Nậm Mả','Nam Ma Commune','nam_ma','089',10),
@@ -1964,7 +1907,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('03178','Xá Tổng','Xa Tong','Xã Xá Tổng','Xa Tong Commune','xa_tong','097',10),
 ('03181','Mường Tùng','Muong Tung','Xã Mường Tùng','Muong Tung Commune','muong_tung','097',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('03190','Hừa Ngài','Hua Ngai','Xã Hừa Ngài','Hua Ngai Commune','hua_ngai','097',10),
 ('03191','Huổi Mí','Huoi Mi','Xã Huổi Mí','Huoi Mi Commune','huoi_mi','097',10),
 ('03193','Pa Ham','Pa Ham','Xã Pa Ham','Pa Ham Commune','pa_ham','097',10),
@@ -2016,7 +1959,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('03343','Thanh An','Thanh An','Xã Thanh An','Thanh An Commune','thanh_an','100',10),
 ('03346','Thanh Yên','Thanh Yen','Xã Thanh Yên','Thanh Yen Commune','thanh_yen','100',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('03349','Noong Luống','Noong Luong','Xã Noong Luống','Noong Luong Commune','noong_luong','100',10),
 ('03352','Noọng Hẹt','Noong Het','Xã Noọng Hẹt','Noong Het Commune','noong_het','100',10),
 ('03355','Sam Mứn','Sam Mun','Xã Sam Mứn','Sam Mun Commune','sam_mun','100',10),
@@ -2068,7 +2011,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('03198','Phìn Hồ','Phin Ho','Xã Phìn Hồ','Phin Ho Commune','phin_ho','103',10),
 ('03199','Si Pa Phìn','Si Pa Phin','Xã Si Pa Phìn','Si Pa Phin Commune','si_pa_phin','103',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('03386','Quyết Thắng','Quyet Thang','Phường Quyết Thắng','Quyet Thang Ward','quyet_thang','105',8),
 ('03387','Tân Phong','Tan Phong','Phường Tân Phong','Tan Phong Ward','tan_phong','105',8),
 ('03388','Quyết Tiến','Quyet Tien','Phường Quyết Tiến','Quyet Tien Ward','quyet_tien','105',8),
@@ -2120,7 +2063,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('03527','Pa Khoá','Pa Khoa','Xã Pa Khoá','Pa Khoa Commune','pa_khoa','108',10),
 ('03529','Làng Mô','Lang Mo','Xã Làng Mô','Lang Mo Commune','lang_mo','108',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('03532','Noong Hẻo','Noong Heo','Xã Noong Hẻo','Noong Heo Commune','noong_heo','108',10),
 ('03535','Nậm Mạ','Nam Ma','Xã Nậm Mạ','Nam Ma Commune','nam_ma','108',10),
 ('03538','Căn Co','Can Co','Xã Căn Co','Can Co Commune','can_co','108',10),
@@ -2172,7 +2115,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('03473','Nậm Chà','Nam Cha','Xã Nậm Chà','Nam Cha Commune','nam_cha','112',10),
 ('03474','Nậm Manh','Nam Manh','Xã Nậm Manh','Nam Manh Commune','nam_manh','112',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('03475','Nậm Hàng','Nam Hang','Xã Nậm Hàng','Nam Hang Commune','nam_hang','112',10),
 ('03481','Lê Lợi','Le Loi','Xã Lê Lợi','Le Loi Commune','le_loi','112',10),
 ('03484','Pú Đao','Pu Dao','Xã Pú Đao','Pu Dao Commune','pu_dao','112',10),
@@ -2224,7 +2167,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('03778','Bó Mười','Bo Muoi','Xã Bó Mười','Bo Muoi Commune','bo_muoi','119',10),
 ('03781','Co Mạ','Co Ma','Xã Co Mạ','Co Ma Commune','co_ma','119',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('03784','Púng Tra','Pung Tra','Xã Púng Tra','Pung Tra Commune','pung_tra','119',10),
 ('03787','Chiềng Pấc','Chieng Pac','Xã Chiềng Pấc','Chieng Pac Commune','chieng_pac','119',10),
 ('03790','Nậm Lầu','Nam Lau','Xã Nậm Lầu','Nam Lau Commune','nam_lau','119',10),
@@ -2276,7 +2219,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('03922','Gia Phù','Gia Phu','Xã Gia Phù','Gia Phu Commune','gia_phu','122',10),
 ('03925','Tường Phù','Tuong Phu','Xã Tường Phù','Tuong Phu Commune','tuong_phu','122',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('03928','Huy Hạ','Huy Ha','Xã Huy Hạ','Huy Ha Commune','huy_ha','122',10),
 ('03931','Huy Tân','Huy Tan','Xã Huy Tân','Huy Tan Commune','huy_tan','122',10),
 ('03934','Mường Lang','Muong Lang','Xã Mường Lang','Muong Lang Commune','muong_lang','122',10),
@@ -2328,7 +2271,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('04108','Chiềng Sung','Chieng Sung','Xã Chiềng Sung','Chieng Sung Commune','chieng_sung','125',10),
 ('04111','Mường Bằng','Muong Bang','Xã Mường Bằng','Muong Bang Commune','muong_bang','125',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('04114','Chiềng Chăn','Chieng Chan','Xã Chiềng Chăn','Chieng Chan Commune','chieng_chan','125',10),
 ('04117','Mương Chanh','Muong Chanh','Xã Mương Chanh','Muong Chanh Commune','muong_chanh','125',10),
 ('04120','Chiềng Ban','Chieng Ban','Xã Chiềng Ban','Chieng Ban Commune','chieng_ban','125',10),
@@ -2380,7 +2323,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('04009','Liên Hoà','Lien Hoa','Xã Liên Hoà','Lien Hoa Commune','lien_hoa','128',10),
 ('04018','Tô Múa','To Mua','Xã Tô Múa','To Mua Commune','to_mua','128',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('04021','Mường Tè','Muong Te','Xã Mường Tè','Muong Te Commune','muong_te','128',10),
 ('04036','Chiềng Khoa','Chieng Khoa','Xã Chiềng Khoa','Chieng Khoa Commune','chieng_khoa','128',10),
 ('04039','Mường Men','Muong Men','Xã Mường Men','Muong Men Commune','muong_men','128',10),
@@ -2432,7 +2375,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('04333','Tô Mậu','To Mau','Xã Tô Mậu','To Mau Commune','to_mau','135',10),
 ('04336','Tân Lĩnh','Tan Linh','Xã Tân Lĩnh','Tan Linh Commune','tan_linh','135',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('04339','Yên Thắng','Yen Thang','Xã Yên Thắng','Yen Thang Commune','yen_thang','135',10),
 ('04342','Khánh Hoà','Khanh Hoa','Xã Khánh Hoà','Khanh Hoa Commune','khanh_hoa','135',10),
 ('04345','Vĩnh Lạc','Vinh Lac','Xã Vĩnh Lạc','Vinh Lac Commune','vinh_lac','135',10),
@@ -2484,7 +2427,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('04489','Chế Tạo','Che Tao','Xã Chế Tạo','Che Tao Commune','che_tao','137',10),
 ('04492','Púng Luông','Pung Luong','Xã Púng Luông','Pung Luong Commune','pung_luong','137',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('04495','Nậm Khắt','Nam Khat','Xã Nậm Khắt','Nam Khat Commune','nam_khat','137',10),
 ('04498','Cổ Phúc','Co Phuc','Thị trấn Cổ Phúc','Co Phuc Township','co_phuc','138',9),
 ('04501','Tân Đồng','Tan Dong','Xã Tân Đồng','Tan Dong Commune','tan_dong','138',10),
@@ -2536,7 +2479,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('04693','Cát Thịnh','Cat Thinh','Xã Cát Thịnh','Cat Thinh Commune','cat_thinh','140',10),
 ('04696','Tân Thịnh','Tan Thinh','Xã Tân Thịnh','Tan Thinh Commune','tan_thinh','140',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('04699','Chấn Thịnh','Chan Thinh','Xã Chấn Thịnh','Chan Thinh Commune','chan_thinh','140',10),
 ('04702','Bình Thuận','Binh Thuan','Xã Bình Thuận','Binh Thuan Commune','binh_thuan','140',10),
 ('04705','Thượng Bằng La','Thuong Bang La','Xã Thượng Bằng La','Thuong Bang La Commune','thuong_bang_la','140',10),
@@ -2588,7 +2531,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('04834','Nánh Nghê','Nanh Nghe','Xã Nánh Nghê','Nanh Nghe Commune','nanh_nghe','150',10),
 ('04840','Giáp Đắt','Giap Dat','Xã Giáp Đắt','Giap Dat Commune','giap_dat','150',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('04846','Mường Chiềng','Muong Chieng','Xã Mường Chiềng','Muong Chieng Commune','muong_chieng','150',10),
 ('04849','Tân Pheo','Tan Pheo','Xã Tân Pheo','Tan Pheo Commune','tan_pheo','150',10),
 ('04852','Đồng Chum','Dong Chum','Xã Đồng Chum','Dong Chum Commune','dong_chum','150',10),
@@ -2640,7 +2583,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('05110','Tây Phong','Tay Phong','Xã Tây Phong','Tay Phong Commune','tay_phong','154',10),
 ('05116','Dũng Phong','Dung Phong','Xã Dũng Phong','Dung Phong Commune','dung_phong','154',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('05119','Nam Phong','Nam Phong','Xã Nam Phong','Nam Phong Commune','nam_phong','154',10),
 ('05125','Thạch Yên','Thach Yen','Xã Thạch Yên','Thach Yen Commune','thach_yen','154',10),
 ('05128','Mãn Đức','Man Duc','Thị trấn Mãn Đức','Man Duc Township','man_duc','155',9),
@@ -2692,7 +2635,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('05320','Định Cư','Dinh Cu','Xã Định Cư','Dinh Cu Commune','dinh_cu','157',10),
 ('05323','Chí Đạo','Chi Dao','Xã Chí Đạo','Chi Dao Commune','chi_dao','157',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('05329','Ngọc Sơn','Ngoc Son','Xã Ngọc Sơn','Ngoc Son Commune','ngoc_son','157',10),
 ('05332','Hương Nhượng','Huong Nhuong','Xã Hương Nhượng','Huong Nhuong Commune','huong_nhuong','157',10),
 ('05335','Vũ Bình','Vu Binh','Xã Vũ Bình','Vu Binh Commune','vu_binh','157',10),
@@ -2744,7 +2687,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('05488','Phúc Xuân','Phuc Xuan','Xã Phúc Xuân','Phuc Xuan Commune','phuc_xuan','164',10),
 ('05491','Quyết Thắng','Quyet Thang','Xã Quyết Thắng','Quyet Thang Commune','quyet_thang','164',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('05494','Phúc Trìu','Phuc Triu','Xã Phúc Trìu','Phuc Triu Commune','phuc_triu','164',10),
 ('05497','Thịnh Đức','Thinh Duc','Xã Thịnh Đức','Thinh Duc Commune','thinh_duc','164',10),
 ('05500','Tích Lương','Tich Luong','Phường Tích Lương','Tich Luong Ward','tich_luong','164',8),
@@ -2796,7 +2739,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('05623','Yên Lạc','Yen Lac','Xã Yên Lạc','Yen Lac Commune','yen_lac','168',10),
 ('05626','Ôn Lương','On Luong','Xã Ôn Lương','On Luong Commune','on_luong','168',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('05629','Động Đạt','Dong Dat','Xã Động Đạt','Dong Dat Commune','dong_dat','168',10),
 ('05632','Phủ Lý','Phu Ly','Xã Phủ Lý','Phu Ly Commune','phu_ly','168',10),
 ('05635','Phú Đô','Phu Do','Xã Phú Đô','Phu Do Commune','phu_do','168',10),
@@ -2848,7 +2791,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('05797','Phú Xuyên','Phu Xuyen','Xã Phú Xuyên','Phu Xuyen Commune','phu_xuyen','171',10),
 ('05800','Bản Ngoại','Ban Ngoai','Xã Bản Ngoại','Ban Ngoai Commune','ban_ngoai','171',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('05803','Tiên Hội','Tien Hoi','Xã Tiên Hội','Tien Hoi Commune','tien_hoi','171',10),
 ('05809','Cù Vân','Cu Van','Xã Cù Vân','Cu Van Commune','cu_van','171',10),
 ('05812','Hà Thượng','Ha Thuong','Xã Hà Thượng','Ha Thuong Commune','ha_thuong','171',10),
@@ -2900,7 +2843,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('05956','Nga My','Nga My','Xã Nga My','Nga My Commune','nga_my','173',10),
 ('05959','Kha Sơn','Kha Son','Xã Kha Sơn','Kha Son Commune','kha_son','173',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('05962','Thanh Ninh','Thanh Ninh','Xã Thanh Ninh','Thanh Ninh Commune','thanh_ninh','173',10),
 ('05965','Dương Thành','Duong Thanh','Xã Dương Thành','Duong Thanh Commune','duong_thanh','173',10),
 ('05968','Hà Châu','Ha Chau','Xã Hà Châu','Ha Chau Commune','ha_chau','173',10),
@@ -2952,7 +2895,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('06118','Bình La','Binh La','Xã Bình La','Binh La Commune','binh_la','181',10),
 ('06121','Tân Văn','Tan Van','Xã Tân Văn','Tan Van Commune','tan_van','181',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('06124','Na Sầm','Na Sam','Thị trấn Na Sầm','Na Sam Township','na_sam','182',9),
 ('06127','Trùng Khánh','Trung Khanh','Xã Trùng Khánh','Trung Khanh Commune','trung_khanh','182',10),
 ('06133','Bắc La','Bac La','Xã Bắc La','Bac La Commune','bac_la','182',10),
@@ -3004,7 +2947,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('06292','Lương Năng','Luong Nang','Xã Lương Năng','Luong Nang Commune','luong_nang','184',10),
 ('06298','Bình Phúc','Binh Phuc','Xã Bình Phúc','Binh Phuc Commune','binh_phuc','184',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('06307','Tân Đoàn','Tan Doan','Xã Tân Đoàn','Tan Doan Commune','tan_doan','184',10),
 ('06313','Tri Lễ','Tri Le','Xã Tri Lễ','Tri Le Commune','tri_le','184',10),
 ('06316','Tràng Phái','Trang Phai','Xã Tràng Phái','Trang Phai Commune','trang_phai','184',10),
@@ -3056,7 +2999,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('06469','Vân An','Van An','Xã Vân An','Van An Commune','van_an','187',10),
 ('06472','Vân Thủy','Van Thuy','Xã Vân Thủy','Van Thuy Commune','van_thuy','187',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('06475','Gia Lộc','Gia Loc','Xã Gia Lộc','Gia Loc Commune','gia_loc','187',10),
 ('06478','Bắc Thủy','Bac Thuy','Xã Bắc Thủy','Bac Thuy Commune','bac_thuy','187',10),
 ('06481','Chiến Thắng','Chien Thang','Xã Chiến Thắng','Chien Thang Commune','chien_thang','187',10),
@@ -3108,7 +3051,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('06649','Hà Khánh','Ha Khanh','Phường Hà Khánh','Ha Khanh Ward','ha_khanh','193',8),
 ('06652','Hà Phong','Ha Phong','Phường Hà Phong','Ha Phong Ward','ha_phong','193',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('06655','Hà Khẩu','Ha Khau','Phường Hà Khẩu','Ha Khau Ward','ha_khau','193',8),
 ('06658','Cao Xanh','Cao Xanh','Phường Cao Xanh','Cao Xanh Ward','cao_xanh','193',8),
 ('06661','Giếng Đáy','Gieng Day','Phường Giếng Đáy','Gieng Day Ward','gieng_day','193',8),
@@ -3160,7 +3103,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('06772','Cẩm Phú','Cam Phu','Phường Cẩm Phú','Cam Phu Ward','cam_phu','195',8),
 ('06775','Cẩm Tây','Cam Tay','Phường Cẩm Tây','Cam Tay Ward','cam_tay','195',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('06778','Quang Hanh','Quang Hanh','Phường Quang Hanh','Quang Hanh Ward','quang_hanh','195',8),
 ('06781','Cẩm Thịnh','Cam Thinh','Phường Cẩm Thịnh','Cam Thinh Ward','cam_thinh','195',8),
 ('06784','Cẩm Thủy','Cam Thuy','Phường Cẩm Thủy','Cam Thuy Ward','cam_thuy','195',8),
@@ -3212,7 +3155,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('06928','Quảng Sơn','Quang Son','Xã Quảng Sơn','Quang Son Commune','quang_son','201',10),
 ('06931','Quảng Thành','Quang Thanh','Xã Quảng Thành','Quang Thanh Commune','quang_thanh','201',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('06937','Quảng Thịnh','Quang Thinh','Xã Quảng Thịnh','Quang Thinh Commune','quang_thinh','201',10),
 ('06940','Quảng Minh','Quang Minh','Xã Quảng Minh','Quang Minh Commune','quang_minh','201',10),
 ('06943','Quảng Chính','Quang Chinh','Xã Quảng Chính','Quang Chinh Commune','quang_chinh','201',10),
@@ -3264,7 +3207,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('07144','Sông Khoai','Song Khoai','Xã Sông Khoai','Song Khoai Commune','song_khoai','206',10),
 ('07147','Hiệp Hòa','Hiep Hoa','Xã Hiệp Hòa','Hiep Hoa Commune','hiep_hoa','206',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('07150','Cộng Hòa','Cong Hoa','Phường Cộng Hòa','Cong Hoa Ward','cong_hoa','206',8),
 ('07153','Tiền An','Tien An','Xã Tiền An','Tien An Commune','tien_an','206',10),
 ('07156','Hoàng Tân','Hoang Tan','Xã Hoàng Tân','Hoang Tan Commune','hoang_tan','206',10),
@@ -3316,7 +3259,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('07744','Thắng Cương','Thang Cuong','Xã Thắng Cương','Thang Cuong Commune','thang_cuong','213',10),
 ('07747','Đồng Việt','Dong Viet','Xã Đồng Việt','Dong Viet Commune','dong_viet','213',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('07750','Đồng Phúc','Dong Phuc','Xã Đồng Phúc','Dong Phuc Commune','dong_phuc','213',10),
 ('07243','Đồng Tiến','Dong Tien','Xã Đồng Tiến','Dong Tien Commune','dong_tien','215',10),
 ('07246','Canh Nậu','Canh Nau','Xã Canh Nậu','Canh Nau Commune','canh_nau','215',10),
@@ -3368,7 +3311,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('07411','Tân Thanh','Tan Thanh','Xã Tân Thanh','Tan Thanh Commune','tan_thanh','217',10),
 ('07417','Tân Hưng','Tan Hung','Xã Tân Hưng','Tan Hung Commune','tan_hung','217',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('07420','Mỹ Thái','My Thai','Xã Mỹ Thái','My Thai Commune','my_thai','217',10),
 ('07426','Xương Lâm','Xuong Lam','Xã Xương Lâm','Xuong Lam Commune','xuong_lam','217',10),
 ('07429','Xuân Hương','Xuan Huong','Xã Xuân Hương','Xuan Huong Commune','xuan_huong','217',10),
@@ -3420,7 +3363,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('07609','Đèo Gia','Deo Gia','Xã Đèo Gia','Deo Gia Commune','deo_gia','219',10),
 ('07615','An Châu','An Chau','Thị trấn An Châu','An Chau Township','an_chau','220',9);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('07616','Tây Yên Tử','Tay Yen Tu','Thị trấn Tây Yên Tử','Tay Yen Tu Township','tay_yen_tu','220',9),
 ('07621','Vân Sơn','Van Son','Xã Vân Sơn','Van Son Commune','van_son','220',10),
 ('07624','Hữu Sản','Huu San','Xã Hữu Sản','Huu San Commune','huu_san','220',10),
@@ -3472,7 +3415,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('07876','Hương Lâm','Huong Lam','Xã Hương Lâm','Huong Lam Commune','huong_lam','223',10),
 ('07879','Đông Lỗ','Dong Lo','Xã Đông Lỗ','Dong Lo Commune','dong_lo','223',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('07882','Châu Minh','Chau Minh','Xã Châu Minh','Chau Minh Commune','chau_minh','223',10),
 ('07885','Mai Đình','Mai Dinh','Xã Mai Đình','Mai Dinh Commune','mai_dinh','223',10),
 ('07525','Chũ','Chu','Phường Chũ','Chu Ward','chu','224',8),
@@ -3524,7 +3467,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('08008','Ngọc Quan','Ngoc Quan','Xã Ngọc Quan','Ngoc Quan Commune','ngoc_quan','230',10),
 ('08014','Hợp Nhất','Hop Nhat','Xã Hợp Nhất','Hop Nhat Commune','hop_nhat','230',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('08023','Tây Cốc','Tay Coc','Xã Tây Cốc','Tay Coc Commune','tay_coc','230',10),
 ('08035','Hùng Long','Hung Long','Xã Hùng Long','Hung Long Commune','hung_long','230',10),
 ('08038','Yên Kiện','Yen Kien','Xã Yên Kiện','Yen Kien Commune','yen_kien','230',10),
@@ -3576,7 +3519,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('08239','Trạm Thản','Tram Than','Xã Trạm Thản','Tram Than Commune','tram_than','233',10),
 ('08242','Trị Quận','Tri Quan','Xã Trị Quận','Tri Quan Commune','tri_quan','233',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('08245','Trung Giáp','Trung Giap','Xã Trung Giáp','Trung Giap Commune','trung_giap','233',10),
 ('08248','Tiên Phú','Tien Phu','Xã Tiên Phú','Tien Phu Commune','tien_phu','233',10),
 ('08251','Hạ Giáp','Ha Giap','Xã Hạ Giáp','Ha Giap Commune','ha_giap','233',10),
@@ -3628,7 +3571,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('08461','Lam Sơn','Lam Son','Xã Lam Sơn','Lam Son Commune','lam_son','236',10),
 ('08467','Vạn Xuân','Van Xuan','Xã Vạn Xuân','Van Xuan Commune','van_xuan','236',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('08470','Quang Húc','Quang Huc','Xã Quang Húc','Quang Huc Commune','quang_huc','236',10),
 ('08473','Hương Nộn','Huong Non','Xã Hương Nộn','Huong Non Commune','huong_non','236',10),
 ('08476','Tề Lễ','Te Le','Xã Tề Lễ','Te Le Commune','te_le','236',10),
@@ -3680,7 +3623,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('08683','Đoan Hạ','Doan Ha','Xã Đoan Hạ','Doan Ha Commune','doan_ha','239',10),
 ('08686','Đồng Trung','Dong Trung','Xã Đồng Trung','Dong Trung Commune','dong_trung','239',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('08689','Hoàng Xá','Hoang Xa','Xã Hoàng Xá','Hoang Xa Commune','hoang_xa','239',10),
 ('08701','Tu Vũ','Tu Vu','Xã Tu Vũ','Tu Vu Commune','tu_vu','239',10),
 ('08545','Thu Cúc','Thu Cuc','Xã Thu Cúc','Thu Cuc Commune','thu_cuc','240',10),
@@ -3732,7 +3675,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('08815','Tử Du','Tu Du','Xã Tử Du','Tu Du Commune','tu_du','246',10),
 ('08833','Bàn Giản','Ban Gian','Xã Bàn Giản','Ban Gian Commune','ban_gian','246',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('08836','Xuân Lôi','Xuan Loi','Xã Xuân Lôi','Xuan Loi Commune','xuan_loi','246',10),
 ('08839','Đồng Ích','Dong Ich','Xã Đồng Ích','Dong Ich Commune','dong_ich','246',10),
 ('08842','Tiên Lữ','Tien Lu','Xã Tiên Lữ','Tien Lu Commune','tien_lu','246',10),
@@ -3784,7 +3727,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('08995','Tam Đồng','Tam Dong','Xã Tam Đồng','Tam Dong Commune','tam_dong','250',10),
 ('08998','Liên Mạc','Lien Mac','Xã Liên Mạc','Lien Mac Commune','lien_mac','250',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('09004','Chu Phan','Chu Phan','Xã Chu Phan','Chu Phan Commune','chu_phan','250',10),
 ('09007','Tiến Thịnh','Tien Thinh','Xã Tiến Thịnh','Tien Thinh Commune','tien_thinh','250',10),
 ('09010','Mê Linh','Me Linh','Xã Mê Linh','Me Linh Commune','me_linh','250',10),
@@ -3836,7 +3779,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('08806','Đôn Nhân','Don Nhan','Xã Đôn Nhân','Don Nhan Commune','don_nhan','253',10),
 ('08809','Phương Khoan','Phuong Khoan','Xã Phương Khoan','Phuong Khoan Commune','phuong_khoan','253',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('08818','Tân Lập','Tan Lap','Xã Tân Lập','Tan Lap Commune','tan_lap','253',10),
 ('08824','Tam Sơn','Tam Son','Thị trấn Tam Sơn','Tam Son Township','tam_son','253',9),
 ('08830','Yên Thạch','Yen Thach','Xã Yên Thạch','Yen Thach Commune','yen_thach','253',10),
@@ -3888,7 +3831,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('09283','Việt Hùng','Viet Hung','Phường Việt Hùng','Viet Hung Ward','viet_hung','259',8),
 ('09289','Ngọc Xá','Ngoc Xa','Xã Ngọc Xá','Ngoc Xa Commune','ngoc_xa','259',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('09292','Châu Phong','Chau Phong','Xã Châu Phong','Chau Phong Commune','chau_phong','259',10),
 ('09295','Bồng Lai','Bong Lai','Phường Bồng Lai','Bong Lai Ward','bong_lai','259',8),
 ('09298','Cách Bi','Cach Bi','Phường Cách Bi','Cach Bi Ward','cach_bi','259',8),
@@ -3940,7 +3883,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('09442','Nguyệt Đức','Nguyet Duc','Xã Nguyệt Đức','Nguyet Duc Commune','nguyet_duc','262',10),
 ('09445','Ninh Xá','Ninh Xa','Phường Ninh Xá','Ninh Xa Ward','ninh_xa','262',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('09448','Nghĩa Đạo','Nghia Dao','Xã Nghĩa Đạo','Nghia Dao Commune','nghia_dao','262',10),
 ('09451','Song Liễu','Song Lieu','Xã Song Liễu','Song Lieu Commune','song_lieu','262',10),
 ('09454','Gia Bình','Gia Binh','Thị trấn Gia Bình','Gia Binh Township','gia_binh','263',9),
@@ -3992,7 +3935,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('09592','Đường Lâm','Duong Lam','Xã Đường Lâm','Duong Lam Commune','duong_lam','269',10),
 ('09595','Viên Sơn','Vien Son','Phường Viên Sơn','Vien Son Ward','vien_son','269',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('09598','Xuân Sơn','Xuan Son','Xã Xuân Sơn','Xuan Son Commune','xuan_son','269',10),
 ('09601','Trung Hưng','Trung Hung','Phường Trung Hưng','Trung Hung Ward','trung_hung','269',8),
 ('09604','Thanh Mỹ','Thanh My','Xã Thanh Mỹ','Thanh My Commune','thanh_my','269',10),
@@ -4044,7 +3987,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('09766','Ngọc Tảo','Ngoc Tao','Xã Ngọc Tảo','Ngoc Tao Commune','ngoc_tao','272',10),
 ('09769','Phụng Thượng','Phung Thuong','Xã Phụng Thượng','Phung Thuong Commune','phung_thuong','272',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('09772','Tam Thuấn','Tam Thuan','Xã Tam Thuấn','Tam Thuan Commune','tam_thuan','272',10),
 ('09775','Tam Hiệp','Tam Hiep','Xã Tam Hiệp','Tam Hiep Commune','tam_hiep','272',10),
 ('09778','Hiệp Thuận','Hiep Thuan','Xã Hiệp Thuận','Hiep Thuan Commune','hiep_thuan','272',10),
@@ -4096,7 +4039,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('09919','Đồng Quang','Dong Quang','Xã Đồng Quang','Dong Quang Commune','dong_quang','275',10),
 ('09922','Phú Cát','Phu Cat','Xã Phú Cát','Phu Cat Commune','phu_cat','275',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('09925','Tuyết Nghĩa','Tuyet Nghia','Xã Tuyết Nghĩa','Tuyet Nghia Commune','tuyet_nghia','275',10),
 ('09928','Liệp Nghĩa','Liep Nghia','Xã Liệp Nghĩa','Liep Nghia Commune','liep_nghia','275',10),
 ('09931','Cộng Hòa','Cong Hoa','Xã Cộng Hòa','Cong Hoa Commune','cong_hoa','275',10),
@@ -4148,7 +4091,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('10078','Hoàng Diệu','Hoang Dieu','Xã Hoàng Diệu','Hoang Dieu Commune','hoang_dieu','277',10),
 ('10081','Hữu Văn','Huu Van','Xã Hữu Văn','Huu Van Commune','huu_van','277',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('10084','Quảng Bị','Quang Bi','Xã Quảng Bị','Quang Bi Commune','quang_bi','277',10),
 ('10087','Mỹ Lương','My Luong','Xã Mỹ Lương','My Luong Commune','my_luong','277',10),
 ('10090','Thượng Vực','Thuong Vuc','Xã Thượng Vực','Thuong Vuc Commune','thuong_vuc','277',10),
@@ -4200,7 +4143,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('10246','Thắng Lợi','Thang Loi','Xã Thắng Lợi','Thang Loi Commune','thang_loi','279',10),
 ('10249','Dũng Tiến','Dung Tien','Xã Dũng Tiến','Dung Tien Commune','dung_tien','279',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('10255','Nghiêm Xuyên','Nghiem Xuyen','Xã Nghiêm Xuyên','Nghiem Xuyen Commune','nghiem_xuyen','279',10),
 ('10258','Tô Hiệu','To Hieu','Xã Tô Hiệu','To Hieu Commune','to_hieu','279',10),
 ('10261','Văn Tự','Van Tu','Xã Văn Tự','Van Tu Commune','van_tu','279',10),
@@ -4252,7 +4195,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('10441','Đại Nghĩa','Dai Nghia','Thị trấn Đại Nghĩa','Dai Nghia Township','dai_nghia','282',9),
 ('10444','Đồng Tâm','Dong Tam','Xã Đồng Tâm','Dong Tam Commune','dong_tam','282',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('10447','Thượng Lâm','Thuong Lam','Xã Thượng Lâm','Thuong Lam Commune','thuong_lam','282',10),
 ('10450','Tuy Lai','Tuy Lai','Xã Tuy Lai','Tuy Lai Commune','tuy_lai','282',10),
 ('10453','Phúc Lâm','Phuc Lam','Xã Phúc Lâm','Phuc Lam Commune','phuc_lam','282',10),
@@ -4304,7 +4247,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('10564','Lê Lợi','Le Loi','Xã Lê Lợi','Le Loi Commune','le_loi','290',10),
 ('10567','Hoàng Tiến','Hoang Tien','Phường Hoàng Tiến','Hoang Tien Ward','hoang_tien','290',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('10570','Cộng Hoà','Cong Hoa','Phường Cộng Hoà','Cong Hoa Ward','cong_hoa','290',8),
 ('10573','Hoàng Tân','Hoang Tan','Phường Hoàng Tân','Hoang Tan Ward','hoang_tan','290',8),
 ('10576','Cổ Thành','Co Thanh','Phường Cổ Thành','Co Thanh Ward','co_thanh','290',8),
@@ -4356,7 +4299,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('10750','Phú Thái','Phu Thai','Thị trấn Phú Thái','Phu Thai Township','phu_thai','293',9),
 ('10756','Lai Khê','Lai Khe','Xã Lai Khê','Lai Khe Commune','lai_khe','293',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('10762','Vũ Dũng','Vu Dung','Xã Vũ Dũng','Vu Dung Commune','vu_dung','293',10),
 ('10768','Tuấn Việt','Tuan Viet','Xã Tuấn Việt','Tuan Viet Commune','tuan_viet','293',10),
 ('10771','Kim Xuyên','Kim Xuyen','Xã Kim Xuyên','Kim Xuyen Commune','kim_xuyen','293',10),
@@ -4408,7 +4351,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('10966','Tân Việt','Tan Viet','Xã Tân Việt','Tan Viet Commune','tan_viet','296',10),
 ('10969','Thúc Kháng','Thuc Khang','Xã Thúc Kháng','Thuc Khang Commune','thuc_khang','296',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('10972','Tân Hồng','Tan Hong','Xã Tân Hồng','Tan Hong Commune','tan_hong','296',10),
 ('10978','Hồng Khê','Hong Khe','Xã Hồng Khê','Hong Khe Commune','hong_khe','296',10),
 ('10981','Thái Minh','Thai Minh','Xã Thái Minh','Thai Minh Commune','thai_minh','296',10),
@@ -4460,7 +4403,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('11188','Bình Xuyên','Binh Xuyen','Xã Bình Xuyên','Binh Xuyen Commune','binh_xuyen','299',10),
 ('11197','Tân Phong','Tan Phong','Xã Tân Phong','Tan Phong Commune','tan_phong','299',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('11203','Ninh Giang','Ninh Giang','Thị trấn Ninh Giang','Ninh Giang Township','ninh_giang','299',9),
 ('11206','Tân Quang','Tan Quang','Xã Tân Quang','Tan Quang Commune','tan_quang','299',10),
 ('11215','Hồng Dụ','Hong Du','Xã Hồng Dụ','Hong Du Commune','hong_du','299',10),
@@ -4512,7 +4455,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('11405','Kênh Dương','Kenh Duong','Phường Kênh Dương','Kenh Duong Ward','kenh_duong','305',8),
 ('11407','Vĩnh Niệm','Vinh Niem','Phường Vĩnh Niệm','Vinh Niem Ward','vinh_niem','305',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('11410','Đông Hải 1','Dong Hai 1','Phường Đông Hải 1','Ward Dong Hai 1','dong_hai_1','306',8),
 ('11411','Đông Hải 2','Dong Hai 2','Phường Đông Hải 2','Ward Dong Hai 2','dong_hai_2','306',8),
 ('11413','Đằng Lâm','Dang Lam','Phường Đằng Lâm','Dang Lam Ward','dang_lam','306',8),
@@ -4564,7 +4507,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('11581','Lê Lợi','Le Loi','Phường Lê Lợi','Le Loi Ward','le_loi','312',8),
 ('11584','Lê Thiện','Le Thien','Phường Lê Thiện','Le Thien Ward','le_thien','312',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('11590','An Hoà','An Hoa','Phường An Hoà','An Hoa Ward','an_hoa','312',8),
 ('11593','Hồng Phong','Hong Phong','Phường Hồng Phong','Hong Phong Ward','hong_phong','312',8),
 ('11596','Tân Tiến','Tan Tien','Phường Tân Tiến','Tan Tien Ward','tan_tien','312',8),
@@ -4616,7 +4559,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('11779','Cấp Tiến','Cap Tien','Xã Cấp Tiến','Cap Tien Commune','cap_tien','315',10),
 ('11782','Kiến Thiết','Kien Thiet','Xã Kiến Thiết','Kien Thiet Commune','kien_thiet','315',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('11785','Đoàn Lập','Doan Lap','Xã Đoàn Lập','Doan Lap Commune','doan_lap','315',10),
 ('11791','Tân Minh','Tan Minh','Xã Tân Minh','Tan Minh Commune','tan_minh','315',10),
 ('11797','Tiên Thắng','Tien Thang','Xã Tiên Thắng','Tien Thang Commune','tien_thang','315',10),
@@ -4668,7 +4611,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('11974','Liên Phương','Lien Phuong','Xã Liên Phương','Lien Phuong Commune','lien_phuong','323',10),
 ('11977','Phương Nam','Phuong Nam','Xã Phương Nam','Phuong Nam Commune','phuong_nam','323',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('11980','Quảng Châu','Quang Chau','Xã Quảng Châu','Quang Chau Commune','quang_chau','323',10),
 ('11983','Bảo Khê','Bao Khe','Xã Bảo Khê','Bao Khe Commune','bao_khe','323',10),
 ('12331','Phú Cường','Phu Cuong','Xã Phú Cường','Phu Cuong Commune','phu_cuong','323',10),
@@ -4720,7 +4663,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('12127','Minh Đức','Minh Duc','Phường Minh Đức','Minh Duc Ward','minh_duc','328',8),
 ('12130','Phùng Chí Kiên','Phung Chi Kien','Phường Phùng Chí Kiên','Phung Chi Kien Ward','phung_chi_kien','328',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('12133','Xuân Dục','Xuan Duc','Xã Xuân Dục','Xuan Duc Commune','xuan_duc','328',10),
 ('12136','Ngọc Lâm','Ngoc Lam','Xã Ngọc Lâm','Ngoc Lam Commune','ngoc_lam','328',10),
 ('12139','Hưng Long','Hung Long','Xã Hưng Long','Hung Long Commune','hung_long','328',10),
@@ -4772,7 +4715,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('12298','Đồng Thanh','Dong Thanh','Xã Đồng Thanh','Dong Thanh Commune','dong_thanh','331',10),
 ('12301','Song Mai','Song Mai','Xã Song Mai','Song Mai Commune','song_mai','331',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('12304','Chính Nghĩa','Chinh Nghia','Xã Chính Nghĩa','Chinh Nghia Commune','chinh_nghia','331',10),
 ('12313','Mai Động','Mai Dong','Xã Mai Động','Mai Dong Commune','mai_dong','331',10),
 ('12316','Đức Hợp','Duc Hop','Xã Đức Hợp','Duc Hop Commune','duc_hop','331',10),
@@ -4824,7 +4767,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('13108','Vũ Lạc','Vu Lac','Xã Vũ Lạc','Vu Lac Commune','vu_lac','336',10),
 ('13225','Tân Bình','Tan Binh','Xã Tân Bình','Tan Binh Commune','tan_binh','336',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('12472','Quỳnh Côi','Quynh Coi','Thị trấn Quỳnh Côi','Quynh Coi Township','quynh_coi','338',9),
 ('12475','An Khê','An Khe','Xã An Khê','An Khe Commune','an_khe','338',10),
 ('12478','An Đồng','An Dong','Xã An Đồng','An Dong Commune','an_dong','338',10),
@@ -4876,7 +4819,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('12631','Đông Đô','Dong Do','Xã Đông Đô','Dong Do Commune','dong_do','339',10),
 ('12634','Phúc Khánh','Phuc Khanh','Xã Phúc Khánh','Phuc Khanh Commune','phuc_khanh','339',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('12637','Liên Hiệp','Lien Hiep','Xã Liên Hiệp','Lien Hiep Commune','lien_hiep','339',10),
 ('12640','Tây Đô','Tay Do','Xã Tây Đô','Tay Do Commune','tay_do','339',10),
 ('12643','Thống Nhất','Thong Nhat','Xã Thống Nhất','Thong Nhat Commune','thong_nhat','339',10),
@@ -4928,7 +4871,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('12823','Minh Phú','Minh Phu','Xã Minh Phú','Minh Phu Commune','minh_phu','340',10),
 ('12826','Diêm Điền','Diem Dien','Thị trấn Diêm Điền','Diem Dien Township','diem_dien','341',9);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('12832','Thụy Trường','Thuy Truong','Xã Thụy Trường','Thuy Truong Commune','thuy_truong','341',10),
 ('12841','Hồng Dũng','Hong Dung','Xã Hồng Dũng','Hong Dung Commune','hong_dung','341',10),
 ('12844','Thụy Quỳnh','Thuy Quynh','Xã Thụy Quỳnh','Thuy Quynh Commune','thuy_quynh','341',10),
@@ -4980,7 +4923,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('13024','Đông Lâm','Dong Lam','Xã Đông Lâm','Dong Lam Commune','dong_lam','342',10),
 ('13027','Phương Công','Phuong Cong','Xã Phương Công','Phuong Cong Commune','phuong_cong','342',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('13030','Ái Quốc','Ai Quoc','Xã Ái Quốc','Ai Quoc Commune','ai_quoc','342',10),
 ('13036','Nam Cường','Nam Cuong','Xã Nam Cường','Nam Cuong Commune','nam_cuong','342',10),
 ('13039','Vân Trường','Van Truong','Xã Vân Trường','Van Truong Commune','van_truong','342',10),
@@ -5032,7 +4975,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('13210','Tân Phong','Tan Phong','Xã Tân Phong','Tan Phong Commune','tan_phong','344',10),
 ('13213','Song Lãng','Song Lang','Xã Song Lãng','Song Lang Commune','song_lang','344',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('13216','Tân Hòa','Tan Hoa','Xã Tân Hòa','Tan Hoa Commune','tan_hoa','344',10),
 ('13219','Việt Hùng','Viet Hung','Xã Việt Hùng','Viet Hung Commune','viet_hung','344',10),
 ('13222','Minh Lãng','Minh Lang','Xã Minh Lãng','Minh Lang Commune','minh_lang','344',10),
@@ -5084,7 +5027,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('13363','Tiên Ngoại','Tien Ngoai','Xã Tiên Ngoại','Tien Ngoai Commune','tien_ngoai','349',10),
 ('13369','Tiên Sơn','Tien Son','Xã Tiên Sơn','Tien Son Commune','tien_son','349',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('13384','Quế','Que','Phường Quế','Que Ward','que','350',8),
 ('13387','Nguyễn Úy','Nguyen Uy','Xã Nguyễn Úy','Nguyen Uy Commune','nguyen_uy','350',10),
 ('13390','Đại Cương','Dai Cuong','Phường Đại Cương','Dai Cuong Ward','dai_cuong','350',8),
@@ -5136,7 +5079,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('13567','Hợp Lý','Hop Ly','Xã Hợp Lý','Hop Ly Commune','hop_ly','353',10),
 ('13570','Nguyên Lý','Nguyen Ly','Xã Nguyên Lý','Nguyen Ly Commune','nguyen_ly','353',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('13573','Chính Lý','Chinh Ly','Xã Chính Lý','Chinh Ly Commune','chinh_ly','353',10),
 ('13576','Chân Lý','Chan Ly','Xã Chân Lý','Chan Ly Commune','chan_ly','353',10),
 ('13579','Đạo Lý','Dao Ly','Xã Đạo Lý','Dao Ly Commune','dao_ly','353',10),
@@ -5188,7 +5131,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('13777','Thành Lợi','Thanh Loi','Xã Thành Lợi','Thanh Loi Commune','thanh_loi','359',10),
 ('13780','Kim Thái','Kim Thai','Xã Kim Thái','Kim Thai Commune','kim_thai','359',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('13783','Liên Minh','Lien Minh','Xã Liên Minh','Lien Minh Commune','lien_minh','359',10),
 ('13786','Đại Thắng','Dai Thang','Xã Đại Thắng','Dai Thang Commune','dai_thang','359',10),
 ('13789','Tam Thanh','Tam Thanh','Xã Tam Thanh','Tam Thanh Commune','tam_thanh','359',10),
@@ -5240,7 +5183,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('13975','Nghĩa An','Nghia An','Xã Nghĩa An','Nghia An Commune','nghia_an','362',10),
 ('13978','Nam Thắng','Nam Thang','Xã Nam Thắng','Nam Thang Commune','nam_thang','362',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('13984','Hồng Quang','Hong Quang','Xã Hồng Quang','Hong Quang Commune','hong_quang','362',10),
 ('13987','Tân Thịnh','Tan Thinh','Xã Tân Thịnh','Tan Thinh Commune','tan_thinh','362',10),
 ('13990','Nam Cường','Nam Cuong','Xã Nam Cường','Nam Cuong Commune','nam_cuong','362',10),
@@ -5292,7 +5235,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('14146','Xuân Phúc','Xuan Phuc','Xã Xuân Phúc','Xuan Phuc Commune','xuan_phuc','364',10),
 ('14152','Quất Lâm','Quat Lam','Thị trấn Quất Lâm','Quat Lam Township','quat_lam','365',9);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('14155','Giao Hương','Giao Huong','Xã Giao Hương','Giao Huong Commune','giao_huong','365',10),
 ('14158','Hồng Thuận','Hong Thuan','Xã Hồng Thuận','Hong Thuan Commune','hong_thuan','365',10),
 ('14161','Giao Thiện','Giao Thien','Xã Giao Thiện','Giao Thien Commune','giao_thien','365',10),
@@ -5344,7 +5287,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('14374','Yên Bình','Yen Binh','Phường Yên Bình','Yen Binh Ward','yen_binh','370',8),
 ('14375','Tân Bình','Tan Binh','Phường Tân Bình','Tan Binh Ward','tan_binh','370',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('14377','Quang Sơn','Quang Son','Xã Quang Sơn','Quang Son Commune','quang_son','370',10),
 ('14380','Đông Sơn','Dong Son','Xã Đông Sơn','Dong Son Commune','dong_son','370',10),
 ('14386','Xích Thổ','Xich Tho','Xã Xích Thổ','Xich Tho Commune','xich_tho','372',10),
@@ -5396,7 +5339,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('14341','Nam Thành','Nam Thanh','Phường Nam Thành','Nam Thanh Ward','nam_thanh','374',8),
 ('14344','Ninh Khánh','Ninh Khanh','Phường Ninh Khánh','Ninh Khanh Ward','ninh_khanh','374',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('14347','Ninh Nhất','Ninh Nhat','Xã Ninh Nhất','Ninh Nhat Commune','ninh_nhat','374',10),
 ('14350','Ninh Tiến','Ninh Tien','Xã Ninh Tiến','Ninh Tien Commune','ninh_tien','374',10),
 ('14353','Ninh Phúc','Ninh Phuc','Phường Ninh Phúc','Ninh Phuc Ward','ninh_phuc','374',8),
@@ -5448,7 +5391,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('14680','Văn Hải','Van Hai','Xã Văn Hải','Van Hai Commune','van_hai','376',10),
 ('14683','Kim Tân','Kim Tan','Xã Kim Tân','Kim Tan Commune','kim_tan','376',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('14686','Kim Mỹ','Kim My','Xã Kim Mỹ','Kim My Commune','kim_my','376',10),
 ('14689','Cồn Thoi','Con Thoi','Xã Cồn Thoi','Con Thoi Commune','con_thoi','376',10),
 ('14695','Kim Trung','Kim Trung','Xã Kim Trung','Kim Trung Commune','kim_trung','376',10),
@@ -5500,7 +5443,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('16396','Đông Lĩnh','Dong Linh','Phường Đông Lĩnh','Dong Linh Ward','dong_linh','380',8),
 ('16399','Đông Minh','Dong Minh','Xã Đông Minh','Dong Minh Commune','dong_minh','380',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('16402','Đông Thanh','Dong Thanh','Xã Đông Thanh','Dong Thanh Commune','dong_thanh','380',10),
 ('16405','Đông Tiến','Dong Tien','Xã Đông Tiến','Dong Tien Commune','dong_tien','380',10),
 ('16408','Đông Khê','Dong Khe','Xã Đông Khê','Dong Khe Commune','dong_khe','380',10),
@@ -5552,7 +5495,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('14887','Phú Sơn','Phu Son','Xã Phú Sơn','Phu Son Commune','phu_son','385',10),
 ('14890','Phú Xuân','Phu Xuan','Xã Phú Xuân','Phu Xuan Commune','phu_xuan','385',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('14896','Hiền Chung','Hien Chung','Xã Hiền Chung','Hien Chung Commune','hien_chung','385',10),
 ('14899','Hiền Kiệt','Hien Kiet','Xã Hiền Kiệt','Hien Kiet Commune','hien_kiet','385',10),
 ('14902','Nam Tiến','Nam Tien','Xã Nam Tiến','Nam Tien Commune','nam_tien','385',10),
@@ -5604,7 +5547,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('15055','Lang Chánh','Lang Chanh','Thị trấn Lang Chánh','Lang Chanh Township','lang_chanh','388',9),
 ('15058','Đồng Lương','Dong Luong','Xã Đồng Lương','Dong Luong Commune','dong_luong','388',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('15061','Ngọc Lặc','Ngoc Lac','Thị trấn Ngọc Lặc','Ngoc Lac Township','ngoc_lac','389',9),
 ('15064','Lam Sơn','Lam Son','Xã Lam Sơn','Lam Son Commune','lam_son','389',10),
 ('15067','Mỹ Tân','My Tan','Xã Mỹ Tân','My Tan Commune','my_tan','389',10),
@@ -5656,7 +5599,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('15223','Thành Mỹ','Thanh My','Xã Thành Mỹ','Thanh My Commune','thanh_my','391',10),
 ('15226','Thành Yên','Thanh Yen','Xã Thành Yên','Thanh Yen Commune','thanh_yen','391',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('15229','Thành Vinh','Thanh Vinh','Xã Thành Vinh','Thanh Vinh Commune','thanh_vinh','391',10),
 ('15232','Thành Minh','Thanh Minh','Xã Thành Minh','Thanh Minh Commune','thanh_minh','391',10),
 ('15235','Thành Công','Thanh Cong','Xã Thành Công','Thanh Cong Commune','thanh_cong','391',10),
@@ -5708,7 +5651,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('15412','Quý Lộc','Quy Loc','Thị trấn Quý Lộc','Quy Loc Township','quy_loc','394',9),
 ('15415','Yên Thọ','Yen Tho','Xã Yên Thọ','Yen Tho Commune','yen_tho','394',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('15418','Yên Trung','Yen Trung','Xã Yên Trung','Yen Trung Commune','yen_trung','394',10),
 ('15421','Yên Trường','Yen Truong','Xã Yên Trường','Yen Truong Commune','yen_truong','394',10),
 ('15427','Yên Phong','Yen Phong','Xã Yên Phong','Yen Phong Commune','yen_phong','394',10),
@@ -5760,7 +5703,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('15592','Xuân Minh','Xuan Minh','Xã Xuân Minh','Xuan Minh Commune','xuan_minh','395',10),
 ('15598','Trường Xuân','Truong Xuan','Xã Trường Xuân','Truong Xuan Commune','truong_xuan','395',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('15607','Bát Mọt','Bat Mot','Xã Bát Mọt','Bat Mot Commune','bat_mot','396',10),
 ('15610','Yên Nhân','Yen Nhan','Xã Yên Nhân','Yen Nhan Commune','yen_nhan','396',10),
 ('15619','Xuân Lẹ','Xuan Le','Xã Xuân Lẹ','Xuan Le Commune','xuan_le','396',10),
@@ -5812,7 +5755,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('15772','Thiệu Hóa','Thieu Hoa','Thị trấn Thiệu Hóa','Thieu Hoa Township','thieu_hoa','398',9),
 ('15775','Thiệu Ngọc','Thieu Ngoc','Xã Thiệu Ngọc','Thieu Ngoc Commune','thieu_ngoc','398',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('15778','Thiệu Vũ','Thieu Vu','Xã Thiệu Vũ','Thieu Vu Commune','thieu_vu','398',10),
 ('15781','Thiệu Phúc','Thieu Phuc','Xã Thiệu Phúc','Thieu Phuc Commune','thieu_phuc','398',10),
 ('15784','Thiệu Tiến','Thieu Tien','Xã Thiệu Tiến','Thieu Tien Commune','thieu_tien','398',10),
@@ -5864,7 +5807,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('15979','Hoằng Châu','Hoang Chau','Xã Hoằng Châu','Hoang Chau Commune','hoang_chau','399',10),
 ('15982','Hoằng Tân','Hoang Tan','Xã Hoằng Tân','Hoang Tan Commune','hoang_tan','399',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('15985','Hoằng Yến','Hoang Yen','Xã Hoằng Yến','Hoang Yen Commune','hoang_yen','399',10),
 ('15988','Hoằng Tiến','Hoang Tien','Xã Hoằng Tiến','Hoang Tien Commune','hoang_tien','399',10),
 ('15991','Hoằng Hải','Hoang Hai','Xã Hoằng Hải','Hoang Hai Commune','hoang_hai','399',10),
@@ -5916,7 +5859,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('16159','Nga Liên','Nga Lien','Xã Nga Liên','Nga Lien Commune','nga_lien','401',10),
 ('16162','Nga Thái','Nga Thai','Xã Nga Thái','Nga Thai Commune','nga_thai','401',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('16165','Nga Thạch','Nga Thach','Xã Nga Thạch','Nga Thach Commune','nga_thach','401',10),
 ('16168','Nga Thắng','Nga Thang','Xã Nga Thắng','Nga Thang Commune','nga_thang','401',10),
 ('16171','Nga Trường','Nga Truong','Xã Nga Trường','Nga Truong Commune','nga_truong','401',10),
@@ -5968,7 +5911,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('16330','Trường Trung','Truong Trung','Xã Trường Trung','Truong Trung Commune','truong_trung','404',10),
 ('16333','Vạn Thắng','Van Thang','Xã Vạn Thắng','Van Thang Commune','van_thang','404',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('16336','Trường Giang','Truong Giang','Xã Trường Giang','Truong Giang Commune','truong_giang','404',10),
 ('16339','Vạn Thiện','Van Thien','Xã Vạn Thiện','Van Thien Commune','van_thien','404',10),
 ('16342','Thăng Long','Thang Long','Xã Thăng Long','Thang Long Commune','thang_long','404',10),
@@ -6020,7 +5963,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('16594','Tân Dân','Tan Dan','Phường Tân Dân','Tan Dan Ward','tan_dan','407',8),
 ('16597','Hải Lĩnh','Hai Linh','Phường Hải Lĩnh','Hai Linh Ward','hai_linh','407',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('16600','Định Hải','Dinh Hai','Xã Định Hải','Dinh Hai Commune','dinh_hai','407',10),
 ('16603','Phú Sơn','Phu Son','Xã Phú Sơn','Phu Son Commune','phu_son','407',10),
 ('16606','Ninh Hải','Ninh Hai','Phường Ninh Hải','Ninh Hai Ward','ninh_hai','407',8),
@@ -6072,7 +6015,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('17920','Nghi Kim','Nghi Kim','Xã Nghi Kim','Nghi Kim Commune','nghi_kim','412',10),
 ('17923','Nghi Đức','Nghi Duc','Phường Nghi Đức','Nghi Duc Ward','nghi_duc','412',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('17926','Nghi Thái','Nghi Thai','Xã Nghi Thái','Nghi Thai Commune','nghi_thai','412',10),
 ('18013','Hưng Chính','Hung Chinh','Xã Hưng Chính','Hung Chinh Commune','hung_chinh','412',10),
 ('16939','Hoà Hiếu','Hoa Hieu','Phường Hoà Hiếu','Hoa Hieu Ward','hoa_hieu','414',8),
@@ -6124,7 +6067,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('16849','Hữu Lập','Huu Lap','Xã Hữu Lập','Huu Lap Commune','huu_lap','417',10),
 ('16852','Tà Cạ','Ta Ca','Xã Tà Cạ','Ta Ca Commune','ta_ca','417',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('16855','Chiêu Lưu','Chieu Luu','Xã Chiêu Lưu','Chieu Luu Commune','chieu_luu','417',10),
 ('16858','Mường Típ','Muong Tip','Xã Mường Típ','Muong Tip Commune','muong_tip','417',10),
 ('16861','Hữu Kiệm','Huu Kiem','Xã Hữu Kiệm','Huu Kiem Commune','huu_kiem','417',10),
@@ -6176,7 +6119,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('17047','Đồng Hợp','Dong Hop','Xã Đồng Hợp','Dong Hop Commune','dong_hop','420',10),
 ('17050','Châu Thành','Chau Thanh','Xã Châu Thành','Chau Thanh Commune','chau_thanh','420',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('17053','Liên Hợp','Lien Hop','Xã Liên Hợp','Lien Hop Commune','lien_hop','420',10),
 ('17056','Châu Lộc','Chau Loc','Xã Châu Lộc','Chau Loc Commune','chau_loc','420',10),
 ('17059','Tam Hợp','Tam Hop','Xã Tam Hợp','Tam Hop Commune','tam_hop','420',10),
@@ -6228,7 +6171,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('17254','Trà Lân','Tra Lan','Thị trấn Trà Lân','Tra Lan Township','tra_lan','422',9),
 ('17257','Yên Khê','Yen Khe','Xã Yên Khê','Yen Khe Commune','yen_khe','422',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('17260','Lục Dạ','Luc Da','Xã Lục Dạ','Luc Da Commune','luc_da','422',10),
 ('17263','Môn Sơn','Mon Son','Xã Môn Sơn','Mon Son Commune','mon_son','422',10),
 ('17266','Tân Kỳ','Tan Ky','Thị trấn Tân Kỳ','Tan Ky Township','tan_ky','423',9),
@@ -6280,7 +6223,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('17416','Diễn Phong','Dien Phong','Xã Diễn Phong','Dien Phong Commune','dien_phong','425',10),
 ('17419','Hùng Hải','Hung Hai','Xã Hùng Hải','Hung Hai Commune','hung_hai','425',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('17425','Diễn Liên','Dien Lien','Xã Diễn Liên','Dien Lien Commune','dien_lien','425',10),
 ('17428','Diễn Vạn','Dien Van','Xã Diễn Vạn','Dien Van Commune','dien_van','425',10),
 ('17431','Diễn Kim','Dien Kim','Xã Diễn Kim','Dien Kim Commune','dien_kim','425',10),
@@ -6332,7 +6275,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('17587','Vĩnh Thành','Vinh Thanh','Xã Vĩnh Thành','Vinh Thanh Commune','vinh_thanh','426',10),
 ('17596','Viên Thành','Vien Thanh','Xã Viên Thành','Vien Thanh Commune','vien_thanh','426',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('17602','Liên Thành','Lien Thanh','Xã Liên Thành','Lien Thanh Commune','lien_thanh','426',10),
 ('17605','Bảo Thành','Bao Thanh','Xã Bảo Thành','Bao Thanh Commune','bao_thanh','426',10),
 ('17608','Mỹ Thành','My Thanh','Xã Mỹ Thành','My Thanh Commune','my_thanh','426',10),
@@ -6384,7 +6327,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('17755','Thanh Ngọc','Thanh Ngoc','Xã Thanh Ngọc','Thanh Ngoc Commune','thanh_ngoc','428',10),
 ('17758','Thanh Hương','Thanh Huong','Xã Thanh Hương','Thanh Huong Commune','thanh_huong','428',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('17759','Ngọc Lâm','Ngoc Lam','Xã Ngọc Lâm','Ngoc Lam Commune','ngoc_lam','428',10),
 ('17764','Đồng Văn','Dong Van','Xã Đồng Văn','Dong Van Commune','dong_van','428',10),
 ('17767','Ngọc Sơn','Ngoc Son','Xã Ngọc Sơn','Ngoc Son Commune','ngoc_son','428',10),
@@ -6436,7 +6379,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('17962','Hùng Tiến','Hung Tien','Xã Hùng Tiến','Hung Tien Commune','hung_tien','430',10),
 ('17968','Thượng Tân Lộc','Thuong Tan Loc','Xã Thượng Tân Lộc','Thuong Tan Loc Commune','thuong_tan_loc','430',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('17971','Kim Liên','Kim Lien','Xã Kim Liên','Kim Lien Commune','kim_lien','430',10),
 ('17980','Xuân Hồng','Xuan Hong','Xã Xuân Hồng','Xuan Hong Commune','xuan_hong','430',10),
 ('17983','Nam Cát','Nam Cat','Xã Nam Cát','Nam Cat Commune','nam_cat','430',10),
@@ -6488,7 +6431,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('18619','Thạch Trị','Thach Tri','Xã Thạch Trị','Thach Tri Commune','thach_tri','436',10),
 ('18622','Thạch Lạc','Thach Lac','Xã Thạch Lạc','Thach Lac Commune','thach_lac','436',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('18628','Tượng Sơn','Tuong Son','Xã Tượng Sơn','Tuong Son Commune','tuong_son','436',10),
 ('18631','Thạch Văn','Thach Van','Xã Thạch Văn','Thach Van Commune','thach_van','436',10),
 ('18637','Thạch Thắng','Thach Thang','Xã Thạch Thắng','Thach Thang Commune','thach_thang','436',10),
@@ -6540,7 +6483,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('18298','An Dũng','An Dung','Xã An Dũng','An Dung Commune','an_dung','440',10),
 ('18304','Đức Đồng','Duc Dong','Xã Đức Đồng','Duc Dong Commune','duc_dong','440',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('18307','Đức Lạng','Duc Lang','Xã Đức Lạng','Duc Lang Commune','duc_lang','440',10),
 ('18310','Tân Hương','Tan Huong','Xã Tân Hương','Tan Huong Commune','tan_huong','440',10),
 ('18313','Vũ Quang','Vu Quang','Thị trấn Vũ Quang','Vu Quang Township','vu_quang','441',9),
@@ -6592,7 +6535,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('18502','Hà Linh','Ha Linh','Xã Hà Linh','Ha Linh Commune','ha_linh','444',10),
 ('18505','Hương Thủy','Huong Thuy','Xã Hương Thủy','Huong Thuy Commune','huong_thuy','444',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('18508','Hòa Hải','Hoa Hai','Xã Hòa Hải','Hoa Hai Commune','hoa_hai','444',10),
 ('18514','Phúc Đồng','Phuc Dong','Xã Phúc Đồng','Phuc Dong Commune','phuc_dong','444',10),
 ('18517','Hương Giang','Huong Giang','Xã Hương Giang','Huong Giang Commune','huong_giang','444',10),
@@ -6644,7 +6587,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('18715','Cẩm Duệ','Cam Due','Xã Cẩm Duệ','Cam Due Commune','cam_due','446',10),
 ('18721','Cẩm Lĩnh','Cam Linh','Xã Cẩm Lĩnh','Cam Linh Commune','cam_linh','446',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('18724','Cẩm Quan','Cam Quan','Xã Cẩm Quan','Cam Quan Commune','cam_quan','446',10),
 ('18727','Cẩm Hà','Cam Ha','Xã Cẩm Hà','Cam Ha Commune','cam_ha','446',10),
 ('18730','Cẩm Lộc','Cam Loc','Xã Cẩm Lộc','Cam Loc Commune','cam_loc','446',10),
@@ -6696,7 +6639,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('18877','Bắc Nghĩa','Bac Nghia','Phường Bắc Nghĩa','Bac Nghia Ward','bac_nghia','450',8),
 ('18880','Đức Ninh Đông','Duc Ninh Dong','Phường Đức Ninh Đông','Duc Ninh Dong Ward','duc_ninh_dong','450',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('18883','Quang Phú','Quang Phu','Xã Quang Phú','Quang Phu Commune','quang_phu','450',10),
 ('18886','Lộc Ninh','Loc Ninh','Xã Lộc Ninh','Loc Ninh Commune','loc_ninh','450',10),
 ('18889','Bảo Ninh','Bao Ninh','Xã Bảo Ninh','Bao Ninh Commune','bao_ninh','450',10),
@@ -6748,7 +6691,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('19042','Quảng Hưng','Quang Hung','Xã Quảng Hưng','Quang Hung Commune','quang_hung','454',10),
 ('19045','Quảng Xuân','Quang Xuan','Xã Quảng Xuân','Quang Xuan Commune','quang_xuan','454',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('19051','Liên Trường','Lien Truong','Xã Liên Trường','Lien Truong Commune','lien_truong','454',10),
 ('19057','Quảng Phương','Quang Phuong','Xã Quảng Phương','Quang Phuong Commune','quang_phuong','454',10),
 ('19063','Phù Cảnh','Phu Canh','Xã Phù Cảnh','Phu Canh Commune','phu_canh','454',10),
@@ -6800,7 +6743,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('19258','Hoa Thủy','Hoa Thuy','Xã Hoa Thủy','Hoa Thuy Commune','hoa_thuy','457',10),
 ('19261','Thanh Thủy','Thanh Thuy','Xã Thanh Thủy','Thanh Thuy Commune','thanh_thuy','457',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('19264','An Thủy','An Thuy','Xã An Thủy','An Thuy Commune','an_thuy','457',10),
 ('19267','Phong Thủy','Phong Thuy','Xã Phong Thủy','Phong Thuy Commune','phong_thuy','457',10),
 ('19270','Cam Thủy','Cam Thuy','Xã Cam Thủy','Cam Thuy Commune','cam_thuy','457',10),
@@ -6852,7 +6795,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('19361','3','3','Phường 3','Ward 3','3','462',8),
 ('19705','Hải Lệ','Hai Le','Xã Hải Lệ','Hai Le Commune','hai_le','462',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('19363','Hồ Xá','Ho Xa','Thị trấn Hồ Xá','Ho Xa Township','ho_xa','464',9),
 ('19366','Bến Quan','Ben Quan','Thị trấn Bến Quan','Ben Quan Township','ben_quan','464',9),
 ('19369','Vĩnh Thái','Vinh Thai','Xã Vĩnh Thái','Vinh Thai Commune','vinh_thai','464',10),
@@ -6904,7 +6847,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('19534','Linh Trường','Linh Truong','Xã Linh Trường','Linh Truong Commune','linh_truong','466',10),
 ('19537','Gio Sơn','Gio Son','Xã Gio Sơn','Gio Son Commune','gio_son','466',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('19543','Gio Mai','Gio Mai','Xã Gio Mai','Gio Mai Commune','gio_mai','466',10),
 ('19546','Hải Thái','Hai Thai','Xã Hải Thái','Hai Thai Commune','hai_thai','466',10),
 ('19552','Gio Quang','Gio Quang','Xã Gio Quang','Gio Quang Commune','gio_quang','466',10),
@@ -6956,7 +6899,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('19717','Hải Lâm','Hai Lam','Xã Hải Lâm','Hai Lam Commune','hai_lam','470',10),
 ('19726','Hải Phong','Hai Phong','Xã Hải Phong','Hai Phong Commune','hai_phong','470',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('19729','Hải Trường','Hai Truong','Xã Hải Trường','Hai Truong Commune','hai_truong','470',10),
 ('19735','Hải Sơn','Hai Son','Xã Hải Sơn','Hai Son Commune','hai_son','470',10),
 ('19738','Hải Chánh','Hai Chanh','Xã Hải Chánh','Hai Chanh Commune','hai_chanh','470',10),
@@ -7008,7 +6951,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('19867','Sịa','Sia','Thị trấn Sịa','Sia Township','sia','477',9),
 ('19870','Quảng Thái','Quang Thai','Xã Quảng Thái','Quang Thai Commune','quang_thai','477',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('19873','Quảng Ngạn','Quang Ngan','Xã Quảng Ngạn','Quang Ngan Commune','quang_ngan','477',10),
 ('19876','Quảng Lợi','Quang Loi','Xã Quảng Lợi','Quang Loi Commune','quang_loi','477',10),
 ('19879','Quảng Công','Quang Cong','Xã Quảng Công','Quang Cong Commune','quang_cong','477',10),
@@ -7060,7 +7003,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('20068','A Ngo','A Ngo','Xã A Ngo','A Ngo Commune','a_ngo','481',10),
 ('20071','Sơn Thủy','Son Thuy','Xã Sơn Thủy','Son Thuy Commune','son_thuy','481',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('20074','Phú Vinh','Phu Vinh','Xã Phú Vinh','Phu Vinh Commune','phu_vinh','481',10),
 ('20080','Hương Phong','Huong Phong','Xã Hương Phong','Huong Phong Commune','huong_phong','481',10),
 ('20083','Quảng Nhâm','Quang Nham','Xã Quảng Nhâm','Quang Nham Commune','quang_nham','481',10),
@@ -7112,7 +7055,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('20227','Thanh Bình','Thanh Binh','Phường Thanh Bình','Thanh Binh Ward','thanh_binh','492',8),
 ('20230','Thuận Phước','Thuan Phuoc','Phường Thuận Phước','Thuan Phuoc Ward','thuan_phuoc','492',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('20233','Thạch Thang','Thach Thang','Phường Thạch Thang','Thach Thang Ward','thach_thang','492',8),
 ('20236','Hải Châu','Hai Chau','Phường Hải Châu','Hai Chau Ward','hai_chau','492',8),
 ('20242','Phước Ninh','Phuoc Ninh','Phường Phước Ninh','Phuoc Ninh Ward','phuoc_ninh','492',8),
@@ -7164,7 +7107,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('20404','Cẩm Phô','Cam Pho','Phường Cẩm Phô','Cam Pho Ward','cam_pho','503',8),
 ('20407','Thanh Hà','Thanh Ha','Phường Thanh Hà','Thanh Ha Ward','thanh_ha','503',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('20410','Sơn Phong','Son Phong','Phường Sơn Phong','Son Phong Ward','son_phong','503',8),
 ('20413','Cẩm Châu','Cam Chau','Phường Cẩm Châu','Cam Chau Ward','cam_chau','503',8),
 ('20416','Cửa Đại','Cua Dai','Phường Cửa Đại','Cua Dai Ward','cua_dai','503',8),
@@ -7216,7 +7159,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('20551','Vĩnh Điện','Vinh Dien','Phường Vĩnh Điện','Vinh Dien Ward','vinh_dien','507',8),
 ('20554','Điện Tiến','Dien Tien','Xã Điện Tiến','Dien Tien Commune','dien_tien','507',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('20557','Điện Hòa','Dien Hoa','Xã Điện Hòa','Dien Hoa Commune','dien_hoa','507',10),
 ('20560','Điện Thắng Bắc','Dien Thang Bac','Phường Điện Thắng Bắc','Dien Thang Bac Ward','dien_thang_bac','507',8),
 ('20561','Điện Thắng Trung','Dien Thang Trung','Phường Điện Thắng Trung','Dien Thang Trung Ward','dien_thang_trung','507',8),
@@ -7268,7 +7211,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('20689','Quế Minh','Que Minh','Xã Quế Minh','Que Minh Commune','que_minh','509',10),
 ('20692','Quế Lâm','Que Lam','Xã Quế Lâm','Que Lam Commune','que_lam','509',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('20695','Thạnh Mỹ','Thanh My','Thị trấn Thạnh Mỹ','Thanh My Township','thanh_my','510',9),
 ('20698','Laêê','Laee','Xã Laêê','Laee Commune','laee','510',10),
 ('20699','Chơ Chun','Cho Chun','Xã Chơ Chun','Cho Chun Commune','cho_chun','510',10),
@@ -7320,7 +7263,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('20836','Bình Sa','Binh Sa','Xã Bình Sa','Binh Sa Commune','binh_sa','513',10),
 ('20839','Bình Hải','Binh Hai','Xã Bình Hải','Binh Hai Commune','binh_hai','513',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('20842','Bình Quế','Binh Que','Xã Bình Quế','Binh Que Commune','binh_que','513',10),
 ('20845','Bình An','Binh An','Xã Bình An','Binh An Commune','binh_an','513',10),
 ('20848','Bình Trung','Binh Trung','Xã Bình Trung','Binh Trung Commune','binh_trung','513',10),
@@ -7372,7 +7315,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('20984','Tam Anh Nam','Tam Anh Nam','Xã Tam Anh Nam','Tam Anh Nam Commune','tam_anh_nam','517',10),
 ('20986','Tam Hòa','Tam Hoa','Xã Tam Hòa','Tam Hoa Commune','tam_hoa','517',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('20989','Tam Hiệp','Tam Hiep','Xã Tam Hiệp','Tam Hiep Commune','tam_hiep','517',10),
 ('20992','Tam Hải','Tam Hai','Xã Tam Hải','Tam Hai Commune','tam_hai','517',10),
 ('20995','Tam Giang','Tam Giang','Xã Tam Giang','Tam Giang Commune','tam_giang','517',10),
@@ -7424,7 +7367,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('21064','Bình An','Binh An','Xã Bình An','Binh An Commune','binh_an','524',10),
 ('21067','Bình Hải','Binh Hai','Xã Bình Hải','Binh Hai Commune','binh_hai','524',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('21070','Bình Dương','Binh Duong','Xã Bình Dương','Binh Duong Commune','binh_duong','524',10),
 ('21073','Bình Phước','Binh Phuoc','Xã Bình Phước','Binh Phuoc Commune','binh_phuoc','524',10),
 ('21079','Bình Hòa','Binh Hoa','Xã Bình Hòa','Binh Hoa Commune','binh_hoa','524',10),
@@ -7476,7 +7419,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('21274','Nghĩa Thương','Nghia Thuong','Xã Nghĩa Thương','Nghia Thuong Commune','nghia_thuong','528',10),
 ('21277','Nghĩa Trung','Nghia Trung','Xã Nghĩa Trung','Nghia Trung Commune','nghia_trung','528',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('21280','Nghĩa Hiệp','Nghia Hiep','Xã Nghĩa Hiệp','Nghia Hiep Commune','nghia_hiep','528',10),
 ('21500','Ba Giang','Ba Giang','Xã Ba Giang','Ba Giang Commune','ba_giang','535',10),
 ('21283','Nghĩa Phương','Nghia Phuong','Xã Nghĩa Phương','Nghia Phuong Commune','nghia_phuong','528',10),
@@ -7528,7 +7471,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('21418','Đức Minh','Duc Minh','Xã Đức Minh','Duc Minh Commune','duc_minh','533',10),
 ('21421','Đức Thạnh','Duc Thanh','Xã Đức Thạnh','Duc Thanh Commune','duc_thanh','533',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('21424','Đức Hòa','Duc Hoa','Xã Đức Hòa','Duc Hoa Commune','duc_hoa','533',10),
 ('21427','Đức Tân','Duc Tan','Xã Đức Tân','Duc Tan Commune','duc_tan','533',10),
 ('21430','Đức Phú','Duc Phu','Xã Đức Phú','Duc Phu Commune','duc_phu','533',10),
@@ -7580,7 +7523,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('21592','Nguyễn Văn Cừ','Nguyen Van Cu','Phường Nguyễn Văn Cừ','Nguyen Van Cu Ward','nguyen_van_cu','540',8),
 ('21595','Ghềnh Ráng','Ghenh Rang','Phường Ghềnh Ráng','Ghenh Rang Ward','ghenh_rang','540',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('21598','Nhơn Lý','Nhon Ly','Xã Nhơn Lý','Nhon Ly Commune','nhon_ly','540',10),
 ('21601','Nhơn Hội','Nhon Hoi','Xã Nhơn Hội','Nhon Hoi Commune','nhon_hoi','540',10),
 ('21604','Nhơn Hải','Nhon Hai','Xã Nhơn Hải','Nhon Hai Commune','nhon_hai','540',10),
@@ -7632,7 +7575,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('21733','Bình Dương','Binh Duong','Thị trấn Bình Dương','Binh Duong Township','binh_duong','545',9),
 ('21736','Mỹ Đức','My Duc','Xã Mỹ Đức','My Duc Commune','my_duc','545',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('21739','Mỹ Châu','My Chau','Xã Mỹ Châu','My Chau Commune','my_chau','545',10),
 ('21742','Mỹ Thắng','My Thang','Xã Mỹ Thắng','My Thang Commune','my_thang','545',10),
 ('21745','Mỹ Lộc','My Loc','Xã Mỹ Lộc','My Loc Commune','my_loc','545',10),
@@ -7684,7 +7627,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('21877','Cát Trinh','Cat Trinh','Xã Cát Trinh','Cat Trinh Commune','cat_trinh','548',10),
 ('21880','Cát Hải','Cat Hai','Xã Cát Hải','Cat Hai Commune','cat_hai','548',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('21883','Cát Hiệp','Cat Hiep','Xã Cát Hiệp','Cat Hiep Commune','cat_hiep','548',10),
 ('21886','Cát Nhơn','Cat Nhon','Xã Cát Nhơn','Cat Nhon Commune','cat_nhon','548',10),
 ('21889','Cát Hưng','Cat Hung','Xã Cát Hưng','Cat Hung Commune','cat_hung','548',10),
@@ -7736,7 +7679,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('22033','5','5','Phường 5','Ward 5','5','555',8),
 ('22036','7','7','Phường 7','Ward 7','7','555',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('22040','Phú Thạnh','Phu Thanh','Phường Phú Thạnh','Phu Thanh Ward','phu_thanh','555',8),
 ('22041','Phú Đông','Phu Dong','Phường Phú Đông','Phu Dong Ward','phu_dong','555',8),
 ('22042','Hòa Kiến','Hoa Kien','Xã Hòa Kiến','Hoa Kien Commune','hoa_kien','555',10),
@@ -7788,7 +7731,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('22174','Sơn Định','Son Dinh','Xã Sơn Định','Son Dinh Commune','son_dinh','560',10),
 ('22177','Sơn Long','Son Long','Xã Sơn Long','Son Long Commune','son_long','560',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('22183','Sơn Phước','Son Phuoc','Xã Sơn Phước','Son Phuoc Commune','son_phuoc','560',10),
 ('22186','Sơn Xuân','Son Xuan','Xã Sơn Xuân','Son Xuan Commune','son_xuan','560',10),
 ('22189','Sơn Nguyên','Son Nguyen','Xã Sơn Nguyên','Son Nguyen Commune','son_nguyen','560',10),
@@ -7840,7 +7783,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('22300','Hòa Xuân Nam','Hoa Xuan Nam','Xã Hòa Xuân Nam','Hoa Xuan Nam Commune','hoa_xuan_nam','564',10),
 ('22327','Vĩnh Hòa','Vinh Hoa','Phường Vĩnh Hòa','Vinh Hoa Ward','vinh_hoa','568',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('22330','Vĩnh Hải','Vinh Hai','Phường Vĩnh Hải','Vinh Hai Ward','vinh_hai','568',8),
 ('22333','Vĩnh Phước','Vinh Phuoc','Phường Vĩnh Phước','Vinh Phuoc Ward','vinh_phuoc','568',8),
 ('22336','Ngọc Hiệp','Ngoc Hiep','Phường Ngọc Hiệp','Ngoc Hiep Ward','ngoc_hiep','568',8),
@@ -7892,7 +7835,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('22471','Cam An Nam','Cam An Nam','Xã Cam An Nam','Cam An Nam Commune','cam_an_nam','570',10),
 ('22708','Suối Cát','Suoi Cat','Xã Suối Cát','Suoi Cat Commune','suoi_cat','570',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('22711','Suối Tân','Suoi Tan','Xã Suối Tân','Suoi Tan Commune','suoi_tan','570',10),
 ('22489','Vạn Giã','Van Gia','Thị trấn Vạn Giã','Van Gia Township','van_gia','571',9),
 ('22492','Đại Lãnh','Dai Lanh','Xã Đại Lãnh','Dai Lanh Commune','dai_lanh','571',10),
@@ -7944,7 +7887,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('22630','Sông Cầu','Song Cau','Xã Sông Cầu','Song Cau Commune','song_cau','573',10),
 ('22633','Giang Ly','Giang Ly','Xã Giang Ly','Giang Ly Commune','giang_ly','573',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('22636','Cầu Bà','Cau Ba','Xã Cầu Bà','Cau Ba Commune','cau_ba','573',10),
 ('22639','Liên Sang','Lien Sang','Xã Liên Sang','Lien Sang Commune','lien_sang','573',10),
 ('22642','Khánh Thành','Khanh Thanh','Xã Khánh Thành','Khanh Thanh Commune','khanh_thanh','573',10),
@@ -7996,7 +7939,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('22789','Phước Tân','Phuoc Tan','Xã Phước Tân','Phuoc Tan Commune','phuoc_tan','584',10),
 ('22792','Phước Tiến','Phuoc Tien','Xã Phước Tiến','Phuoc Tien Commune','phuoc_tien','584',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('22795','Phước Thắng','Phuoc Thang','Xã Phước Thắng','Phuoc Thang Commune','phuoc_thang','584',10),
 ('22798','Phước Thành','Phuoc Thanh','Xã Phước Thành','Phuoc Thanh Commune','phuoc_thanh','584',10),
 ('22801','Phước Đại','Phuoc Dai','Xã Phước Đại','Phuoc Dai Commune','phuoc_dai','584',10),
@@ -8048,7 +7991,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('22921','Phú Hài','Phu Hai','Phường Phú Hài','Phu Hai Ward','phu_hai','593',8),
 ('22924','Phú Thủy','Phu Thuy','Phường Phú Thủy','Phu Thuy Ward','phu_thuy','593',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('22927','Phú Tài','Phu Tai','Phường Phú Tài','Phu Tai Ward','phu_tai','593',8),
 ('22930','Phú Trinh','Phu Trinh','Phường Phú Trinh','Phu Trinh Ward','phu_trinh','593',8),
 ('22933','Xuân An','Xuan An','Phường Xuân An','Xuan An Ward','xuan_an','593',8),
@@ -8100,7 +8043,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('23056','Hồng Phong','Hong Phong','Xã Hồng Phong','Hong Phong Commune','hong_phong','596',10),
 ('23059','Ma Lâm','Ma Lam','Thị trấn Ma Lâm','Ma Lam Township','ma_lam','597',9);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('23062','Phú Long','Phu Long','Thị trấn Phú Long','Phu Long Township','phu_long','597',9),
 ('23065','La Dạ','La Da','Xã La Dạ','La Da Commune','la_da','597',10),
 ('23068','Đông Tiến','Dong Tien','Xã Đông Tiến','Dong Tien Commune','dong_tien','597',10),
@@ -8152,7 +8095,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('23212','Đức Hạnh','Duc Hanh','Xã Đức Hạnh','Duc Hanh Commune','duc_hanh','600',10),
 ('23215','Đức Tín','Duc Tin','Xã Đức Tín','Duc Tin Commune','duc_tin','600',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('23218','Vũ Hoà','Vu Hoa','Xã Vũ Hoà','Vu Hoa Commune','vu_hoa','600',10),
 ('23221','Tân Hà','Tan Ha','Xã Tân Hà','Tan Ha Commune','tan_ha','600',10),
 ('23224','Đông Hà','Dong Ha','Xã Đông Hà','Dong Ha Commune','dong_ha','600',10),
@@ -8204,7 +8147,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('23371','Đắk KRoong','Dak KRoong','Xã Đắk KRoong','Dak KRoong Commune','dak_kroong','610',10),
 ('23374','Đắk Môn','Dak Mon','Xã Đắk Môn','Dak Mon Commune','dak_mon','610',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('23377','Plei Kần','Plei Kan','Thị trấn Plei Kần','Plei Kan Township','plei_kan','611',9),
 ('23380','Đắk Ang','Dak Ang','Xã Đắk Ang','Dak Ang Commune','dak_ang','611',10),
 ('23383','Đắk Dục','Dak Duc','Xã Đắk Dục','Dak Duc Commune','dak_duc','611',10),
@@ -8256,7 +8199,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('23539','Sa Sơn','Sa Son','Xã Sa Sơn','Sa Son Commune','sa_son','616',10),
 ('23542','Sa Nghĩa','Sa Nghia','Xã Sa Nghĩa','Sa Nghia Commune','sa_nghia','616',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('23545','Sa Bình','Sa Binh','Xã Sa Bình','Sa Binh Commune','sa_binh','616',10),
 ('23548','Ya Xiêr','Ya Xier','Xã Ya Xiêr','Ya Xier Commune','ya_xier','616',10),
 ('23551','Ya Tăng','Ya Tang','Xã Ya Tăng','Ya Tang Commune','ya_tang','616',10),
@@ -8308,7 +8251,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('23633','Ngô Mây','Ngo May','Phường Ngô Mây','Ngo May Ward','ngo_may','623',8),
 ('23635','Thành An','Thanh An','Xã Thành An','Thanh An Commune','thanh_an','623',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('24041','Cheo Reo','Cheo Reo','Phường Cheo Reo','Cheo Reo Ward','cheo_reo','624',8),
 ('24042','Hòa Bình','Hoa Binh','Phường Hòa Bình','Hoa Binh Ward','hoa_binh','624',8),
 ('24044','Đoàn Kết','Doan Ket','Phường Đoàn Kết','Doan Ket Ward','doan_ket','624',8),
@@ -8360,7 +8303,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('23752','Ia Nhin','Ia Nhin','Xã Ia Nhin','Ia Nhin Commune','ia_nhin','627',10),
 ('23755','Nghĩa Hòa','Nghia Hoa','Xã Nghĩa Hòa','Nghia Hoa Commune','nghia_hoa','627',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('23761','Nghĩa Hưng','Nghia Hung','Xã Nghĩa Hưng','Nghia Hung Commune','nghia_hung','627',10),
 ('23764','Ia Kha','Ia Kha','Thị trấn Ia Kha','Ia Kha Township','ia_kha','628',9),
 ('23767','Ia Sao','Ia Sao','Xã Ia Sao','Ia Sao Commune','ia_sao','628',10),
@@ -8412,7 +8355,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('23878','Ia Kriêng','Ia Krieng','Xã Ia Kriêng','Ia Krieng Commune','ia_krieng','631',10),
 ('23881','Ia Pnôn','Ia Pnon','Xã Ia Pnôn','Ia Pnon Commune','ia_pnon','631',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('23884','Ia Nan','Ia Nan','Xã Ia Nan','Ia Nan Commune','ia_nan','631',10),
 ('23887','Chư Prông','Chu Prong','Thị trấn Chư Prông','Chu Prong Township','chu_prong','632',9),
 ('23888','Ia Kly','Ia Kly','Xã Ia Kly','Ia Kly Commune','ia_kly','632',10),
@@ -8464,7 +8407,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('24025','Chư Mố','Chu Mo','Xã Chư Mố','Chu Mo Commune','chu_mo','635',10),
 ('24028','Ia Tul','Ia Tul','Xã Ia Tul','Ia Tul Commune','ia_tul','635',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('24031','Ia Ma Rơn','Ia Ma Ron','Xã Ia Ma Rơn','Ia Ma Ron Commune','ia_ma_ron','635',10),
 ('24034','Ia Broăi','Ia Broai','Xã Ia Broăi','Ia Broai Commune','ia_broai','635',10),
 ('24037','Ia Trok','Ia Trok','Xã Ia Trok','Ia Trok Commune','ia_trok','635',10),
@@ -8516,7 +8459,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('24160','Cư ÊBur','Cu EBur','Xã Cư ÊBur','Cu EBur Commune','cu_ebur','643',10),
 ('24163','Ea Tu','Ea Tu','Xã Ea Tu','Ea Tu Commune','ea_tu','643',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('24166','Hòa Thắng','Hoa Thang','Xã Hòa Thắng','Hoa Thang Commune','hoa_thang','643',10),
 ('24169','Ea Kao','Ea Kao','Xã Ea Kao','Ea Kao Commune','ea_kao','643',10),
 ('24172','Hòa Phú','Hoa Phu','Xã Hòa Phú','Hoa Phu Commune','hoa_phu','643',10),
@@ -8568,7 +8511,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('24264','Ea Kuêh','Ea Kueh','Xã Ea Kuêh','Ea Kueh Commune','ea_kueh','648',10),
 ('24265','Ea Kiết','Ea Kiet','Xã Ea Kiết','Ea Kiet Commune','ea_kiet','648',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('24268','Ea Tar','Ea Tar','Xã Ea Tar','Ea Tar Commune','ea_tar','648',10),
 ('24271','Cư Dliê M''nông','Cu Dlie M''nong','Xã Cư Dliê M''nông','Cu Dlie M''nong Commune','cu_dlie_mnong','648',10),
 ('24274','Ea H''đinh','Ea H''dinh','Xã Ea H''đinh','Ea H''dinh Commune','ea_hdinh','648',10),
@@ -8620,7 +8563,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('24415','Cư Prao','Cu Prao','Xã Cư Prao','Cu Prao Commune','cu_prao','652',10),
 ('24418','Ea Pil','Ea Pil','Xã Ea Pil','Ea Pil Commune','ea_pil','652',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('24421','Ea Lai','Ea Lai','Xã Ea Lai','Ea Lai Commune','ea_lai','652',10),
 ('24424','Ea H''MLay','Ea H''MLay','Xã Ea H''MLay','Ea H''MLay Commune','ea_hmlay','652',10),
 ('24427','Krông Jing','Krong Jing','Xã Krông Jing','Krong Jing Commune','krong_jing','652',10),
@@ -8672,7 +8615,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('24583','Yang Tao','Yang Tao','Xã Yang Tao','Yang Tao Commune','yang_tao','656',10),
 ('24586','Bông Krang','Bong Krang','Xã Bông Krang','Bong Krang Commune','bong_krang','656',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('24589','Đắk Liêng','Dak Lieng','Xã Đắk Liêng','Dak Lieng Commune','dak_lieng','656',10),
 ('24592','Buôn Triết','Buon Triet','Xã Buôn Triết','Buon Triet Commune','buon_triet','656',10),
 ('24595','Buôn Tría','Buon Tria','Xã Buôn Tría','Buon Tria Commune','buon_tria','656',10),
@@ -8724,7 +8667,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('24685','Đức Minh','Duc Minh','Xã Đức Minh','Duc Minh Commune','duc_minh','663',10),
 ('24688','Đắk Mâm','Dak Mam','Thị trấn Đắk Mâm','Dak Mam Township','dak_mam','664',9);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('24691','Đắk Sôr','Dak Sor','Xã Đắk Sôr','Dak Sor Commune','dak_sor','664',10),
 ('24692','Nam Xuân','Nam Xuan','Xã Nam Xuân','Nam Xuan Commune','nam_xuan','664',10),
 ('24694','Buôn Choah','Buon Choah','Xã Buôn Choah','Buon Choah Commune','buon_choah','664',10),
@@ -8776,7 +8719,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('24802','3','3','Phường 3','Ward 3','3','672',8),
 ('24805','Xuân Thọ','Xuan Tho','Xã Xuân Thọ','Xuan Tho Commune','xuan_tho','672',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('24808','Tà Nung','Ta Nung','Xã Tà Nung','Ta Nung Commune','ta_nung','672',10),
 ('24810','Trạm Hành','Tram Hanh','Xã Trạm Hành','Tram Hanh Commune','tram_hanh','672',10),
 ('24811','Xuân Trường','Xuan Truong','Xã Xuân Trường','Xuan Truong Commune','xuan_truong','672',10),
@@ -8828,7 +8771,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('24940','Lạc Lâm','Lac Lam','Xã Lạc Lâm','Lac Lam Commune','lac_lam','677',10),
 ('24943','Ka Đô','Ka Do','Xã Ka Đô','Ka Do Commune','ka_do','677',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('24949','Ka Đơn','Ka Don','Xã Ka Đơn','Ka Don Commune','ka_don','677',10),
 ('24952','Tu Tra','Tu Tra','Xã Tu Tra','Tu Tra Commune','tu_tra','677',10),
 ('24955','Quảng Lập','Quang Lap','Xã Quảng Lập','Quang Lap Commune','quang_lap','677',10),
@@ -8880,7 +8823,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('25087','Tân Lạc','Tan Lac','Xã Tân Lạc','Tan Lac Commune','tan_lac','680',10),
 ('25090','Lộc Thành','Loc Thanh','Xã Lộc Thành','Loc Thanh Commune','loc_thanh','680',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('25093','Lộc Nam','Loc Nam','Xã Lộc Nam','Loc Nam Commune','loc_nam','680',10),
 ('25096','Đạ M''ri','Da M''ri','Thị trấn Đạ M''ri','Da M''ri Township','da_mri','682',9),
 ('25099','Ma Đa Guôi','Ma Da Guoi','Thị trấn Ma Đa Guôi','Ma Da Guoi Township','ma_da_guoi','682',9),
@@ -8932,7 +8875,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('25336','Thanh Phú','Thanh Phu','Xã Thanh Phú','Thanh Phu Commune','thanh_phu','690',10),
 ('25222','Bù Gia Mập','Bu Gia Map','Xã Bù Gia Mập','Bu Gia Map Commune','bu_gia_map','691',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('25225','Đak Ơ','Dak O','Xã Đak Ơ','Dak O Commune','dak_o','691',10),
 ('25228','Đức Hạnh','Duc Hanh','Xã Đức Hạnh','Duc Hanh Commune','duc_hanh','691',10),
 ('25229','Phú Văn','Phu Van','Xã Phú Văn','Phu Van Commune','phu_van','691',10),
@@ -8984,7 +8927,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('25378','Tân Lợi','Tan Loi','Xã Tân Lợi','Tan Loi Commune','tan_loi','695',10),
 ('25381','Tân Lập','Tan Lap','Xã Tân Lập','Tan Lap Commune','tan_lap','695',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('25384','Tân Hòa','Tan Hoa','Xã Tân Hòa','Tan Hoa Commune','tan_hoa','695',10),
 ('25387','Thuận Phú','Thuan Phu','Xã Thuận Phú','Thuan Phu Commune','thuan_phu','695',10),
 ('25390','Đồng Tiến','Dong Tien','Xã Đồng Tiến','Dong Tien Commune','dong_tien','695',10),
@@ -9036,7 +8979,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('25483','Ninh Thạnh','Ninh Thanh','Phường Ninh Thạnh','Ninh Thanh Ward','ninh_thanh','703',8),
 ('25486','Tân Biên','Tan Bien','Thị trấn Tân Biên','Tan Bien Township','tan_bien','705',9);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('25489','Tân Lập','Tan Lap','Xã Tân Lập','Tan Lap Commune','tan_lap','705',10),
 ('25492','Thạnh Bắc','Thanh Bac','Xã Thạnh Bắc','Thanh Bac Commune','thanh_bac','705',10),
 ('25495','Tân Bình','Tan Binh','Xã Tân Bình','Tan Binh Commune','tan_binh','705',10),
@@ -9088,7 +9031,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('25633','Hiệp Tân','Hiep Tan','Phường Hiệp Tân','Hiep Tan Ward','hiep_tan','709',8),
 ('25636','Long Thành Bắc','Long Thanh Bac','Phường Long Thành Bắc','Long Thanh Bac Ward','long_thanh_bac','709',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('25639','Trường Hòa','Truong Hoa','Xã Trường Hòa','Truong Hoa Commune','truong_hoa','709',10),
 ('25642','Trường Đông','Truong Dong','Xã Trường Đông','Truong Dong Commune','truong_dong','709',10),
 ('25645','Long Thành Trung','Long Thanh Trung','Phường Long Thành Trung','Long Thanh Trung Ward','long_thanh_trung','709',8),
@@ -9140,7 +9083,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('25819','Cây Trường II','Cay Truong II','Xã Cây Trường II','Cay Truong II Commune','cay_truong_ii','719',10),
 ('25822','Lai Uyên','Lai Uyen','Thị trấn Lai Uyên','Lai Uyen Township','lai_uyen','719',9);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('25825','Tân Hưng','Tan Hung','Xã Tân Hưng','Tan Hung Commune','tan_hung','719',10),
 ('25828','Long Nguyên','Long Nguyen','Xã Long Nguyên','Long Nguyen Commune','long_nguyen','719',10),
 ('25831','Hưng Hòa','Hung Hoa','Xã Hưng Hòa','Hung Hoa Commune','hung_hoa','719',10),
@@ -9192,7 +9135,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('25945','Tân Bình','Tan Binh','Phường Tân Bình','Tan Binh Ward','tan_binh','724',8),
 ('25948','Tân Đông Hiệp','Tan Dong Hiep','Phường Tân Đông Hiệp','Tan Dong Hiep Ward','tan_dong_hiep','724',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('25951','Bình An','Binh An','Phường Bình An','Binh An Ward','binh_an','724',8),
 ('25954','Bình Thắng','Binh Thang','Phường Bình Thắng','Binh Thang Ward','binh_thang','724',8),
 ('25957','Đông Hòa','Dong Hoa','Phường Đông Hòa','Dong Hoa Ward','dong_hoa','724',8),
@@ -9244,7 +9187,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('26380','Long Hưng','Long Hung','Xã Long Hưng','Long Hung Commune','long_hung','731',10),
 ('26077','Xuân Bình','Xuan Binh','Phường Xuân Bình','Xuan Binh Ward','xuan_binh','732',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('26080','Xuân An','Xuan An','Phường Xuân An','Xuan An Ward','xuan_an','732',8),
 ('26083','Xuân Hoà','Xuan Hoa','Phường Xuân Hoà','Xuan Hoa Ward','xuan_hoa','732',8),
 ('26086','Phú Bình','Phu Binh','Phường Phú Bình','Phu Binh Ward','phu_binh','732',8),
@@ -9296,7 +9239,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('26236','Phú Cường','Phu Cuong','Xã Phú Cường','Phu Cuong Commune','phu_cuong','736',10),
 ('26239','Túc Trưng','Tuc Trung','Xã Túc Trưng','Tuc Trung Commune','tuc_trung','736',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('26242','Phú Túc','Phu Tuc','Xã Phú Túc','Phu Tuc Commune','phu_tuc','736',10),
 ('26245','Suối Nho','Suoi Nho','Xã Suối Nho','Suoi Nho Commune','suoi_nho','736',10),
 ('26248','Trảng Bom','Trang Bom','Thị trấn Trảng Bom','Trang Bom Township','trang_bom','737',9),
@@ -9348,7 +9291,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('26398','Tam An','Tam An','Xã Tam An','Tam An Commune','tam_an','740',10),
 ('26401','Cẩm Đường','Cam Duong','Xã Cẩm Đường','Cam Duong Commune','cam_duong','740',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('26404','Long An','Long An','Xã Long An','Long An Commune','long_an','740',10),
 ('26410','Bàu Cạn','Bau Can','Xã Bàu Cạn','Bau Can Commune','bau_can','740',10),
 ('26413','Long Phước','Long Phuoc','Xã Long Phước','Long Phuoc Commune','long_phuoc','740',10),
@@ -9400,7 +9343,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('26542','12','12','Phường 12','Ward 12','12','747',8),
 ('26545','Long Sơn','Long Son','Xã Long Sơn','Long Son Commune','long_son','747',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('26548','Phước Hưng','Phuoc Hung','Phường Phước Hưng','Phuoc Hung Ward','phuoc_hung','748',8),
 ('26554','Phước Nguyên','Phuoc Nguyen','Phường Phước Nguyên','Phuoc Nguyen Ward','phuoc_nguyen','748',8),
 ('26557','Long Toàn','Long Toan','Phường Long Toàn','Long Toan Ward','long_toan','748',8),
@@ -9452,7 +9395,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('26695','Long Tân','Long Tan','Xã Long Tân','Long Tan Commune','long_tan','753',10),
 ('26698','Láng Dài','Lang Dai','Xã Láng Dài','Lang Dai Commune','lang_dai','753',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('26704','Phú Mỹ','Phu My','Phường Phú Mỹ','Phu My Ward','phu_my','754',8),
 ('26707','Tân Hoà','Tan Hoa','Xã Tân Hoà','Tan Hoa Commune','tan_hoa','754',10),
 ('26710','Tân Hải','Tan Hai','Xã Tân Hải','Tan Hai Commune','tan_hai','754',10),
@@ -9504,7 +9447,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('26920','25','25','Phường 25','Ward 25','25','765',8),
 ('26923','5','5','Phường 5','Ward 5','5','765',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('26926','7','7','Phường 7','Ward 7','7','765',8),
 ('26935','14','14','Phường 14','Ward 14','14','765',8),
 ('26941','2','2','Phường 2','Ward 2','2','765',8),
@@ -9556,7 +9499,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('26809','Hiệp Bình Phước','Hiep Binh Phuoc','Phường Hiệp Bình Phước','Hiep Binh Phuoc Ward','hiep_binh_phuoc','769',8),
 ('26812','Hiệp Bình Chánh','Hiep Binh Chanh','Phường Hiệp Bình Chánh','Hiep Binh Chanh Ward','hiep_binh_chanh','769',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('26815','Linh Chiểu','Linh Chieu','Phường Linh Chiểu','Linh Chieu Ward','linh_chieu','769',8),
 ('26818','Linh Tây','Linh Tay','Phường Linh Tây','Linh Tay Ward','linh_tay','769',8),
 ('26821','Linh Đông','Linh Dong','Phường Linh Đông','Linh Dong Ward','linh_dong','769',8),
@@ -9608,7 +9551,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('27208','15','15','Phường 15','Ward 15','15','772',8),
 ('27211','5','5','Phường 5','Ward 5','5','772',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('27214','14','14','Phường 14','Ward 14','14','772',8),
 ('27217','11','11','Phường 11','Ward 11','11','772',8),
 ('27220','3','3','Phường 3','Ward 3','3','772',8),
@@ -9660,7 +9603,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('27436','Bình Hưng Hòa','Binh Hung Hoa','Phường Bình Hưng Hòa','Binh Hung Hoa Ward','binh_hung_hoa','777',8),
 ('27439','Bình Hưng Hoà A','Binh Hung Hoa A','Phường Bình Hưng Hoà A','Binh Hung Hoa A Ward','binh_hung_hoa_a','777',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('27442','Bình Hưng Hoà B','Binh Hung Hoa B','Phường Bình Hưng Hoà B','Binh Hung Hoa B Ward','binh_hung_hoa_b','777',8),
 ('27445','Bình Trị Đông','Binh Tri Dong','Phường Bình Trị Đông','Binh Tri Dong Ward','binh_tri_dong','777',8),
 ('27448','Bình Trị Đông A','Binh Tri Dong A','Phường Bình Trị Đông A','Binh Tri Dong A Ward','binh_tri_dong_a','777',8),
@@ -9712,7 +9655,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('27583','Xuân Thới Đông','Xuan Thoi Dong','Xã Xuân Thới Đông','Xuan Thoi Dong Commune','xuan_thoi_dong','784',10),
 ('27586','Trung Chánh','Trung Chanh','Xã Trung Chánh','Trung Chanh Commune','trung_chanh','784',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('27589','Xuân Thới Thượng','Xuan Thoi Thuong','Xã Xuân Thới Thượng','Xuan Thoi Thuong Commune','xuan_thoi_thuong','784',10),
 ('27592','Bà Điểm','Ba Diem','Xã Bà Điểm','Ba Diem Commune','ba_diem','784',10),
 ('27595','Tân Túc','Tan Tuc','Thị trấn Tân Túc','Tan Tuc Township','tan_tuc','785',9),
@@ -9764,7 +9707,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('27793','Bình Hiệp','Binh Hiep','Xã Bình Hiệp','Binh Hiep Commune','binh_hiep','795',10),
 ('27799','Bình Tân','Binh Tan','Xã Bình Tân','Binh Tan Commune','binh_tan','795',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('27805','Tuyên Thạnh','Tuyen Thanh','Xã Tuyên Thạnh','Tuyen Thanh Commune','tuyen_thanh','795',10),
 ('27806','3','3','Phường 3','Ward 3','3','795',8),
 ('27817','Thạnh Hưng','Thanh Hung','Xã Thạnh Hưng','Thanh Hung Commune','thanh_hung','795',10),
@@ -9816,7 +9759,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('27874','Thạnh Phước','Thanh Phuoc','Xã Thạnh Phước','Thanh Phuoc Commune','thanh_phuoc','800',10),
 ('27877','Thạnh Phú','Thanh Phu','Xã Thạnh Phú','Thanh Phu Commune','thanh_phu','800',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('27880','Thuận Nghĩa Hòa','Thuan Nghia Hoa','Xã Thuận Nghĩa Hòa','Thuan Nghia Hoa Commune','thuan_nghia_hoa','800',10),
 ('27883','Thủy Đông','Thuy Dong','Xã Thủy Đông','Thuy Dong Commune','thuy_dong','800',10),
 ('27886','Thủy Tây','Thuy Tay','Xã Thủy Tây','Thuy Tay Commune','thuy_tay','800',10),
@@ -9868,7 +9811,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('28030','Phước Lợi','Phuoc Loi','Xã Phước Lợi','Phuoc Loi Commune','phuoc_loi','803',10),
 ('28033','Nhựt Chánh','Nhut Chanh','Xã Nhựt Chánh','Nhut Chanh Commune','nhut_chanh','803',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('28036','Thủ Thừa','Thu Thua','Thị trấn Thủ Thừa','Thu Thua Township','thu_thua','804',9),
 ('28039','Long Thạnh','Long Thanh','Xã Long Thạnh','Long Thanh Commune','long_thanh','804',10),
 ('28042','Tân Thành','Tan Thanh','Xã Tân Thành','Tan Thanh Commune','tan_thanh','804',10),
@@ -9920,7 +9863,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('28189','Thuận Thành','Thuan Thanh','Xã Thuận Thành','Thuan Thanh Commune','thuan_thanh','807',10),
 ('28192','Phước Vĩnh Tây','Phuoc Vinh Tay','Xã Phước Vĩnh Tây','Phuoc Vinh Tay Commune','phuoc_vinh_tay','807',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('28195','Phước Vĩnh Đông','Phuoc Vinh Dong','Xã Phước Vĩnh Đông','Phuoc Vinh Dong Commune','phuoc_vinh_dong','807',10),
 ('28198','Long An','Long An','Xã Long An','Long An Commune','long_an','807',10),
 ('28201','Long Phụng','Long Phung','Xã Long Phụng','Long Phung Commune','long_phung','807',10),
@@ -9972,7 +9915,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('28450','Mỹ Hạnh Đông','My Hanh Dong','Xã Mỹ Hạnh Đông','My Hanh Dong Commune','my_hanh_dong','817',10),
 ('28453','Mỹ Hạnh Trung','My Hanh Trung','Xã Mỹ Hạnh Trung','My Hanh Trung Commune','my_hanh_trung','817',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('28459','Tân Phú','Tan Phu','Xã Tân Phú','Tan Phu Commune','tan_phu','817',10),
 ('28462','Tân Bình','Tan Binh','Xã Tân Bình','Tan Binh Commune','tan_binh','817',10),
 ('28468','Tân Hội','Tan Hoi','Xã Tân Hội','Tan Hoi Commune','tan_hoi','817',10),
@@ -10024,7 +9967,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('28456','Mỹ Thành Nam','My Thanh Nam','Xã Mỹ Thành Nam','My Thanh Nam Commune','my_thanh_nam','820',10),
 ('28465','Phú Nhuận','Phu Nhuan','Xã Phú Nhuận','Phu Nhuan Commune','phu_nhuan','820',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('28471','Bình Phú','Binh Phu','Thị trấn Bình Phú','Binh Phu Township','binh_phu','820',9),
 ('28489','Cẩm Sơn','Cam Son','Xã Cẩm Sơn','Cam Son Commune','cam_son','820',10),
 ('28492','Phú An','Phu An','Xã Phú An','Phu An Commune','phu_an','820',10),
@@ -10076,7 +10019,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('28642','Xuân Đông','Xuan Dong','Xã Xuân Đông','Xuan Dong Commune','xuan_dong','822',10),
 ('28645','Hòa Định','Hoa Dinh','Xã Hòa Định','Hoa Dinh Commune','hoa_dinh','822',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('28648','Bình Ninh','Binh Ninh','Xã Bình Ninh','Binh Ninh Commune','binh_ninh','822',10),
 ('28651','Vĩnh Bình','Vinh Binh','Thị trấn Vĩnh Bình','Vinh Binh Township','vinh_binh','823',9),
 ('28654','Đồng Sơn','Dong Son','Xã Đồng Sơn','Dong Son Commune','dong_son','823',10),
@@ -10128,7 +10071,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('28813','Giao Long','Giao Long','Xã Giao Long','Giao Long Commune','giao_long','831',10),
 ('28819','Phú Túc','Phu Tuc','Xã Phú Túc','Phu Tuc Commune','phu_tuc','831',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('28822','Phú Đức','Phu Duc','Xã Phú Đức','Phu Duc Commune','phu_duc','831',10),
 ('28828','An Phước','An Phuoc','Xã An Phước','An Phuoc Commune','an_phuoc','831',10),
 ('28831','Tam Phước','Tam Phuoc','Xã Tam Phước','Tam Phuoc Commune','tam_phuoc','831',10),
@@ -10180,7 +10123,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('29014','Sơn Phú','Son Phu','Xã Sơn Phú','Son Phu Commune','son_phu','834',10),
 ('29017','Bình Hoà','Binh Hoa','Xã Bình Hoà','Binh Hoa Commune','binh_hoa','834',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('29020','Phước Long','Phuoc Long','Xã Phước Long','Phuoc Long Commune','phuoc_long','834',10),
 ('29023','Hưng Phong','Hung Phong','Xã Hưng Phong','Hung Phong Commune','hung_phong','834',10),
 ('29026','Long Mỹ','Long My','Xã Long Mỹ','Long My Commune','long_my','834',10),
@@ -10232,7 +10175,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('29173','An Đức','An Duc','Xã An Đức','An Duc Commune','an_duc','836',10),
 ('29176','An Hòa Tây','An Hoa Tay','Xã An Hòa Tây','An Hoa Tay Commune','an_hoa_tay','836',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('29179','Tiệm Tôm','Tiem Tom','Thị trấn Tiệm Tôm','Tiem Tom Township','tiem_tom','836',9),
 ('29182','Thạnh Phú','Thanh Phu','Thị trấn Thạnh Phú','Thanh Phu Township','thanh_phu','837',9),
 ('29185','Phú Khánh','Phu Khanh','Xã Phú Khánh','Phu Khanh Commune','phu_khanh','837',10),
@@ -10284,7 +10227,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('29290','Phương Thạnh','Phuong Thanh','Xã Phương Thạnh','Phuong Thanh Commune','phuong_thanh','844',10),
 ('29293','Đại Phúc','Dai Phuc','Xã Đại Phúc','Dai Phuc Commune','dai_phuc','844',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('29296','Đại Phước','Dai Phuoc','Xã Đại Phước','Dai Phuoc Commune','dai_phuoc','844',10),
 ('29299','Nhị Long Phú','Nhi Long Phu','Xã Nhị Long Phú','Nhi Long Phu Commune','nhi_long_phu','844',10),
 ('29302','Nhị Long','Nhi Long','Xã Nhị Long','Nhi Long Commune','nhi_long','844',10),
@@ -10336,7 +10279,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('29437','Hiệp Hòa','Hiep Hoa','Xã Hiệp Hòa','Hiep Hoa Commune','hiep_hoa','848',10),
 ('29440','Thuận Hòa','Thuan Hoa','Xã Thuận Hòa','Thuan Hoa Commune','thuan_hoa','848',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('29443','Long Sơn','Long Son','Xã Long Sơn','Long Son Commune','long_son','848',10),
 ('29446','Nhị Trường','Nhi Truong','Xã Nhị Trường','Nhi Truong Commune','nhi_truong','848',10),
 ('29449','Trường Thọ','Truong Tho','Xã Trường Thọ','Truong Tho Commune','truong_tho','848',10),
@@ -10388,7 +10331,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('29593','Tân Hạnh','Tan Hanh','Xã Tân Hạnh','Tan Hanh Commune','tan_hanh','857',10),
 ('29596','Phước Hậu','Phuoc Hau','Xã Phước Hậu','Phuoc Hau Commune','phuoc_hau','857',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('29599','Long Phước','Long Phuoc','Xã Long Phước','Long Phuoc Commune','long_phuoc','857',10),
 ('29602','Long Hồ','Long Ho','Thị trấn Long Hồ','Long Ho Township','long_ho','857',9),
 ('29605','Lộc Hòa','Loc Hoa','Xã Lộc Hòa','Loc Hoa Commune','loc_hoa','857',10),
@@ -10440,7 +10383,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('29746','Mỹ Lộc','My Loc','Xã Mỹ Lộc','My Loc Commune','my_loc','860',10),
 ('29749','Tân Phú','Tan Phu','Xã Tân Phú','Tan Phu Commune','tan_phu','860',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('29752','Long Phú','Long Phu','Xã Long Phú','Long Phu Commune','long_phu','860',10),
 ('29755','Mỹ Thạnh Trung','My Thanh Trung','Xã Mỹ Thạnh Trung','My Thanh Trung Commune','my_thanh_trung','860',10),
 ('29761','Loan Mỹ','Loan My','Xã Loan Mỹ','Loan My Commune','loan_my','860',10),
@@ -10492,7 +10435,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('29899','Tịnh Thới','Tinh Thoi','Xã Tịnh Thới','Tinh Thoi Commune','tinh_thoi','866',10),
 ('29902','3','3','Phường 3','Ward 3','3','867',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('29905','1','1','Phường 1','Ward 1','1','867',8),
 ('29908','4','4','Phường 4','Ward 4','4','867',8),
 ('29911','2','2','Phường 2','Ward 2','2','867',8),
@@ -10544,7 +10487,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('30043','Hưng Thạnh','Hung Thanh','Xã Hưng Thạnh','Hung Thanh Commune','hung_thanh','872',10),
 ('30046','Trường Xuân','Truong Xuan','Xã Trường Xuân','Truong Xuan Commune','truong_xuan','872',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('30049','Tân Kiều','Tan Kieu','Xã Tân Kiều','Tan Kieu Commune','tan_kieu','872',10),
 ('30052','Mỹ Hòa','My Hoa','Xã Mỹ Hòa','My Hoa Commune','my_hoa','872',10),
 ('30055','Mỹ Quý','My Quy','Xã Mỹ Quý','My Quy Commune','my_quy','872',10),
@@ -10596,7 +10539,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('30193','Bình Thành','Binh Thanh','Xã Bình Thành','Binh Thanh Commune','binh_thanh','875',10),
 ('30196','Định An','Dinh An','Xã Định An','Dinh An Commune','dinh_an','875',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('30199','Định Yên','Dinh Yen','Xã Định Yên','Dinh Yen Commune','dinh_yen','875',10),
 ('30202','Hội An Đông','Hoi An Dong','Xã Hội An Đông','Hoi An Dong Commune','hoi_an_dong','875',10),
 ('30205','Bình Thạnh Trung','Binh Thanh Trung','Xã Bình Thạnh Trung','Binh Thanh Trung Commune','binh_thanh_trung','875',10),
@@ -10648,7 +10591,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('30341','Long Bình','Long Binh','Thị trấn Long Bình','Long Binh Township','long_binh','886',9),
 ('30343','Khánh Bình','Khanh Binh','Xã Khánh Bình','Khanh Binh Commune','khanh_binh','886',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('30346','Quốc Thái','Quoc Thai','Xã Quốc Thái','Quoc Thai Commune','quoc_thai','886',10),
 ('30349','Nhơn Hội','Nhon Hoi','Xã Nhơn Hội','Nhon Hoi Commune','nhon_hoi','886',10),
 ('30352','Phú Hữu','Phu Huu','Xã Phú Hữu','Phu Huu Commune','phu_huu','886',10),
@@ -10700,7 +10643,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('30484','Bình Long','Binh Long','Xã Bình Long','Binh Long Commune','binh_long','889',10),
 ('30487','Bình Mỹ','Binh My','Xã Bình Mỹ','Binh My Commune','binh_my','889',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('30490','Bình Thủy','Binh Thuy','Xã Bình Thủy','Binh Thuy Commune','binh_thuy','889',10),
 ('30493','Đào Hữu Cảnh','Dao Huu Canh','Xã Đào Hữu Cảnh','Dao Huu Canh Commune','dao_huu_canh','889',10),
 ('30496','Bình Phú','Binh Phu','Xã Bình Phú','Binh Phu Commune','binh_phu','889',10),
@@ -10752,7 +10695,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('30634','Kiến An','Kien An','Xã Kiến An','Kien An Commune','kien_an','893',10),
 ('30637','Mỹ Hội Đông','My Hoi Dong','Xã Mỹ Hội Đông','My Hoi Dong Commune','my_hoi_dong','893',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('30640','Long Điền A','Long Dien A','Xã Long Điền A','Long Dien A Commune','long_dien_a','893',10),
 ('30643','Tấn Mỹ','Tan My','Xã Tấn Mỹ','Tan My Commune','tan_my','893',10),
 ('30646','Long Điền B','Long Dien B','Xã Long Điền B','Long Dien B Commune','long_dien_b','893',10),
@@ -10804,7 +10747,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('30784','Thuận Yên','Thuan Yen','Xã Thuận Yên','Thuan Yen Commune','thuan_yen','900',10),
 ('30787','Kiên Lương','Kien Luong','Thị trấn Kiên Lương','Kien Luong Township','kien_luong','902',9);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('30790','Kiên Bình','Kien Binh','Xã Kiên Bình','Kien Binh Commune','kien_binh','902',10),
 ('30802','Hòa Điền','Hoa Dien','Xã Hòa Điền','Hoa Dien Commune','hoa_dien','902',10),
 ('30805','Dương Hòa','Duong Hoa','Xã Dương Hòa','Duong Hoa Commune','duong_hoa','902',10),
@@ -10856,7 +10799,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('30919','Bàn Thạch','Ban Thach','Xã Bàn Thạch','Ban Thach Commune','ban_thach','906',10),
 ('30922','Bàn Tân Định','Ban Tan Dinh','Xã Bàn Tân Định','Ban Tan Dinh Commune','ban_tan_dinh','906',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('30925','Ngọc Thành','Ngoc Thanh','Xã Ngọc Thành','Ngoc Thanh Commune','ngoc_thanh','906',10),
 ('30928','Ngọc Chúc','Ngoc Chuc','Xã Ngọc Chúc','Ngoc Chuc Commune','ngoc_chuc','906',10),
 ('30931','Ngọc Thuận','Ngoc Thuan','Xã Ngọc Thuận','Ngoc Thuan Commune','ngoc_thuan','906',10),
@@ -10908,7 +10851,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('31074','Phong Đông','Phong Dong','Xã Phong Đông','Phong Dong Commune','phong_dong','910',10),
 ('31075','Vĩnh Phong','Vinh Phong','Xã Vĩnh Phong','Vinh Phong Commune','vinh_phong','910',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('31078','Dương Đông','Duong Dong','Phường Dương Đông','Duong Dong Ward','duong_dong','911',8),
 ('31081','An Thới','An Thoi','Phường An Thới','An Thoi Ward','an_thoi','911',8),
 ('31084','Cửa Cạn','Cua Can','Xã Cửa Cạn','Cua Can Commune','cua_can','911',10),
@@ -10960,7 +10903,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('31189','Hưng Phú','Hung Phu','Phường Hưng Phú','Hung Phu Ward','hung_phu','919',8),
 ('31192','Hưng Thạnh','Hung Thanh','Phường Hưng Thạnh','Hung Thanh Ward','hung_thanh','919',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('31195','Ba Láng','Ba Lang','Phường Ba Láng','Ba Lang Ward','ba_lang','919',8),
 ('31198','Thường Thạnh','Thuong Thanh','Phường Thường Thạnh','Thuong Thanh Ward','thuong_thanh','919',8),
 ('31201','Phú Thứ','Phu Thu','Phường Phú Thứ','Phu Thu Ward','phu_thu','919',8),
@@ -11012,7 +10955,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('31286','Trường Thắng','Truong Thang','Xã Trường Thắng','Truong Thang Commune','truong_thang','927',10),
 ('31288','Định Môn','Dinh Mon','Xã Định Môn','Dinh Mon Commune','dinh_mon','927',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('31291','Trường Thành','Truong Thanh','Xã Trường Thành','Truong Thanh Commune','truong_thanh','927',10),
 ('31294','Trường Xuân','Truong Xuan','Xã Trường Xuân','Truong Xuan Commune','truong_xuan','927',10),
 ('31297','Trường Xuân A','Truong Xuan A','Xã Trường Xuân A','Truong Xuan A Commune','truong_xuan_a','927',10),
@@ -11064,7 +11007,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('31432','Tân Phước Hưng','Tan Phuoc Hung','Xã Tân Phước Hưng','Tan Phuoc Hung Commune','tan_phuoc_hung','934',10),
 ('31433','Búng Tàu','Bung Tau','Thị trấn Búng Tàu','Bung Tau Township','bung_tau','934',9);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('31435','Phương Phú','Phuong Phu','Xã Phương Phú','Phuong Phu Commune','phuong_phu','934',10),
 ('31438','Tân Long','Tan Long','Xã Tân Long','Tan Long Commune','tan_long','934',10),
 ('31441','Nàng Mau','Nang Mau','Thị trấn Nàng Mau','Nang Mau Township','nang_mau','935',9),
@@ -11116,7 +11059,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('31534','Xuân Hòa','Xuan Hoa','Xã Xuân Hòa','Xuan Hoa Commune','xuan_hoa','943',10),
 ('31537','Phong Nẫm','Phong Nam','Xã Phong Nẫm','Phong Nam Commune','phong_nam','943',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('31540','An Lạc Tây','An Lac Tay','Xã An Lạc Tây','An Lac Tay Commune','an_lac_tay','943',10),
 ('31543','Trinh Phú','Trinh Phu','Xã Trinh Phú','Trinh Phu Commune','trinh_phu','943',10),
 ('31546','Ba Trinh','Ba Trinh','Xã Ba Trinh','Ba Trinh Commune','ba_trinh','943',10),
@@ -11168,7 +11111,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('31732','1','1','Phường 1','Ward 1','1','948',8),
 ('31735','2','2','Phường 2','Ward 2','2','948',8);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('31738','Vĩnh Quới','Vinh Quoi','Xã Vĩnh Quới','Vinh Quoi Commune','vinh_quoi','948',10),
 ('31741','Tân Long','Tan Long','Xã Tân Long','Tan Long Commune','tan_long','948',10),
 ('31744','Long Bình','Long Binh','Xã Long Bình','Long Binh Commune','long_binh','948',10),
@@ -11220,7 +11163,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('31846','Ninh Quới','Ninh Quoi','Xã Ninh Quới','Ninh Quoi Commune','ninh_quoi','956',10),
 ('31849','Ninh Quới A','Ninh Quoi A','Xã Ninh Quới A','Ninh Quoi A Commune','ninh_quoi_a','956',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('31852','Ninh Hòa','Ninh Hoa','Xã Ninh Hòa','Ninh Hoa Commune','ninh_hoa','956',10),
 ('31855','Lộc Ninh','Loc Ninh','Xã Lộc Ninh','Loc Ninh Commune','loc_ninh','956',10),
 ('31858','Vĩnh Lộc','Vinh Loc','Xã Vĩnh Lộc','Vinh Loc Commune','vinh_loc','956',10),
@@ -11272,7 +11215,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('31930','Vĩnh Hậu A','Vinh Hau A','Xã Vĩnh Hậu A','Vinh Hau A Commune','vinh_hau_a','961',10),
 ('31933','Vĩnh Mỹ A','Vinh My A','Xã Vĩnh Mỹ A','Vinh My A Commune','vinh_my_a','961',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('31936','Vĩnh Thịnh','Vinh Thinh','Xã Vĩnh Thịnh','Vinh Thinh Commune','vinh_thinh','961',10),
 ('31999','9','9','Phường 9','Ward 9','9','964',8),
 ('32002','2','2','Phường 2','Ward 2','2','964',8),
@@ -11324,7 +11267,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('32124','Phong Điền','Phong Dien','Xã Phong Điền','Phong Dien Commune','phong_dien','968',10),
 ('32125','Phong Lạc','Phong Lac','Xã Phong Lạc','Phong Lac Commune','phong_lac','968',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('32128','Cái Nước','Cai Nuoc','Thị trấn Cái Nước','Cai Nuoc Township','cai_nuoc','969',9),
 ('32130','Thạnh Phú','Thanh Phu','Xã Thạnh Phú','Thanh Phu Commune','thanh_phu','969',10),
 ('32131','Lương Thế Trân','Luong The Tran','Xã Lương Thế Trân','Luong The Tran Commune','luong_the_tran','969',10),
@@ -11376,7 +11319,7 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 ('32244','Rạch Gốc','Rach Goc','Thị trấn Rạch Gốc','Rach Goc Township','rach_goc','973',9),
 ('32245','Tân Ân','Tan An','Xã Tân Ân','Tan An Commune','tan_an','973',10);
 
-INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+INSERT INTO areas(code,name,name_en,full_name,full_name_en,code_name,parent_code,administrative_unit_id) VALUES
 ('32248','Đất Mũi','Dat Mui','Xã Đất Mũi','Dat Mui Commune','dat_mui','973',10);
 
 -- ----------------------------------
