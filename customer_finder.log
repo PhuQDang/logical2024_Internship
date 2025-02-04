@@ -30,3 +30,4 @@ HINT:  Perhaps you meant to reference the column "business_act.act_code".
 2025-01-21 14:03:50,364 - INFO - Finished getting raw data
 2025-01-21 14:03:59,428 - INFO - Finished getting raw data
 2025-01-21 14:03:59,579 - INFO - Finished getting raw data
+2025-02-04 10:45:56,386 - ERROR - Length mismatch: Expected axis has 16 elements, new values have 2 elements

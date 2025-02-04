@@ -14,7 +14,6 @@ class VNBusinessImporter:
         self.excel_file = excel_file
         self.classifier = IndustrialParkClassifier(self.db_params)
         self.setup_logging()
-        self.test_array = []
         
     def setup_logging(self):
         logging.basicConfig(
@@ -110,20 +109,6 @@ class VNBusinessImporter:
         # Extract numbers only
         phones = re.findall(r'\d+[^-,;/]*', phone_str.replace('–', '-'))
         return [phone.strip() for phone in phones]
-
-    def __fetch_divisions(self):
-        conn = psycopg2.connect(**self.db_params)
-        cur = conn.cursor()
-        
-        try:
-            cur.execute("SELECT areas.code, areas.name FROM areas")
-            self.areas_map = pd.DataFrame(cur.fetchall())
-        except Exception as e:
-            conn.rollback()
-            self.logger.error(f"Error fetching divisions: {str(e)}")
-        finally:
-            cur.close()
-            conn.close()
         
     def __fetch_area_code(self, address, parent='NULL'):
         conn = psycopg2.connect(**self.db_params)
@@ -147,7 +132,6 @@ class VNBusinessImporter:
         conn = psycopg2.connect(**self.db_params)
         cur = conn.cursor()
         self.test_array
-        last_access_ = None
         get_id = None
         try:
             if pd.notna(row['province']):
@@ -158,7 +142,6 @@ class VNBusinessImporter:
                         WHERE parent_code IS NULL AND areas.name LIKE %s             
                 """, ('%'+province_temp+'%',))
                 _province_id = cur.fetchone()[0]
-                last_access_ = province_temp
                 get_id = _province_id
                 if pd.notna(row['district']):
                     district_temp = re.search(r"(?<=Thành phố).+|(?<=Huyện).+|(?<=Thị Xã).+|(?<=Thị xã).+|(?<=TX).+|(?<=tx).+", row['district']).group().strip()
@@ -172,7 +155,6 @@ class VNBusinessImporter:
                         _district_id = self.__fetch_area_code(district_temp, parent=_province_id)
                     else: 
                         _district_id = _district_id[0]
-                    last_access_ = district_temp
                     get_id = _district_id
                     if pd.notna(row['ward']):
                         ward_temp = re.search(r"(?<=Phường).+|(?<=Xã).+|(?<=Thị Trấn).+|(?<=Thị trấn).+|(?<=Tt).+|(?<=tt)", row['ward']).group().strip()
@@ -186,12 +168,7 @@ class VNBusinessImporter:
                             _ward_id = self.__fetch_area_code(ward_temp, parent=_district_id)
                         else:
                             _ward_id = _ward_id[0]
-                        last_access_ = ward_temp
                         get_id = _ward_id
-                #         return _ward_id
-                #     return _district_id
-                # return _province_id
-                self.test_array.append([last_access_, get_id])
                 return get_id
         except Exception as e:
             self.logger.error(e)
@@ -221,7 +198,7 @@ class VNBusinessImporter:
                         )
                         SELECT * FROM e
                         UNION SELECT id FROM business_type WHERE descr = %s
-                        """, (btype,btype)
+                        """, (btype,btype,)
                     )
                     type_id = cur.fetchone()[0]
                     type_map[btype] = type_id
@@ -275,7 +252,7 @@ class VNBusinessImporter:
                     SELECT * FROM e 
                     UNION 
                         SELECT code FROM activities WHERE code = %s
-                    """, (code, activity, code)
+                    """, (code, activity, code,)
                 )
                 activity_map[code] = activity
             conn.commit()
@@ -308,7 +285,7 @@ class VNBusinessImporter:
                             RETURNING id
                         ) SELECT * FROM e
                         UNION SELECT id FROM shareholders WHERE name = %s
-                    """, (_s, _s))
+                    """, (_s, _s,))
                     _id = cur.fetchone()[0]
                     shareholders_map[_s] = _id
             conn.commit()
@@ -390,7 +367,7 @@ class VNBusinessImporter:
                                     INSERT INTO business_act (business_id, act_code, main_act)
                                     VALUES (%s, %s, %s)
                                     ON CONFLICT DO NOTHING
-                                """, (business_id, main_act_code, True))
+                                """, (business_id, main_act_code, True,))
 
                     # Process other activities
                     if pd.notna(row['all_act']):
@@ -402,7 +379,7 @@ class VNBusinessImporter:
                                     INSERT INTO business_act (business_id, act_code, main_act)
                                     VALUES (%s, %s, %s)
                                     ON CONFLICT (business_id, act_code) DO NOTHING
-                                """, (business_id, act_code, False))
+                                """, (business_id, act_code, False,))
 
                     # Process shareholders
                     for shareholder_list in ['co_fund', 'shareholders']:
@@ -415,7 +392,7 @@ class VNBusinessImporter:
                                         INSERT INTO business_shareholder (business_id, shareholder_id, type)
                                         VALUES (%s, %s, %s)
                                         ON CONFLICT DO NOTHING
-                                    """, (business_id, shareholder_map[s], shareholder_list))
+                                    """, (business_id, shareholder_map[s], shareholder_list,))
 
                     if pd.notna(row.get('legal_rep')):
                         rep = row['legal_rep']
@@ -423,9 +400,7 @@ class VNBusinessImporter:
                             "INSERT INTO legal_rep (business_id, name) VALUES (%s, %s) ON CONFLICT DO NOTHING",
                             (business_id, rep,)
                         )
-                        
-                    
-
+                
                 conn.commit()
                 self.logger.info(f"Successfully imported all data")
 

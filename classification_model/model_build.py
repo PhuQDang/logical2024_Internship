@@ -1,4 +1,3 @@
-#standard import
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -39,16 +38,12 @@ class PotentialCustomersClassifier:
             cur.execute("""
             SELECT general_businesses.id AS business_id,
                 business_act.act_code AS act_code,
-                activities.descr AS act_descr,
                 general_businesses.auth_capital AS auth_capital
             FROM general_businesses
                 JOIN industrial_parks 
                     ON general_businesses.park_id = industrial_parks.id
                 JOIN business_act 
                     ON general_businesses.id = business_act.business_id
-                JOIN activities 
-                    ON business_act.act_code = activities.code
-            WHERE business_act.main_act = true
             """)
             df = pd.DataFrame(cur.fetchall())
             df.columns = ["business_id", "act_code", "act_descr", "auth_cap"]
@@ -76,14 +71,41 @@ class PotentialCustomersClassifier:
             self.logger.error(e)
             raise
     
+    def basic_classify(self, targetCost:int|None = 3e10) -> pd.DataFrame:
+        targetCost = 3e10
+        actCode = ['16%', '19%', '20%', '21%', '22%', '23%', '24%', '25%', '26%', '27%']
+        res = []
+        try:
+            conn = psycopg2.connect(**self.__db_params)
+            cur = conn.cursor()
+            for code in actCode:
+                cur.execute("""
+                    SELECT DISTINCT general_businesses.name as business_name,
+                           general_businesses.reg_number as registration_number
+                    FROM general_businesses 
+                        JOIN business_act ON general_businesses.id = business_act.business_id
+                    WHERE auth_capital > %s AND general_businesses.park_id is not NULL
+                            AND business_act.act_code like %s
+                """, (targetCost, code,))
+                res += cur.fetchall()
+            df = pd.DataFrame(res)
+            df.columns = ["Name", "Registration Number"]
+            df.drop_duplicates("Name")
+            return df
+        except Exception as e:
+            conn.rollback()
+            self.logger.error(str(e))
+            raise
+        finally:
+            if conn:
+                cur.close()
+                conn.close()
+            
     def create_model_(self):
         ...
 
     def plot_data(self, df: pd.DataFrame):
-        xArray = df['business_id']
-        yArray = df['auth_cap']
-        plt.plot(xArray, yArray, marker='^', ls='')
-        plt.show()
+        ...
 
 def main():
     db_param = {
@@ -95,9 +117,8 @@ def main():
     }
     try:
         custClass = PotentialCustomersClassifier(db_params=db_param)
-        custClass.export_to_()
-        custClass.plot_data(custClass.retrieve_raw_data())
-
+        res = custClass.basic_classify()
+        print(res)
     except Exception as e:
         print(str(e))
 
