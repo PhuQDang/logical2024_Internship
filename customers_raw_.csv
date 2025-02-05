@@ -1,155 +1,29 @@
-business_id,act_code,act_descr,auth_cap
-121,2410,"Sản xuất sắt, thép, gang",16000000000
-308,2012,Sản xuất phân bón và hợp chất ni tơ,9000000000
-563,2220,Sản xuất sản phẩm từ plastic,63000000000
-645,1410,May trang phục (trừ trang phục từ da lông thú),769317786300
-682,4632,Bán buôn thực phẩm,1500000000
-715,4663,"Bán buôn vật liệu, thiết bị lắp đặt khác trong xây dựng",4900000000
-888,5610,Nhà hàng và các dịch vụ ăn uống phục vụ lưu động,9900000000
-950,5510,Dịch vụ lưu trú ngắn ngày,3000000000
-957,4620,"Bán buôn nông, lâm sản nguyên liệu (trừ gỗ, tre, nứa) và động vật sống",3500000000
-964,5510,Dịch vụ lưu trú ngắn ngày,3000000000
-992,4663,"Bán buôn vật liệu, thiết bị lắp đặt khác trong xây dựng",300000000000
-1136,3290,Sản xuất khác chưa được phân vào đâu,45004500000
-1143,2610,Sản xuất linh kiện điện tử,25212000000
-1197,1621,"Sản xuất gỗ dán, gỗ lạng, ván ép và ván mỏng khác",46200000000
-1198,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",50000000000
-1323,4632,Bán buôn thực phẩm,1900000000
-1324,5610,Nhà hàng và các dịch vụ ăn uống phục vụ lưu động,1900000000
-1325,4771,"Bán lẻ hàng may mặc, giày dép, hàng da và giả da trong các cửa hàng chuyên doanh",1900000000
-1327,5610,Nhà hàng và các dịch vụ ăn uống phục vụ lưu động,3200000000
-1333,5510,Dịch vụ lưu trú ngắn ngày,1900000000
-1589,4690,Bán buôn tổng hợp,1900000000
-1590,4690,Bán buôn tổng hợp,1900000000
-1591,4690,Bán buôn tổng hợp,1900000000
-1593,4690,Bán buôn tổng hợp,4900000000
-1594,5510,Dịch vụ lưu trú ngắn ngày,1900000000
-1595,4690,Bán buôn tổng hợp,1900000000
-1596,4690,Bán buôn tổng hợp,1900000000
-1792,1629,"Sản xuất sản phẩm khác từ gỗ; sản xuất sản phẩm từ tre, nứa, rơm, rạ và vật liệu tết bện",20000000000
-1819,4933,Vận tải hàng hóa bằng đường bộ,9000000000
-1823,1520,Sản xuất giày dép,25000000000
-1832,4100,Xây dựng nhà các loại,4500000000
-1850,5210,Kho bãi và lưu giữ hàng hóa,20000000000
-1858,1621,"Sản xuất gỗ dán, gỗ lạng, ván ép và ván mỏng khác",2000000000
-1994,3290,Sản xuất khác chưa được phân vào đâu,8000000000
-2096,1410,May trang phục (trừ trang phục từ da lông thú),5000000000
-2120,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",68000000000
-2179,1629,"Sản xuất sản phẩm khác từ gỗ; sản xuất sản phẩm từ tre, nứa, rơm, rạ và vật liệu tết bện",10000000000
-2349,4663,"Bán buôn vật liệu, thiết bị lắp đặt khác trong xây dựng",20000000000
-2460,1629,"Sản xuất sản phẩm khác từ gỗ; sản xuất sản phẩm từ tre, nứa, rơm, rạ và vật liệu tết bện",5000000000
-2481,2395,"Sản xuất bê tông và các sản phẩm từ bê tông, xi măng và thạch cao",100000000000
-2632,4520,"Bảo dưỡng, sửa chữa ô tô và xe có động cơ khác",1000000000
-2654,4530,Bán phụ tùng và các bộ phận phụ trợ của ô tô và xe có động cơ khác,5000000000
-2741,3100,"Sản xuất giường, tủ, bàn, ghế",10000000000
-2765,4663,"Bán buôn vật liệu, thiết bị lắp đặt khác trong xây dựng",3000000000
-2800,4530,Bán phụ tùng và các bộ phận phụ trợ của ô tô và xe có động cơ khác,5000000000
-2887,2599,Sản xuất sản phẩm khác bằng kim loại chưa được phân vào đâu,150000000000
-2953,1702,"Sản xuất giấy nhăn, bìa nhăn, bao bì từ giấy và bìa",44500000000
-3137,3100,"Sản xuất giường, tủ, bàn, ghế",10000000000
-3341,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",900000000
-3365,2220,Sản xuất sản phẩm từ plastic,20000000000
-3386,1399,Sản xuất các loại hàng dệt khác chưa được phân vào đâu,135900000000
-3400,1010,"Chế biến, bảo quản thịt và các sản phẩm từ thịt",120000000000
-3511,4662,Bán buôn kim loại và quặng kim loại,20000000000
-3584,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",5000000000
-3745,2220,Sản xuất sản phẩm từ plastic,5000000000
-3796,1702,"Sản xuất giấy nhăn, bìa nhăn, bao bì từ giấy và bìa",4000000000
-3954,4742,Bán lẻ thiết bị nghe nhìn trong các cửa hàng chuyên doanh,2000000000
-3963,2592,Gia công cơ khí; xử lý và tráng phủ kim loại,20000000000
-3965,4669,Bán buôn chuyên doanh khác chưa được phân vào đâu,2000000000
-3968,2599,Sản xuất sản phẩm khác bằng kim loại chưa được phân vào đâu,120000000000
-4023,2599,Sản xuất sản phẩm khác bằng kim loại chưa được phân vào đâu,3000000000
-4063,1629,"Sản xuất sản phẩm khác từ gỗ; sản xuất sản phẩm từ tre, nứa, rơm, rạ và vật liệu tết bện",5000000000
-4100,4742,Bán lẻ thiết bị nghe nhìn trong các cửa hàng chuyên doanh,8000000000
-4164,7830,Cung ứng và quản lý nguồn lao động,2000000000
-4184,5621,Cung cấp dịch vụ ăn uống theo hợp đồng không thường xuyên với khách hàng,3000000000
-4283,4933,Vận tải hàng hóa bằng đường bộ,1000000000
-4358,4520,"Bảo dưỡng, sửa chữa ô tô và xe có động cơ khác",10000000000
-4424,1622,Sản xuất đồ gỗ xây dựng,15000000000
-4428,4511,Bán buôn ô tô và xe có động cơ khác,15000000000
-4444,1629,"Sản xuất sản phẩm khác từ gỗ; sản xuất sản phẩm từ tre, nứa, rơm, rạ và vật liệu tết bện",8000000000
-4545,5629,Dịch vụ ăn uống khác,500000000
-4797,1391,"Sản xuất vải dệt kim, vải đan móc và vải không dệt khác",10000000000
-4829,4773,Bán lẻ hàng hóa khác mới trong các cửa hàng chuyên doanh,1500000000
-4865,4662,Bán buôn kim loại và quặng kim loại,3000000000
-5029,7830,Cung ứng và quản lý nguồn lao động,2000000000
-5037,4690,Bán buôn tổng hợp,1000000000
-5162,4662,Bán buôn kim loại và quặng kim loại,1000000000
-5197,3100,"Sản xuất giường, tủ, bàn, ghế",500000000
-5349,2420,Sản xuất kim loại quý và kim loại màu,160000000000
-5463,4620,"Bán buôn nông, lâm sản nguyên liệu (trừ gỗ, tre, nứa) và động vật sống",66000000000
-5530,2410,"Sản xuất sắt, thép, gang",17900000000
-5583,2511,Sản xuất các cấu kiện kim loại,8000000000
-5634,4100,Xây dựng nhà các loại,20000000000
-5636,3830,Tái chế phế liệu,46200000000
-5666,2219,Sản xuất sản phẩm khác từ cao su,30000000000
-5700,7110,Hoạt động kiến trúc và tư vấn kỹ thuật có liên quan,1800000000
-5739,3290,Sản xuất khác chưa được phân vào đâu,100000000000
-5787,1811,In ấn,13600902526
-5832,5229,Hoạt động dịch vụ hỗ trợ khác liên quan đến vận tải,40000000000
-5835,1312,Sản xuất vải dệt thoi,50347000000
-5924,2825,"Sản xuất máy chế biến thực phẩm, đồ uống và thuốc lá",24200000000
-5988,1610,"Cưa, xẻ, bào gỗ và bảo quản gỗ",50000000000
-6002,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",90000000000
-6083,1701,"Sản xuất bột giấy, giấy và bìa",1800000000000
-6099,5621,Cung cấp dịch vụ ăn uống theo hợp đồng không thường xuyên với khách hàng,2500000000
-6118,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",100000000000
-6120,1629,"Sản xuất sản phẩm khác từ gỗ; sản xuất sản phẩm từ tre, nứa, rơm, rạ và vật liệu tết bện",70000000000
-6150,4669,Bán buôn chuyên doanh khác chưa được phân vào đâu,1900000000
-6265,1702,"Sản xuất giấy nhăn, bìa nhăn, bao bì từ giấy và bìa",225000000000
-6285,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",165000000000
-6381,1709,Sản xuất các sản phẩm khác từ giấy và bìa chưa được phân vào đâu,100000000000
-6385,1394,Sản xuất các loại dây bện và lưới,6123000000
-6412,4690,Bán buôn tổng hợp,10000000000
-6556,1621,"Sản xuất gỗ dán, gỗ lạng, ván ép và ván mỏng khác",100000000000
-6638,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",75000000000
-6639,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",125000000000
-7084,1629,"Sản xuất sản phẩm khác từ gỗ; sản xuất sản phẩm từ tre, nứa, rơm, rạ và vật liệu tết bện",50000000000
-7099,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",135000000000
-7111,0125,Trồng cây cao su,600000000000
-7127,2591,"Rèn, dập, ép và cán kim loại; luyện bột kim loại",29000000000
-7134,2432,Đúc kim loại màu,20000000000
-7215,3830,Tái chế phế liệu,40000000000
-7222,1610,"Cưa, xẻ, bào gỗ và bảo quản gỗ",40000000000
-7225,1629,"Sản xuất sản phẩm khác từ gỗ; sản xuất sản phẩm từ tre, nứa, rơm, rạ và vật liệu tết bện",80000000000
-7226,1629,"Sản xuất sản phẩm khác từ gỗ; sản xuất sản phẩm từ tre, nứa, rơm, rạ và vật liệu tết bện",2000000000
-7230,1629,"Sản xuất sản phẩm khác từ gỗ; sản xuất sản phẩm từ tre, nứa, rơm, rạ và vật liệu tết bện",80000000000
-7234,4620,"Bán buôn nông, lâm sản nguyên liệu (trừ gỗ, tre, nứa) và động vật sống",160000000000
-7246,3290,Sản xuất khác chưa được phân vào đâu,12000000000
-7260,8510,Giáo dục mầm non,17800000000
-7263,4511,Bán buôn ô tô và xe có động cơ khác,10000000000
-7265,1621,"Sản xuất gỗ dán, gỗ lạng, ván ép và ván mỏng khác",580450560000
-7277,4661,"Bán buôn nhiên liệu rắn, lỏng, khí và các sản phẩm liên quan",10000000000
-7283,2012,Sản xuất phân bón và hợp chất ni tơ,6000000000
-7284,3830,Tái chế phế liệu,2500000000000
-7346,2599,Sản xuất sản phẩm khác bằng kim loại chưa được phân vào đâu,24000000000
-7354,3830,Tái chế phế liệu,549685000000
-7374,0810,"Khai thác đá, cát, sỏi, đất sét",69000000000
-7382,8512,Giáo dục mẫu giáo,15200000000
-7389,1080,"Sản xuất thức ăn gia súc, gia cầm và thuỷ sản",25000000000
-7402,8620,"Hoạt động của các phòng khám đa khoa, chuyên khoa và nha khoa",5000000000
-7430,3511,Sản xuất điện,15000000000
-7431,3511,Sản xuất điện,18000000000
-7432,3511,Sản xuất điện,24000000000
-7444,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",25000000000
-7446,4711,"Bán lẻ lương thực, thực phẩm, đồ uống, thuốc lá, thuốc lào chiếm tỷ trọng lớn trong các cửa hàng kinh doanh tổng hợp",8000000000
-7449,6820,"Tư vấn, môi giới, đấu giá bất động sản, đấu giá quyền sử dụng đất",20000000000
-7460,0121,Trồng cây ăn quả,410000000000
-7471,2219,Sản xuất sản phẩm khác từ cao su,60000000000
-7504,1701,"Sản xuất bột giấy, giấy và bìa",30600000000
-7508,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",42000000000
-7511,1621,"Sản xuất gỗ dán, gỗ lạng, ván ép và ván mỏng khác",603232000000
-7512,7020,Hoạt động tư vấn quản lý,14500000000
-7519,5210,Kho bãi và lưu giữ hàng hóa,61900000000
-7546,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",200000000000
-7548,3100,"Sản xuất giường, tủ, bàn, ghế",86080000000
-7562,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",25000000000
-7576,1701,"Sản xuất bột giấy, giấy và bìa",30000000000
-7628,0112,Trồng ngô và cây lương thực có hạt khác,100000000000
-7659,2599,Sản xuất sản phẩm khác bằng kim loại chưa được phân vào đâu,168000000000
-7663,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",118823040000
-7688,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",10000000000
-7694,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",10000000000
-7700,4102,Xây dựng nhà không để ở,100000000000
-7713,6810,"Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",143000000000
+name,reg_number,auth_capital,park_id
+CÔNG TY TNHH THƯƠNG MẠI SẢN XUẤT KHANG GIA,0313375871,40000000000,8
+CÔNG TY CỔ PHẦN GỖ CAO SU THIÊN HƯNG,3801036564,40000000000,3
+CÔNG TY CỔ PHẦN SẢN XUẤT VÀ THƯƠNG MẠI GIẢI PHÁP XANH BÌNH PHƯỚC,3800958485,40000000000,2
+CÔNG TY CỔ PHẦN CÔNG NGHIỆP NAM HƯNG PHƯỚC,3801253093,42000000000,12
+CÔNG TY TNHH THƯƠNG MẠI DỊCH VỤ CÔNG NGHỆ MỚI,3800694112,46200000000,1
+CÔNG TY TNHH RONGHENG (VIỆT NAM),3801123418,46200000000,2
+CÔNG TY TNHH SẢN XUẤT VÀ THƯƠNG MẠI GỖ TRƯỜNG XUÂN,3801162590,50000000000,10
+CÔNG TY CỔ PHẦN NAN XIONG VIỆT NAM,3800303538,50000000000,3
+CÔNG TY CỔ PHẦN GĂNG TAY BÌNH PHƯỚC,3801241436,60000000000,3
+CÔNG TY TNHH MỘT THÀNH VIÊN BÁCH KINH,3800858804,63000000000,3
+CÔNG TY TNHH HÀ PHƯỚC THỊNH,3801210501,70000000000,8
+CÔNG TY CỔ PHẦN SINH KHỐI NAHNOOM,3800661773,80000000000,8
+CÔNG TY CỔ PHẦN GREEN WOOD BÌNH PHƯỚC ENERGY,3801057395,80000000000,8
+CÔNG TY CỔ PHẦN KIM TÍN DECOR,3801266529,86080000000,5
+CÔNG TY TNHH THƯƠNG MẠI DỊCH VỤ CHẾ BIẾN GỖ THIÊN DƯƠNG,3801295784,100000000000,3
+CÔNG TY TNHH ĐẦU TƯ CHƠN THÀNH CAPITAL,3801209418,100000000000,3
+CÔNG TY CỔ PHẦN ECO EASTWOOD NÔNG TRƯỜNG XANH BÌNH PHƯỚC,3801287712,100000000000,3
+CÔNG TY CỔ PHẦN ĐẦU TƯ XÂY DỰNG ĐẠI HOÀNG KIM,3801302978,100000000000,5
+CÔNG TY TNHH CHIEF,3801282009,120000000000,3
+CÔNG TY TNHH SẢN XUẤT KẾT CẤU THÉP HỒNG TÍN,3801240552,150000000000,5
+CÔNG TY CỔ PHẦN EASTWOOD ENERGY,3801061715,160000000000,3
+CÔNG TY TNHH LUYỆN KIM THĂNG LONG,3800307324,160000000000,1
+CÔNG TY CỔ PHẦN THƯƠNG MẠI VÀ CÔNG NGHIỆP BOSS,3801294357,168000000000,12
+CÔNG TY CỔ PHẦN CÔNG NGHIỆP ĐẠI HẠNH PHÚC,3801266053,200000000000,12
+CÔNG TY CỔ PHẦN KIM TÍN MDF ĐỒNG PHÚ,3801119852,580450560000,7
+CÔNG TY CỔ PHẦN ĐẦU TƯ KINH DOANH NHÀ BÌNH PHƯỚC,3800369828,600000000000,10
+CÔNG TY CỔ PHẦN KIM TÍN MDF CHƠN THÀNH,3801253696,603232000000,5
+CÔNG TY CỔ PHẦN THƯƠNG MẠI DỊCH VỤ GIẤY THUẬN AN,3801140300,2500000000000,2

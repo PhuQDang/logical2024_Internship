@@ -41,7 +41,7 @@ def main():
             elif int(option) == 0:
                 sys.exit(0)
             elif int(option) == 1:
-                ...
+                fpath = input()
             elif int(option) == 2:
                 queryRespond = QueryPrompter(db_parms=db_params)
                 queryRespond.query_results()

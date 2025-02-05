@@ -19,6 +19,7 @@ class PotentialCustomersClassifier:
     def __init__(self, db_params):
         self.__db_params = db_params
         self.__setup_logging()
+        self.retrieve_raw_data()
 
     def __setup_logging(self):
         logging.basicConfig(
@@ -37,18 +38,21 @@ class PotentialCustomersClassifier:
             cur = conn.cursor()
             cur.execute("""
             SELECT general_businesses.id AS business_id,
-                business_act.act_code AS act_code,
-                general_businesses.auth_capital AS auth_capital
+                general_businesses.name AS business_name,
+                general_businesses.reg_number AS reg_number,
+                general_businesses.auth_capital AS auth_capital,
+                general_businesses.park_id AS park_id,
+                business_act.act_code AS act_code
             FROM general_businesses
-                JOIN industrial_parks 
-                    ON general_businesses.park_id = industrial_parks.id
                 JOIN business_act 
                     ON general_businesses.id = business_act.business_id
+            WHERE general_businesses.park_id is not NULL
             """)
             df = pd.DataFrame(cur.fetchall())
-            df.columns = ["business_id", "act_code", "act_descr", "auth_cap"]
+            df.columns = ["business_id", "name", "reg_number", "auth_capital", "park_id", "act_code"]
             self.logger.info("Finished getting raw data")
-            return df
+            self.df = df
+            return
         except Exception as e:
             conn.rollback()
             self.logger.error(str(e))
@@ -58,49 +62,26 @@ class PotentialCustomersClassifier:
                 cur.close()
                 conn.close()
     
-    def export_to_(self, f_format: str|None ='csv' ) -> None:
+    def export_to_(self, data, f_format: str|None ='csv' ) -> None:
         export_f = {
             'csv': pd.DataFrame.to_csv,
             'xlsx': pd.DataFrame.to_excel
         }
         try:
-            raw_data = self.retrieve_raw_data()
             out_path = Path.cwd() / f"customers_raw_.{f_format}"
-            export_f[f_format](raw_data, out_path, index=False)
+            export_f[f_format](data, out_path, index=False)
         except Exception as e:
             self.logger.error(e)
             raise
-    
-    def basic_classify(self, targetCost:int|None = 3e10) -> pd.DataFrame:
-        targetCost = 3e10
-        actCode = ['16%', '19%', '20%', '21%', '22%', '23%', '24%', '25%', '26%', '27%']
-        res = []
-        try:
-            conn = psycopg2.connect(**self.__db_params)
-            cur = conn.cursor()
-            for code in actCode:
-                cur.execute("""
-                    SELECT DISTINCT general_businesses.name as business_name,
-                           general_businesses.reg_number as registration_number
-                    FROM general_businesses 
-                        JOIN business_act ON general_businesses.id = business_act.business_id
-                    WHERE auth_capital > %s AND general_businesses.park_id is not NULL
-                            AND business_act.act_code like %s
-                """, (targetCost, code,))
-                res += cur.fetchall()
-            df = pd.DataFrame(res)
-            df.columns = ["Name", "Registration Number"]
-            df.drop_duplicates("Name")
-            return df
-        except Exception as e:
-            conn.rollback()
-            self.logger.error(str(e))
-            raise
-        finally:
-            if conn:
-                cur.close()
-                conn.close()
-            
+ 
+
+    def basic_classify(self, targetCost: int = 3e10) -> pd.DataFrame:
+        dfTemp = self.df
+        actCode = [r'^162[\d]+', r'^20[\d]+', r'^22[\d]+', r'^24[\d]+', r'^25[\d]+', r'^26[\d]+', r'^27[\d]+']
+        mask = (dfTemp['act_code'].apply(lambda x: np.array([re.search(code, x) != None for code in actCode]).any())) & (dfTemp['auth_capital'] > targetCost)
+        dfCleaned = dfTemp[mask].dropna().drop_duplicates('business_id', keep='first')[['name', 'reg_number', 'auth_capital', 'park_id']].sort_values(by='auth_capital')
+        return dfCleaned
+
     def create_model_(self):
         ...
 
@@ -117,8 +98,11 @@ def main():
     }
     try:
         custClass = PotentialCustomersClassifier(db_params=db_param)
+        start = time.time()
         res = custClass.basic_classify()
+        custClass.export_to_(res)
         print(res)
+        print("Runtime = {:.3g}s".format(time.time()-start))
     except Exception as e:
         print(str(e))
 

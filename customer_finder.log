@@ -31,3 +31,73 @@ HINT:  Perhaps you meant to reference the column "business_act.act_code".
 2025-01-21 14:03:59,428 - INFO - Finished getting raw data
 2025-01-21 14:03:59,579 - INFO - Finished getting raw data
 2025-02-04 10:45:56,386 - ERROR - Length mismatch: Expected axis has 16 elements, new values have 2 elements
+2025-02-04 16:31:55,109 - ERROR - syntax error at or near "."
+LINE 2: ...        SELECT DISTINCTDISTINCT general_businesses.name as b...
+                                                             ^
+
+2025-02-04 16:33:24,306 - ERROR - Index(...) must be called with a collection of some kind, False was passed
+2025-02-05 08:45:44,391 - ERROR - 'Column not found: index'
+2025-02-05 08:46:41,177 - ERROR - 'DataFrameGroupBy' object has no attribute 'index'
+2025-02-05 08:47:38,731 - ERROR - unhashable type: 'DataFrame'
+2025-02-05 08:51:33,848 - ERROR - "None of [Index([ 563, 1197, 2887, 3968, 5349, 5636, 5832, 5988, 6118, 6120, 6556, 7084,\n       7111, 7215, 7222, 7225, 7230, 7234, 7265, 7284, 7471, 7508, 7511, 7546,\n       7548, 7628, 7659, 7700],\n      dtype='int64')] are in the [index]"
+2025-02-05 08:52:00,864 - ERROR - positional indexers are out-of-bounds
+2025-02-05 08:52:19,068 - ERROR - positional indexers are out-of-bounds
+2025-02-05 08:53:06,770 - ERROR - ('Lengths must match to compare', (94,), (28,))
+2025-02-05 08:53:39,809 - ERROR - The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+2025-02-05 08:53:52,863 - ERROR - can only convert an array of size 1 to a Python scalar
+2025-02-05 08:57:37,262 - ERROR - NDFrame.first() missing 1 required positional argument: 'offset'
+2025-02-05 09:22:38,167 - ERROR - column general_businesses.business_name does not exist
+LINE 3:                 general_businesses.business_name as business...
+                        ^
+
+2025-02-05 09:23:09,991 - INFO - Finished getting raw data
+2025-02-05 09:23:34,390 - INFO - Finished getting raw data
+2025-02-05 09:24:05,327 - INFO - Finished getting raw data
+2025-02-05 09:31:12,198 - INFO - Finished getting raw data
+2025-02-05 09:31:17,691 - INFO - Finished getting raw data
+2025-02-05 09:32:27,278 - INFO - Finished getting raw data
+2025-02-05 09:32:38,332 - INFO - Finished getting raw data
+2025-02-05 09:34:49,376 - INFO - Finished getting raw data
+2025-02-05 09:35:13,940 - INFO - Finished getting raw data
+2025-02-05 09:35:21,746 - INFO - Finished getting raw data
+2025-02-05 09:36:12,995 - INFO - Finished getting raw data
+2025-02-05 09:36:26,770 - INFO - Finished getting raw data
+2025-02-05 09:36:46,146 - INFO - Finished getting raw data
+2025-02-05 09:36:59,706 - INFO - Finished getting raw data
+2025-02-05 09:38:07,302 - INFO - Finished getting raw data
+2025-02-05 09:38:20,336 - INFO - Finished getting raw data
+2025-02-05 09:38:46,636 - INFO - Finished getting raw data
+2025-02-05 09:39:28,356 - INFO - Finished getting raw data
+2025-02-05 09:40:54,261 - INFO - Finished getting raw data
+2025-02-05 09:42:22,774 - INFO - Finished getting raw data
+2025-02-05 09:43:00,279 - INFO - Finished getting raw data
+2025-02-05 09:46:19,468 - INFO - Finished getting raw data
+2025-02-05 09:46:55,094 - INFO - Finished getting raw data
+2025-02-05 09:47:27,805 - INFO - Finished getting raw data
+2025-02-05 09:48:42,084 - INFO - Finished getting raw data
+2025-02-05 09:49:08,204 - INFO - Finished getting raw data
+2025-02-05 09:53:11,271 - INFO - Finished getting raw data
+2025-02-05 09:55:39,753 - INFO - Finished getting raw data
+2025-02-05 09:56:56,202 - INFO - Finished getting raw data
+2025-02-05 09:57:20,913 - INFO - Finished getting raw data
+2025-02-05 09:58:04,752 - INFO - Finished getting raw data
+2025-02-05 09:58:27,952 - INFO - Finished getting raw data
+2025-02-05 09:58:56,412 - INFO - Finished getting raw data
+2025-02-05 10:00:21,527 - INFO - Finished getting raw data
+2025-02-05 10:00:48,432 - INFO - Finished getting raw data
+2025-02-05 10:02:23,277 - INFO - Finished getting raw data
+2025-02-05 10:02:58,542 - INFO - Finished getting raw data
+2025-02-05 10:03:12,522 - INFO - Finished getting raw data
+2025-02-05 10:03:23,992 - INFO - Finished getting raw data
+2025-02-05 10:03:36,222 - INFO - Finished getting raw data
+2025-02-05 10:04:49,202 - INFO - Finished getting raw data
+2025-02-05 10:05:05,752 - INFO - Finished getting raw data
+2025-02-05 10:08:00,265 - INFO - Finished getting raw data
+2025-02-05 10:08:42,022 - INFO - Finished getting raw data
+2025-02-05 10:08:48,412 - INFO - Finished getting raw data
+2025-02-05 10:12:20,677 - INFO - Finished getting raw data
+2025-02-05 10:12:28,230 - INFO - Finished getting raw data
+2025-02-05 10:13:22,211 - INFO - Finished getting raw data
+2025-02-05 10:13:41,791 - INFO - Finished getting raw data
+2025-02-05 10:14:04,501 - INFO - Finished getting raw data
+2025-02-05 10:14:42,986 - INFO - Finished getting raw data
