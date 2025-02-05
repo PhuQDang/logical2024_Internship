@@ -17,6 +17,7 @@ def general_setup(fname):
     try:
         importer.import_data()
         print("Data import completed successfully!")
+        classifier = PotentialCustomers(db_params)
     except Exception as e:
         print(f"Error: {str(e)}")
         return
@@ -42,6 +43,7 @@ def main():
                 sys.exit(0)
             elif int(option) == 1:
                 fpath = input()
+                general_setup(fname=fpath)
             elif int(option) == 2:
                 queryRespond = QueryPrompter(db_parms=db_params)
                 queryRespond.query_results()
