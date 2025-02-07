@@ -416,32 +416,33 @@ class VNBusinessImporter:
             self.logger.error(f"Error in import process: {e}")
             raise
 
-def main(fname):
-    # Database connection parameters
-    db_params = {
-        'host': 'localhost',
-        'database': 'divisiondb_test',
-        'user': 'postgres',
-        'password': '1234',
-        'port': '5432'
-    }
-    
-    # Excel file path
-    excel_file = fname
-    
-    # Create importer and run import
-    importer = VNBusinessImporter(db_params, excel_file)
-    
-    try:
-        importer.import_data()
-        print("Data import completed successfully!")
-        for i, k in importer.test_array:
-            if k == '01':
-                print(i, k)
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        sys.exit(1)
+
 
 if __name__ == "__main__":
+    def main(fname):
+    # Database connection parameters
+        db_params = {
+            'host': 'localhost',
+            'database': 'divisiondb_test',
+            'user': 'postgres',
+            'password': '1234',
+            'port': '5432'
+        }
+        
+        # Excel file path
+        excel_file = fname
+        
+        # Create importer and run import
+        importer = VNBusinessImporter(db_params, excel_file)
+        
+        try:
+            importer.import_data()
+            print("Data import completed successfully!")
+            for i, k in importer.test_array:
+                if k == '01':
+                    print(i, k)
+        except Exception as e:
+            print(f"Error: {str(e)}")
+            sys.exit(1)
     fname = 'dsdn_1997_2024_processed.xlsx' #should create a dropbox to drop file in (front-end)
     main(fname)

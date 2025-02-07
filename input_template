@@ -24,7 +24,7 @@ class InputTemplateFile:
         )
         self.logger = logging.getLogger(__name__)
     
-    def input_data_to_excel(self, is_empty=True):
+    def input_data_to_excel(self, is_empty: bool =True) -> str:
         try:
             input_data = self.get_input(is_empty)
             df = pd.DataFrame(input_data)
@@ -37,7 +37,7 @@ class InputTemplateFile:
             self.logger.error(str(e))
             raise
     
-    def get_input(self, is_empty):
+    def get_input(self, is_empty: bool) -> dict:
         input_data = {
             "no": [],
             "reg_number": [],

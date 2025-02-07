@@ -84,7 +84,7 @@ class IndustrialParkClassifier:
 
     def classify_(self, address) -> int|None:
         """
-        Classify the industrial park where the business belongs based on string matching with
+        Classify the industrial park where the business belongs to based on string matching with
         industrial parks name already available in the database
         *This method does not account for new industrial park being discovered during the process
         of matching
@@ -96,21 +96,21 @@ class IndustrialParkClassifier:
         _id, _ = max([(i, park) for i, park in self.parks.iloc()], key=lambda x: fuzz.partial_ratio(x[1], processed_address))
         return int(_id)
 
-def main():
-    try:
-        db_params = {
-        'host': 'localhost',
-        'database': 'businessesdb',
-        'user': 'postgres',
-        'password': '1234',
-        'port': '5432'
-        }
-        classifier = IndustrialParkClassifier(db_params=db_params)
-        test1 = classifier.classify_("Khu công nghiệp Tân Khai, Thị trấn Tân Khai, Huyện Hớn Quản, Tỉnh Bình Phước, Việt Nam")
-        print(test1)
-    except Exception as e:
-        print(e)
-        sys.exit(1)
-
 if __name__ == "__main__":
+    def main():
+        try:
+            db_params = {
+            'host': 'localhost',
+            'database': 'businessesdb',
+            'user': 'postgres',
+            'password': '1234',
+            'port': '5432'
+            }
+            classifier = IndustrialParkClassifier(db_params=db_params)
+            test1 = classifier.classify_("Khu công nghiệp Tân Khai, Thị trấn Tân Khai, Huyện Hớn Quản, Tỉnh Bình Phước, Việt Nam")
+            print(test1)
+        except Exception as e:
+            print(e)
+            sys.exit(1)
+
     main()

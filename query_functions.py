@@ -64,13 +64,15 @@ class QueryPrompter:
     def all_businesses_capital_query(self) -> tuple[str, list, list]:
         min_capital = self.verify_capital_input()
         query = """
-        SELECT general_businesses.name, 
+        SELECT general_businesses.name,
+               general_businesses.reg_number,
+               general_businesses.address,
                general_businesses.auth_capital
         FROM general_businesses
             WHERE auth_capital > %s
         ORDER BY auth_capital
         """
-        cols = [self.COL_NAME[1], self.COL_NAME[3]]
+        cols = [self.COL_NAME[1], self.COL_NAME[0], self.COL_NAME[2], self.COL_NAME[3]]
         return (query, [min_capital], cols)
     
     def industrial_park_business_capital_query(self):
@@ -239,23 +241,24 @@ class PotentialCustomers(QueryPrompter):
             self.logger.error(e)
             raise
 
-def main():
-    db_param = {
-        'host': 'localhost',
-        'database': 'businessesdb',
-        'user': 'postgres',
-        'password': '1234',
-        'port': '5432'
-    }
-    try:
-        custClass = PotentialCustomers(db_params=db_param)
-        start = time.time()
-        res = custClass.classify()
-        custClass.export_to_(res)
-        print(res)
-        print("Runtime = {:.3g}s".format(time.time()-start))
-    except Exception as e:
-        print(str(e))
+
 
 if __name__ == "__main__":
+    def main():
+        db_param = {
+            'host': 'localhost',
+            'database': 'businessesdb',
+            'user': 'postgres',
+            'password': '1234',
+            'port': '5432'
+        }
+        try:
+            custClass = PotentialCustomers(db_params=db_param)
+            start = time.time()
+            res = custClass.classify()
+            custClass.export_to_(res)
+            print(res)
+            print("Runtime = {:.3g}s".format(time.time()-start))
+        except Exception as e:
+            print(str(e))
     main()
