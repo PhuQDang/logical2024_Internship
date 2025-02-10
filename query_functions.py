@@ -187,9 +187,21 @@ class QueryPrompter:
             raise
         return df
 
-class PotentialCustomers(QueryPrompter):
+class PotentialCustomers:
     def __init__(self, db_params):
-        super().__init__(db_params)
+        self.db_params = db_params
+        self.__setup_logging()
+    
+    def __setup_logging(self):
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s - %(levelname)s - %(message)s',
+            handlers=[
+                logging.FileHandler('customers.log'),
+                logging.StreamHandler(sys.stdout)
+            ]
+        )
+        self.logger = logging.getLogger(__name__)
         self.__retrieve_raw_data()
     
     def __retrieve_raw_data(self):

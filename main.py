@@ -65,9 +65,9 @@ def main():
             sys.exit(1)
 
 if __name__ == "__main__":
-    fname = 'dsdn_1997_2024_processed.xlsx'
-    start = time.time()
-    general_setup(fname)
-    end = time.time()
-    print(f"Time taken to import all data = {end-start}")
+    # fname = 'dsdn_1997_2024_processed.xlsx'
+    # start = time.time()
+    # general_setup(fname)
+    # end = time.time()
+    # print(f"Time taken to import all data = {end-start}")
     main()

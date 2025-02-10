@@ -313,3 +313,10 @@ LINE 41:                 PRIMARY KEY (business_id, name)
 2025-02-10 14:06:23,122 - INFO - Finish processing shareholders
 2025-02-10 14:06:28,878 - INFO - Finish processing legal representatives
 2025-02-10 14:16:39,741 - INFO - Successfully imported all data
+2025-02-10 15:05:06,066 - INFO - Finish getting industrial parks
+2025-02-10 15:05:06,160 - INFO - Schema created successfully
+2025-02-10 15:05:13,984 - INFO - Finish processing shareholders
+2025-02-10 15:05:20,295 - INFO - Finish processing legal representatives
+2025-02-10 15:15:34,540 - INFO - Successfully imported all data
+2025-02-10 15:46:42,852 - INFO - Finish getting industrial parks
+2025-02-10 15:46:42,909 - INFO - Schema created successfully
