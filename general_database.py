@@ -64,14 +64,14 @@ class VNBusinessImporter:
                 domestic boolean
             );
             
-            CREATE TABLE IF NOT EXISTS legal_rep (
+            CREATE TABLE IF NOT EXISTS legal_reps (
                 id serial PRIMARY KEY,
                 name varchar(255)
             );
 
             CREATE TABLE IF NOT EXISTS business_legal_rep(
                 business_id int REFERENCES general_businesses(id),
-                rep_id int REFERENCES legal_rep(id),
+                rep_id int REFERENCES legal_reps(id),
                 PRIMARY KEY (business_id, rep_id)
             );
 
@@ -276,12 +276,12 @@ class VNBusinessImporter:
         cur = conn.cursor()
         legal_rep_map = {}
         try:
-            legal_reps = df['legal_rep'].dropna().unique()
-            for name in legal_reps:
+            legalReps= df['legal_rep'].dropna().unique()
+            for name in legalReps:
                 name = name.strip().lower()
                 cur.execute("""
                     WITH e AS (
-                        INSERT INTO legal_rep (name)
+                        INSERT INTO legal_reps (name)
                         VALUES
                             (%s)
                         ON CONFLICT DO NOTHING
