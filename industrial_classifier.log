@@ -254,3 +254,62 @@ DETAIL:  Key columns "div_id" and "code" are of incompatible types: integer and 
 2025-01-22 13:42:40,396 - INFO - Finish processing shareholders
 2025-01-22 13:52:55,159 - INFO - Successfully imported all data
 2025-02-07 10:30:41,645 - INFO - Finish getting industrial parks
+2025-02-10 13:22:08,767 - INFO - Finish getting industrial parks
+2025-02-10 13:22:08,918 - INFO - Schema created successfully
+2025-02-10 13:22:12,458 - INFO - Finish processing shareholders
+2025-02-10 13:22:15,222 - ERROR - Error in import process: 'VNBusinessImporter' object has no attribute 'test_array'
+2025-02-10 13:22:51,517 - INFO - Finish getting industrial parks
+2025-02-10 13:22:51,547 - INFO - Schema created successfully
+2025-02-10 13:22:56,517 - INFO - Finish processing shareholders
+2025-02-10 13:23:00,969 - ERROR - Error in import process: 'VNBusinessImporter' object has no attribute 'test_array'
+2025-02-10 13:24:03,758 - INFO - Finish getting industrial parks
+2025-02-10 13:24:03,787 - INFO - Schema created successfully
+2025-02-10 13:24:10,207 - INFO - Finish processing shareholders
+2025-02-10 13:24:16,295 - ERROR - Error in import process: column "rep_id" of relation "business_legal_rep" does not exist
+LINE 1: INSERT INTO business_legal_rep (business_id, rep_id) VALUES ...
+                                                     ^
+
+2025-02-10 13:25:26,510 - INFO - Finish getting industrial parks
+2025-02-10 13:25:26,643 - INFO - Schema created successfully
+2025-02-10 13:25:34,537 - INFO - Finish processing shareholders
+2025-02-10 13:25:42,177 - ERROR - Error in import process: column "rep_id" of relation "business_legal_rep" does not exist
+LINE 1: INSERT INTO business_legal_rep (business_id, rep_id) VALUES ...
+                                                     ^
+
+2025-02-10 13:27:33,210 - INFO - Finish getting industrial parks
+2025-02-10 13:27:33,356 - ERROR - Error creating schema: column "name" named in key does not exist
+LINE 41:                 PRIMARY KEY (business_id, name)
+                         ^
+
+2025-02-10 13:27:33,356 - ERROR - Error in import process: column "name" named in key does not exist
+LINE 41:                 PRIMARY KEY (business_id, name)
+                         ^
+
+2025-02-10 13:27:47,168 - INFO - Finish getting industrial parks
+2025-02-10 13:27:47,320 - INFO - Schema created successfully
+2025-02-10 13:27:50,567 - INFO - Finish processing shareholders
+2025-02-10 13:27:53,216 - INFO - Finish processing legal representatives
+2025-02-10 13:34:07,360 - INFO - Successfully imported all data
+2025-02-10 13:41:42,287 - INFO - Finish getting industrial parks
+2025-02-10 13:41:42,438 - ERROR - Error creating schema: relation "legal_rep" does not exist
+
+2025-02-10 13:41:42,438 - ERROR - Error in import process: relation "legal_rep" does not exist
+
+2025-02-10 13:42:19,986 - INFO - Finish getting industrial parks
+2025-02-10 13:42:20,041 - INFO - Schema created successfully
+2025-02-10 13:42:23,555 - INFO - Finish processing shareholders
+2025-02-10 13:42:26,290 - INFO - Finish processing legal representatives
+2025-02-10 13:47:42,344 - ERROR - Error in import process: 'float' object has no attribute 'strip'
+2025-02-10 13:53:17,516 - INFO - Finish getting industrial parks
+2025-02-10 13:53:17,545 - INFO - Schema created successfully
+2025-02-10 13:53:28,319 - INFO - Finish processing shareholders
+2025-02-10 13:53:32,664 - INFO - Finish processing legal representatives
+2025-02-10 14:00:27,482 - INFO - Finish getting industrial parks
+2025-02-10 14:00:27,510 - INFO - Schema created successfully
+2025-02-10 14:00:40,196 - INFO - Finish processing shareholders
+2025-02-10 14:00:46,335 - INFO - Finish processing legal representatives
+2025-02-10 14:06:15,634 - INFO - Finish getting industrial parks
+2025-02-10 14:06:15,751 - INFO - Schema created successfully
+2025-02-10 14:06:23,122 - INFO - Finish processing shareholders
+2025-02-10 14:06:28,878 - INFO - Finish processing legal representatives
+2025-02-10 14:16:39,741 - INFO - Successfully imported all data

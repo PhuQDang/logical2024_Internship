@@ -62,3 +62,6 @@ LINE 9:         WHERE industrial_zones.name LIKE ''%KCN %''
 2025-02-07 10:57:40,533 - INFO - Finish returning query results
 2025-02-07 10:59:47,508 - INFO - Finish returning query results
 2025-02-07 11:01:46,597 - INFO - Finish returning query results
+2025-02-10 14:23:05,989 - INFO - Finish returning query results
+2025-02-10 14:23:24,892 - INFO - Finished getting raw data
+2025-02-10 14:24:08,387 - INFO - Finish returning query results

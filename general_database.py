@@ -63,11 +63,16 @@ class VNBusinessImporter:
                 type_id int REFERENCES business_type(id),
                 domestic boolean
             );
+            
+            CREATE TABLE IF NOT EXISTS legal_rep (
+                id serial PRIMARY KEY,
+                name varchar(255)
+            );
 
-            CREATE TABLE IF NOT EXISTS legal_rep(
+            CREATE TABLE IF NOT EXISTS business_legal_rep(
                 business_id int REFERENCES general_businesses(id),
-                name varchar(100),
-                PRIMARY KEY (business_id, name)
+                rep_id int REFERENCES legal_rep(id),
+                PRIMARY KEY (business_id, rep_id)
             );
 
             CREATE TABLE IF NOT EXISTS business_act(
@@ -131,7 +136,6 @@ class VNBusinessImporter:
         """Process district and ward data into admin_divisions table"""
         conn = psycopg2.connect(**self.db_params)
         cur = conn.cursor()
-        self.test_array
         get_id = None
         try:
             if pd.notna(row['province']):
@@ -267,6 +271,37 @@ class VNBusinessImporter:
             cur.close()
             conn.close()
 
+    def process_legal_reps(self, df: pd.DataFrame):
+        conn = psycopg2.connect(**self.db_params)
+        cur = conn.cursor()
+        legal_rep_map = {}
+        try:
+            legal_reps = df['legal_rep'].dropna().unique()
+            for name in legal_reps:
+                name = name.strip().lower()
+                cur.execute("""
+                    WITH e AS (
+                        INSERT INTO legal_rep (name)
+                        VALUES
+                            (%s)
+                        ON CONFLICT DO NOTHING
+                        RETURNING id
+                    ) SELECT * FROM e
+                    UNION SELECT id FROM shareholders WHERE name = %s
+                """, (name, name,))
+                _id = cur.fetchone()
+                legal_rep_map[name] = _id
+            conn.commit()
+            self.logger.info("Finish processing legal representatives")
+            return legal_rep_map
+        except Exception as e:
+            conn.rollback()
+            self.logger.error(f"Error processing legal representatives: {str(e)}")
+            raise
+        finally:
+            cur.close()
+            conn.close()
+
     def process_shareholders(self, df: pd.DataFrame):
         conn = psycopg2.connect(**self.db_params)
         cur = conn.cursor()
@@ -312,6 +347,7 @@ class VNBusinessImporter:
             type_map = self.process_business_types(df)
             activity_map = self.process_activities(df)
             shareholder_map = self.process_shareholders(df)
+            legalRep_map = self.process_legal_reps(df)
 
             # Process businesses
             conn = psycopg2.connect(**self.db_params)
@@ -395,10 +431,10 @@ class VNBusinessImporter:
                                     """, (business_id, shareholder_map[s], shareholder_list,))
 
                     if pd.notna(row.get('legal_rep')):
-                        rep = row['legal_rep']
+                        rep = row['legal_rep'].strip().lower()
                         cur.execute(
-                            "INSERT INTO legal_rep (business_id, name) VALUES (%s, %s) ON CONFLICT DO NOTHING",
-                            (business_id, rep,)
+                            "INSERT INTO business_legal_rep (business_id, rep_id) VALUES (%s, %s) ON CONFLICT DO NOTHING",
+                            (business_id, legalRep_map[rep],)
                         )
                 
                 conn.commit()
@@ -416,33 +452,29 @@ class VNBusinessImporter:
             self.logger.error(f"Error in import process: {e}")
             raise
 
-
+def main(fname):
+# Database connection parameters
+    db_params = {
+        'host': 'localhost',
+        'database': 'businessesdb',
+        'user': 'postgres',
+        'password': '1234',
+        'port': '5432'
+    }
+    
+    # Excel file path
+    excel_file = fname
+    
+    # Create importer and run import
+    importer = VNBusinessImporter(db_params, excel_file)
+    
+    try:
+        importer.import_data()
+        print("Data import completed successfully!")
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        sys.exit(1)
 
 if __name__ == "__main__":
-    def main(fname):
-    # Database connection parameters
-        db_params = {
-            'host': 'localhost',
-            'database': 'divisiondb_test',
-            'user': 'postgres',
-            'password': '1234',
-            'port': '5432'
-        }
-        
-        # Excel file path
-        excel_file = fname
-        
-        # Create importer and run import
-        importer = VNBusinessImporter(db_params, excel_file)
-        
-        try:
-            importer.import_data()
-            print("Data import completed successfully!")
-            for i, k in importer.test_array:
-                if k == '01':
-                    print(i, k)
-        except Exception as e:
-            print(f"Error: {str(e)}")
-            sys.exit(1)
     fname = 'dsdn_1997_2024_processed.xlsx' #should create a dropbox to drop file in (front-end)
     main(fname)
